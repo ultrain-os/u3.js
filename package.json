@@ -1,0 +1,77 @@
+{
+  "name": "ultrain-jssdk",
+  "version": "1.0.0",
+  "description": "Node wrapper for Ultrain API",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "mocha test/**/*.test.js --timeout 10000",
+    "docs": "node test/gendoc.js && rm -rf docs && mkdir docs && node_modules/.bin/jsdoc -c jsdoc.json"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:ultrain-os/nodejs-sdk.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ultrain-os/nodejs-sdk/issues"
+  },
+  "keywords": [
+    "web-service"
+  ],
+  "author": "ben.yasin80@gmail.com",
+  "contributors": [],
+  "engines": [
+    "node >= 8"
+  ],
+  "dependencies": {
+    "babel-polyfill": "^6.26.0",
+    "bigi": "^1.4.2",
+    "binaryen": "^37.0.0",
+    "browserify-aes": "^1.0.6",
+    "bs58": "^4.0.1",
+    "bytebuffer": "^5.0.1",
+    "camel-case": "^3.0.0",
+    "create-hash": "^1.1.3",
+    "create-hmac": "^1.1.6",
+    "docdash": "^0.4.0",
+    "ecurve": "^1.0.5",
+    "fcbuffer": "^2.2.0",
+    "history": "^4.7.2",
+    "is-browser": "^2.0.1",
+    "isomorphic-fetch": "^2.2.1",
+    "jsdoc": "^3.5.5",
+    "localStorage": "^1.0.3",
+    "minimatch": "^3.0.4",
+    "randombytes": "^2.0.5"
+  },
+  "devDependencies": {
+    "@types/node": "^8.0.3",
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.0",
+    "babel-plugin-syntax-async-functions": "^6.13.0",
+    "babel-plugin-transform-regenerator": "^6.26.0",
+    "babel-preset-es2015": "^6.24.1",
+    "blanket": "*",
+    "bluebird": "^3.5.0",
+    "browserify": "^14.4.0",
+    "camel-case": "^3.0.0",
+    "chai": "4.1.2",
+    "coveralls": "^3.0.0",
+    "documentation": "^5.3.2",
+    "eslint": "^4.19.1",
+    "eslint-config-standard": "^12.0.0-alpha.0",
+    "eslint-plugin-import": "^2.11.0",
+    "eslint-plugin-node": "^6.0.1",
+    "eslint-plugin-promise": "^3.7.0",
+    "eslint-plugin-standard": "^3.1.0",
+    "istanbul": "^0.4.5",
+    "mocha": "3.5.0",
+    "nyc": "^11.7.1",
+    "pedding": "*",
+    "should": "1.2.2",
+    "travis-cov": "*"
+  },
+  "license": "MIT"
+}
