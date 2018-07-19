@@ -31,8 +31,26 @@ const Ultrain = (config = {}) => {
   };
   config.logger = Object.assign({}, defaultLogger, config.logger);
 
-  return createUltrain(config);
+  let ultrainObj = createUltrain(config);
+  
+
+  Object.assign(ultrainObj,{
+    deploy
+  });
+  return ultrainObj;
 };
+
+async function deploy(contract, account = "ultrainio"){
+  
+  const wasm = fs.readFileSync(path.resolve(__dirname, `../contracts/${contract}/${contract}.wasm`));
+  const abi = fs.readFileSync(path.resolve(__dirname, `../contracts/${contract}/${contract}.abi`));
+
+  this.setcode(account, 0, 0, wasm);
+  this.setabi(account, JSON.parse(abi));
+
+  const code = await this.getCode(account);
+  return code;
+}
 
 module.exports = Ultrain;
 
