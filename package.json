@@ -1,5 +1,5 @@
 {
-  "name": "ultrain-jssdk",
+  "name": "u3.js",
   "version": "1.0.0",
   "description": "Node wrapper for Ultrain API",
   "main": "index.js",
