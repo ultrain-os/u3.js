@@ -6,6 +6,8 @@ try {
   }
 }
 
+const fs = require('fs');
+const path = require('path');
 const configDefaults = require("./config");
 const ecc = require("./ecc");
 const Fcbuffer = require("fcbuffer");
@@ -42,8 +44,8 @@ const Ultrain = (config = {}) => {
 
 async function deploy(contract, account = "ultrainio"){
   
-  const wasm = fs.readFileSync(path.resolve(__dirname, `../contracts/${contract}/${contract}.wasm`));
-  const abi = fs.readFileSync(path.resolve(__dirname, `../contracts/${contract}/${contract}.abi`));
+  const wasm = fs.readFileSync(path.resolve(process.cwd(), `build/${contract}.wasm`));
+  const abi = fs.readFileSync(path.resolve(process.cwd(), `build/${contract}.abi`));
 
   this.setcode(account, 0, 0, wasm);
   this.setabi(account, JSON.parse(abi));
