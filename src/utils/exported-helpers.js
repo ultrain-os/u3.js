@@ -10,10 +10,10 @@ function createTransaction (api, expireInSeconds = 60, callback) {
   if (!callback) {
     throw new TypeError("callback parameter is required");
   }
-  api.getInfo(checkError(callback, info => {
+  api.getChainInfo(checkError(callback, info => {
     const chainDate = new Date(info.head_block_time + "Z");
 
-    api.getBlock(info.last_irreversible_block_num, checkError(callback, block => {
+    api.getBlockInfo(info.last_irreversible_block_num, checkError(callback, block => {
       const expiration = new Date(chainDate.getTime() + expireInSeconds * 1000);
 
       const ref_block_num = info.last_irreversible_block_num & 0xFFFF;

@@ -6,6 +6,7 @@ try {
   }
 }
 
+const abi2json = require('./utils/abi2json');
 const fs = require('fs');
 const path = require('path');
 const configDefaults = require("./config");
@@ -50,7 +51,7 @@ async function deploy(contract, account = "ultrainio"){
   this.setcode(account, 0, 0, wasm);
   this.setabi(account, JSON.parse(abi));
 
-  const code = await this.getCode(account);
+  const code = await this.getContract(account);
   return code;
 }
 
@@ -62,7 +63,8 @@ Object.assign(Ultrain, {
       format,
       ecc,
       Fcbuffer
-    }
+    },
+    abi2json
   }
 );
 
@@ -118,8 +120,15 @@ function mergeWriteFunctions (config, api, structs) {
   // block api
   const merge = Object.assign({}, network);
 
+  // add abi.json to schema
+  const list = glob.sync(path.join(process.cwd(),'build/*.json'));
+  let my_schema = Object.assign({},schema);
+  for(let i in list){
+    my_schema = Object.assign(my_schema,require(list[i]));
+  }
+
   // contract abi
-  const writeApi = writeApiGen(api, network, structs, config, schema);
+  const writeApi = writeApiGen(api, network, structs, config, my_schema);
 
   throwOnDuplicate(merge, writeApi, "Conflicting methods in UltrainApi and Transaction Api");
   Object.assign(merge, writeApi);
@@ -229,7 +238,7 @@ const defaultSignProvider = (ultrain, config) => async function({ sign, buf, tra
 };
 
 function checkChainId (network, chainId) {
-  network.getInfo({}).then(info => {
+  network.getChainInfo({}).then(info => {
     if (info.chain_id !== chainId) {
       console.warn(
         "WARN: chainId mismatch, signatures will not match transaction authority. " +

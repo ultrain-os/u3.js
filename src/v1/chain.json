@@ -40,7 +40,7 @@
       }
     }
   },
-  "get_info": {
+  "get_chain_info": {
     "brief": "Return general network information.",
     "params": null,
     "results": {
@@ -58,7 +58,7 @@
     }
   },
 
-  "get_block": {
+  "get_block_info": {
     "brief": "Fetch a block from the blockchain.",
     "params": {
       "block_num_or_id": "string"
@@ -69,7 +69,7 @@
     }
   },
 
-  "get_account": {
+  "get_account_info": {
     "brief": "Fetch a blockchain account",
     "params": {
       "account_name": "name"
@@ -92,7 +92,7 @@
     }
   },
 
-  "get_code": {
+  "get_contract": {
     "brief": "Fetch smart contract code",
     "params": {
       "account_name": "name"
@@ -105,7 +105,7 @@
     }
   },
 
-  "get_table_rows": {
+  "get_table_records": {
     "brief": "Fetch smart contract data from an account.",
     "params": {
       "json": { "type": "bool", "default": false},
@@ -129,7 +129,7 @@
     }
   },
 
-  "abi_json_to_bin": {
+  "abi_json2bin": {
     "brief": "Manually serialize json into binary hex.  The binayargs is usually stored in Action.data.",
     "params": {
       "code": "name",
@@ -141,7 +141,7 @@
     }
   },
 
-  "abi_bin_to_json": {
+  "abi_bin2json": {
     "brief": "Convert bin hex back into Abi json definition.",
     "params": {
       "code": "name",
@@ -171,7 +171,7 @@
     "results": null
   },
 
-  "push_transaction": {
+  "push_tx": {
     "brief": "Attempts to push the transaction into the pending queue.",
     "params": {
       "signed_transaction": "signed_transaction"
@@ -182,7 +182,7 @@
     }
   },
 
-  "push_transactions": {
+  "push_txs": {
     "brief": "Attempts to push transactions into the pending queue.",
     "params": {
       "signed_transaction[]": "signed_transaction"
