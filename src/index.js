@@ -7,6 +7,7 @@ try {
 }
 
 const abi2json = require('./utils/abi2json');
+const glob = require('glob');
 const fs = require('fs');
 const path = require('path');
 const configDefaults = require("./config");

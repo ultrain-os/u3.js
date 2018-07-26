@@ -7,7 +7,7 @@
     "test": "test"
   },
   "scripts": {
-    "test": "mocha test/**/*.test.js --timeout 10000",
+    "test": "NODE_ENV=development mocha test/index.test.js --timeout 10000",
     "docs": "node test/gendoc.js && rm -rf docs && mkdir docs && node_modules/.bin/jsdoc -c jsdoc.json"
   },
   "repository": {
@@ -38,6 +38,7 @@
     "docdash": "^0.4.0",
     "ecurve": "^1.0.5",
     "fcbuffer": "^2.2.0",
+    "glob": "^7.1.2",
     "history": "^4.7.2",
     "is-browser": "^2.0.1",
     "isomorphic-fetch": "^2.2.1",
