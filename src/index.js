@@ -45,15 +45,19 @@ const Ultrain = (config = {}) => {
 };
 
 async function deploy(contract, account = "ultrainio"){
+  try{
+    const wasm = fs.readFileSync(path.resolve(process.cwd(), `build/${contract}.wasm`));
+    const abi = fs.readFileSync(path.resolve(process.cwd(), `build/${contract}.abi`));
   
-  const wasm = fs.readFileSync(path.resolve(process.cwd(), `build/${contract}.wasm`));
-  const abi = fs.readFileSync(path.resolve(process.cwd(), `build/${contract}.abi`));
-
-  this.setcode(account, 0, 0, wasm);
-  this.setabi(account, JSON.parse(abi));
-
-  const code = await this.getContract(account);
-  return code;
+    this.setcode(account, 0, 0, wasm);
+    this.setabi(account, JSON.parse(abi));
+  
+    const code = await this.getContract(account);
+    return code;
+  }catch(e){
+    console.log(e);
+    return false;
+  }
 }
 
 module.exports = Ultrain;
