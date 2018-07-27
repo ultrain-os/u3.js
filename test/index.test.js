@@ -8,14 +8,15 @@ const configDefaults = require("../src/config");
 const { ecc } = Ultrain.modules;
 
 const wif = "5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79zkvFD3"; //ultrainio
-const wif2 = "5JXs6Q5QVibj1eWpPqGC5jdCnZHoREC9u35sEDPrmVHEaYf1JYt"; //utrio.token
+// const wif2 = "5JXs6Q5QVibj1eWpPqGC5jdCnZHoREC9u35sEDPrmVHEaYf1JYt"; //utrio.token
+const wif2 = "5J96TDpA5GLERPYwu3FaxCWwvFQaQYZ14GDKh371NsCavPmR3vp";
 
 // 打印链信息
 describe("chainInfo", () => {
   it("chainInfo", (done) => {
 
     const ultrain = Ultrain();
-    ultrain.getInfo((err, info) => {
+    ultrain.getChainInfo((err, info) => {
       if (err) {
         throw err;
       }
@@ -115,16 +116,18 @@ if (process.env["NODE_ENV"] === "development") {
       it(`deploy ${contract}@${account}`, async function() {
         this.timeout(4000);
         // console.log('todo, skipping deploy ' + `${contract}@${account}`)
-        const config = { binaryen: require("binaryen"), keyProvider: wif2 };
+        const config = { binaryen: require("binaryen"), keyProvider: wif };
         const ultrain = Ultrain(config);
 
-        const wasm = fs.readFileSync(path.resolve(__dirname, `../contracts/${contract}/${contract}.wasm`));
-        const abi = fs.readFileSync(path.resolve(__dirname, `../contracts/${contract}/${contract}.abi`));
+        const code = await ultrain.deploy(contract,account);
 
-        ultrain.setcode(account, 0, 0, wasm);
-        ultrain.setabi(account, JSON.parse(abi));
+        // const wasm = fs.readFileSync(path.resolve(__dirname, `../build/${contract}.wasm`));
+        const abi = fs.readFileSync(path.resolve(__dirname, `../build/${contract}.abi`));
 
-        const code = await ultrain.getCode(account);
+        // ultrain.setcode(account, 0, 0, wasm);
+        // ultrain.setabi(account, JSON.parse(abi));
+
+        // const code = await ultrain.getContract(account);
 
         const diskAbi = JSON.parse(abi);
         delete diskAbi.____comment;
@@ -141,7 +144,7 @@ if (process.env["NODE_ENV"] === "development") {
     // TODO: undeploy contract instead (when API allows this)
 
     //deploy("ultrainio.msig","utrio.msig");
-    deploy("ultrainio.token", "utrio.token");
+    deploy("ultrainio.token","utrio.token");
     //deploy("ultrainio.bios","utrio.bios");
     //deploy("ultrainio.system","utrio.system");
   });

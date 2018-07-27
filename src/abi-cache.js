@@ -13,7 +13,7 @@ function AbiCache(network, config) {
     if(force == false && cache[account] != null) {
       return Promise.resolve(cache[account])
     }
-    return network.getCode(account).then(({abi}) => {
+    return network.getContract(account).then(({abi}) => {
       assert(abi, `Missing ABI for account: ${account}`)
       const schema = abiToFcSchema(abi)
       const structs = Structs(config, schema) // structs = {structs, types}

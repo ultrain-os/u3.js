@@ -477,7 +477,7 @@ function WriteApi (Network, network, config, Transaction) {
             transaction: packedTr
           });
         } else {
-          network.pushTransaction(packedTr, error => {
+          network.pushTx(packedTr, error => {
             if (!error) {
               callback(null, {
                 transaction_id: transactionId,
