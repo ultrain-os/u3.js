@@ -1,7 +1,6 @@
 .DS_Store
 *.swp
 logs
-docs
 
 node_modules
 npm-debug.log
