@@ -27,7 +27,7 @@ const format = require("./format");
 const schema = require("./v1/schema");
 const pkg = require("../package.json");
 
-const Ultrain = (config = {}) => {
+const U3 = (config = {}) => {
   config = Object.assign({}, configDefaults, config);
   const defaultLogger = {
     log: config.verbose ? console.log : null,
@@ -35,13 +35,11 @@ const Ultrain = (config = {}) => {
   };
   config.logger = Object.assign({}, defaultLogger, config.logger);
 
-  let ultrainObj = createUltrain(config);
-  
-
-  Object.assign(ultrainObj,{
+  let u3Obj = createU3(config);
+  Object.assign(u3Obj,{
     deploy
   });
-  return ultrainObj;
+  return u3Obj;
 };
 
 async function deploy(contract, account = "ultrainio"){
@@ -60,9 +58,9 @@ async function deploy(contract, account = "ultrainio"){
   }
 }
 
-module.exports = Ultrain;
+module.exports = U3;
 
-Object.assign(Ultrain, {
+Object.assign(U3, {
     version: pkg.version,
     modules: {
       format,
@@ -78,8 +76,8 @@ Object.assign(Ultrain, {
  * @param config
  * @returns {Object}
  */
-function createUltrain (config) {
-  const network = apiGen("v1", api, config);
+function createU3 (config) {
+  const network = config.httpEndpoint != null ? apiGen("v1", api, config): null
   config.network = network;
 
   config.assetCache = AssetCache(network);
@@ -100,9 +98,9 @@ function createUltrain (config) {
   }
 
   const { structs, types, fromBuffer, toBuffer } = Structs(config);
-  const ultrain = mergeWriteFunctions(config, network, structs);
+  const u3 = mergeWriteFunctions(config, network, structs);
 
-  Object.assign(ultrain, {
+  Object.assign(u3, {
     fc: {
       structs,
       types,
@@ -112,14 +110,14 @@ function createUltrain (config) {
   });
 
   if (!config.signProvider) {
-    config.signProvider = defaultSignProvider(ultrain, config);
+    config.signProvider = defaultSignProvider(u3, config);
   }
 
-  return ultrain;
+  return u3;
 }
 
 function mergeWriteFunctions (config, api, structs) {
-  assert(config.network, "network instance required");
+  assert(config, "network instance required");
   const { network } = config;
 
   // block api

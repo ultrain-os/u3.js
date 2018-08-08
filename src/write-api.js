@@ -3,7 +3,7 @@ const ecc = require("./ecc");
 const Fcbuffer = require("fcbuffer");
 const createHash = require("create-hash");
 const processArgs = require("./utils/process-args");
-const Structs = require("./structs");
+//const Structs = require("./structs");
 const AssetCache = require("./asset-cache");
 
 module.exports = writeApiGen;
@@ -308,7 +308,7 @@ function WriteApi (Network, network, config, Transaction) {
   }
 
   function transaction (arg, options, callback) {
-    const defaultExpiration = config.expireInSeconds ? config.expireInSeconds : 60;
+    const defaultExpiration = config.expireInSeconds ? config.expireInSeconds : 60*60;
     const optionDefault = { expireInSeconds: defaultExpiration, broadcast: true, sign: true };
     options = Object.assign({}/*clone*/, optionDefault, options);
 

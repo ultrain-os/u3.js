@@ -7,8 +7,17 @@ const helpers = require('./exported-helpers')
 module.exports = apiGen;
 
 function apiGen (version, definitions, config) {
-  config = Object.assign({}, configDefaults, config);
-  Object.assign(configDefaults.logger, config.logger);
+
+  function applyDefaults(target, defaults) {
+    Object.keys(defaults).forEach(key => {
+      if(target[key] === undefined) {
+        target[key] = defaults[key]
+      }
+    })
+  }
+
+  applyDefaults(config, configDefaults)
+  applyDefaults(config.logger, configDefaults.logger)
 
   const api = {};
   const { httpEndpoint } = config;
