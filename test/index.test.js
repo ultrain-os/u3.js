@@ -234,7 +234,8 @@ if (process.env["NODE_ENV"] === "development") {
           creator: "ultrainio",
           name,
           owner: pubkey,
-          active: pubkey
+          active: pubkey,
+          updateable:0
         });
         tr.buyrambytes({
           payer: "ultrainio",

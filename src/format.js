@@ -6,6 +6,8 @@ module.exports = {
   isName,
   encodeName, // encode human readable name to uint64 (number string)
   decodeName, // decode from uint64 to human readable
+  encodeNameEx,
+  decodeNameEx,
   encodeNameHex: name => Long.fromString(encodeName(name), true).toString(16),
   decodeNameHex: (hex, littleEndian = true) =>
     decodeName(Long.fromString(hex, true, 16).toString(), littleEndian),
@@ -112,6 +114,118 @@ function decodeName(value, littleEndian = true) {
     const c = charmap[tmp.and(i === 0 ? fourBits : fiveBits)]
     str = c + str
     tmp = tmp.shiftRight(i === 0 ? 4 : 5)
+  }
+  str = str.replace(/\.+$/, '') // remove trailing dots (all of them)
+
+  return str
+}
+
+const NameExMapStr = '._0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+const NameExIndex = ch => {
+  const idx = NameExMapStr.indexOf(ch)
+  if(idx === -1)
+    throw new TypeError(`Invalid character for NameEx: '${ch}'`)
+
+  return idx
+}
+
+function encodeNameEx(name, littleEndian = true) {
+  if(typeof name !== 'string')
+    throw new TypeError('name parameter is a required string')
+
+  if(name.length > 21)
+    throw new TypeError('A name_ex can be up to 21 characters long')
+
+  let convert = str => {
+    const value = Long.fromString(str, true, 2)
+
+    // convert to LITTLE_ENDIAN
+    let leHex = ''
+    const bytes = littleEndian ? value.toBytesLE() : value.toBytesBE()
+    for(const b of bytes) {
+      const n = Number(b).toString(16)
+      leHex += (n.length === 1 ? '0' : '') + n
+    }
+
+    const ulName = Long.fromString(leHex, true, 16).toString()
+
+    // console.log('encodeName', name, value.toString(), ulName.toString(), JSON.stringify(bitstr.split(/(.....)/).slice(1)))
+
+    return ulName.toString()
+  }
+
+  let bitstr = ''
+  let result = {}
+
+  for(let i = 0; i <= 20; i++) { // process all 64 bits (even if name is short)
+    const c = i < name.length ? NameExIndex(name[i]) : 0
+    const bitlen = 6;
+    let bits = Number(c).toString(2)
+    if(bits.length > bitlen) {
+      throw new TypeError('Invalid name_ex ' + name)
+    }
+    bits = '0'.repeat(bitlen - bits.length) + bits
+
+    if (i <= 9) {
+      bitstr = bits + bitstr
+
+    } else if (i == 10) {
+      let lowFourBits = bits.substring(2) // low four bits
+      bitstr = lowFourBits + bitstr
+      result.valL = convert(bitstr)
+
+      bitstr = bits.substring(0, 2); // up two bits
+    } else {
+      bitstr = bits + bitstr
+    }
+  }
+
+  result.valH = convert(bitstr)
+  return result;
+}
+
+function decodeNameEx(valueH, valueL, littleEndian = true) {
+  let convert = value => {
+    value = ULong(value)
+
+    // convert from LITTLE_ENDIAN
+    let beHex = ''
+    const bytes = littleEndian ? value.toBytesLE() : value.toBytesBE()
+    for(const b of bytes) {
+      const n = Number(b).toString(16)
+      beHex += (n.length === 1 ? '0' : '') + n
+    }
+    beHex += '0'.repeat(16 - beHex.length)
+
+    const beValue = Long.fromString(beHex, true, 16)
+
+    return beValue;
+  }
+
+  const sixBits = Long.fromNumber(0x3f, true)
+  const twoBits = Long.fromNumber(0x3, true)
+
+  let str = ''
+  let tmpH = convert(valueH);
+  let tmpL = convert(valueL);
+
+  for(let i = 0; i <= 20; i++) {
+    const c = ''
+    if (i <= 9) {
+      c = NameExMapStr[tmpL.and(sixBits)];
+      tmpL = tmpL.shiftRight(6);
+    } else if (i == 10) {
+      let htb = tmpH.and(twoBits);
+      htb = htb.shiftLeft(4);
+      htb = htb.and(tmpL);
+
+      c = NameExMapStr[htb];
+      tmpH = tmpH.shiftRight(2);
+    } else {
+      c = NameExMapStr[tmpH.and(sixBits)];
+      tmpH = tmpH.shiftRight(6);
+    }
+    str = str + c
   }
   str = str.replace(/\.+$/, '') // remove trailing dots (all of them)
 

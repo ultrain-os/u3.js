@@ -15,7 +15,7 @@
   "token_name": "name",
   "table_name": "name",
   "scope_name": "name",
-  "action_name": "name",
+  "action_name": "name_ex",
   "time_point": "int64",
   "time_point_sec": "time",
   "timestamp": "uint32",

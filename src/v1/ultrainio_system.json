@@ -1,6 +1,6 @@
 {
   "account_name": "name",
-  "action_name": "name",
+  "action_name": "name_ex",
   "authority": {
     "base": "",
     "fields": {
@@ -186,7 +186,8 @@
       "creator": "account_name",
       "name": "account_name",
       "owner": "authority",
-      "active": "authority"
+      "active": "authority",
+      "updateable": "uint8"
     }
   },
   "onerror": {

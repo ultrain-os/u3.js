@@ -6,7 +6,7 @@ const assert = require('assert')
 const json = {schema: require('./v1/schema')}
 
 const {
-  isName, encodeName, decodeName,
+  isName, encodeName, decodeName, encodeNameEx, decodeNameEx,
   UDecimalPad, UDecimalImply, UDecimalUnimply,
   parseExtendedAsset
 } = require('./format')
@@ -50,6 +50,8 @@ module.exports = (config = {}, extendedSchema) => {
 
   const ultrainTypes = {
     name: ()=> [Name],
+    name_ex: ()=> [NameEx],
+
     public_key: () => [variant(PublicKeyEcc)],
 
     symbol: () => [Symbol(assetCache)],
@@ -103,6 +105,42 @@ const Name = (validation) => {
     },
 
     toObject (value) {
+      if (validation.defaults && value == null) {
+        return ''
+      }
+      return value
+    }
+  }
+}
+
+const NameEx = (validation) => {
+  return {
+    fromByteBuffer (b) {
+      let valH = b.readUint64()
+      let valL = b.readUint64()
+      const n = decodeNameEx(valH, valL, false) // b is already in littleEndian
+      // if(validation.debug) {
+      //   console.error(`${n}`, '(Name.fromByteBuffer)')
+      // }
+      return n
+    },
+
+    appendByteBuffer (b, value) {
+      // if(validation.debug) {
+      //   console.error(`${value}`, (Name.appendByteBuffer))
+      // }
+      let result = encodeNameEx(value, false)
+      b.writeUint64(result.valH)
+      b.writeUint64(result.valL)
+    },
+
+    fromObject (value) {
+      // console.log(`NameEx call fromObject with ${value}`)
+      return value
+    },
+
+    toObject (value) {
+      // console.log(`Name call toObject with ${value}`)
       if (validation.defaults && value == null) {
         return ''
       }
