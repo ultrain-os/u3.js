@@ -45,7 +45,9 @@
     "jsdoc": "^3.5.5",
     "localStorage": "^1.0.3",
     "minimatch": "^3.0.4",
-    "randombytes": "^2.0.5"
+    "randombytes": "^2.0.5",
+    "moment": "^2.22.2",
+    "mongoose": "^5.2.7"
   },
   "devDependencies": {
     "@types/node": "^8.0.3",
