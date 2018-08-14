@@ -5,20 +5,7 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 const moment = require('moment')
 
-let TxSchema = new Schema({
-    _id: {
-        type: String,
-        'default': '1'
-    },
-    id: String,
-    b_id: String,
-    create_time: { type: Date, default: Date.now },
-    expiration: { type: Date, default: Date.now },
-    actions: Number
-},
-{
-    timestamps: true
-});
+let TxSchema = new Schema();
 
 TxSchema.set('toJSON', {getters: true, virtuals: true})
 TxSchema.set('toObject', {getters: true, virtuals: true})

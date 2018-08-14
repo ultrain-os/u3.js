@@ -33,3 +33,4 @@ function init (param) {
 exports.init = init;
 exports.Blocks = require("./block");
 exports.Txs = require("./transaction");
+exports.Accounts = require("./account");
