@@ -10,7 +10,7 @@ let BlockSchema = new Schema({
     block : Object
 });
 
-BlockSchema.static('findTxByBlockId', async function (block_num) {
+BlockSchema.static('getTxByBlockId', async function (block_num) {
     const res = await this.findOne({block_num});
     let trx = [];
     if(res){
