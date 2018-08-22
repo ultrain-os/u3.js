@@ -17,10 +17,8 @@ const apiGen = require("./utils/apigen");
 const api = require("./v1/chain");
 
 const assert = require("assert");
-
 const Structs = require("./structs");
 const AbiCache = require("./abi-cache");
-
 const AssetCache = require("./asset-cache");
 const writeApiGen = require("./write-api");
 const format = require("./format");
@@ -42,112 +40,7 @@ const U3 = (config = {}) => {
   return u3Obj;
 };
 
-async function deploy(contract, account = "ultrainio"){
-  try{
-    const wasm = fs.readFileSync(path.resolve(process.cwd(), `build/${contract}.wasm`));
-    const abi = fs.readFileSync(path.resolve(process.cwd(), `build/${contract}.abi`));
-  
-    this.setcode(account, 0, 0, wasm);
-    this.setabi(account, JSON.parse(abi));
-  
-    const code = await this.getContract(account);
-    return code;
-  }catch(e){
-    console.log(e);
-    return false;
-  }
-}
-
-module.exports = U3;
-
-Object.assign(U3, {
-    version: pkg.version,
-    modules: {
-      format,
-      ecc,
-      Fcbuffer
-    },
-    abi2json
-  }
-);
-
-/**
- * create ultrain instance
- * @param config
- * @returns {Object}
- */
-function createU3 (config) {
-  const network = config.httpEndpoint != null ? apiGen("v1", api, config): null
-  config.network = network;
-
-  config.assetCache = AssetCache(network);
-  config.abiCache = AbiCache(network, config);
-
-  if (!config.chainId) {
-    config.chainId = "cf057bbfb72640471fd910bcb67639c22df9f92470936cddc1ade0e2f2e7dc4f";
-  }
-
-  checkChainId(network, config.chainId);
-
-  if (config.mockTransactions != null) {
-    if (typeof config.mockTransactions === "string") {
-      const mock = config.mockTransactions;
-      config.mockTransactions = () => mock;
-    }
-    assert.equal(typeof config.mockTransactions, "function", "config.mockTransactions");
-  }
-
-  const { structs, types, fromBuffer, toBuffer } = Structs(config);
-  const u3 = mergeWriteFunctions(config, network, structs);
-
-  Object.assign(u3, {
-    fc: {
-      structs,
-      types,
-      fromBuffer,
-      toBuffer
-    }
-  });
-
-  if (!config.signProvider) {
-    config.signProvider = defaultSignProvider(u3, config);
-  }
-
-  return u3;
-}
-
-function mergeWriteFunctions (config, api, structs) {
-  assert(config, "network instance required");
-  const { network } = config;
-
-  // block api
-  const merge = Object.assign({}, network);
-
-  // add abi.json to schema
-  const list = glob.sync(path.join(process.cwd(),'build/*.json'));
-  let my_schema = Object.assign({},schema);
-  for(let i in list){
-    my_schema = Object.assign(my_schema,require(list[i]));
-  }
-
-  // contract abi
-  const writeApi = writeApiGen(api, network, structs, config, my_schema);
-
-  throwOnDuplicate(merge, writeApi, "Conflicting methods in UltrainApi and Transaction Api");
-  Object.assign(merge, writeApi);
-
-  return merge;
-}
-
-function throwOnDuplicate (o1, o2, msg) {
-  for (const key in o1) {
-    if (o2[key]) {
-      throw new TypeError(msg + ": " + key);
-    }
-  }
-}
-
-const defaultSignProvider = (ultrain, config) => async function({ sign, buf, transaction }) {
+const defaultSignProvider = (u3, config) => async function({ sign, buf, transaction }) {
   const { keyProvider } = config;
 
   if (!keyProvider) {
@@ -203,7 +96,7 @@ const defaultSignProvider = (ultrain, config) => async function({ sign, buf, tra
 
   const pubkeys = Array.from(keyMap.keys());
 
-  return ultrain.getRequiredKeys(transaction, pubkeys).then(({ required_keys }) => {
+  return u3.getRequiredKeys(transaction, pubkeys).then(({ required_keys }) => {
     if (!required_keys.length) {
       throw new Error("missing required keys for " + JSON.stringify(transaction));
     }
@@ -240,8 +133,127 @@ const defaultSignProvider = (ultrain, config) => async function({ sign, buf, tra
   });
 };
 
-function checkChainId (network, chainId) {
-  network.getChainInfo({}).then(info => {
+/**
+ * deploy contract
+ * @param contract name of contract，eg. utrio.system
+ * @param account name of owner account，eg. ultrainio
+ * @returns {Promise<*>}
+ */
+async function deploy(contract, account = "ultrainio"){
+  try{
+    const wasm = fs.readFileSync(path.resolve(process.cwd(), `build/${contract}.wasm`));
+    const abi = fs.readFileSync(path.resolve(process.cwd(), `build/${contract}.abi`));
+  
+    this.setcode(account, 0, 0, wasm);
+    this.setabi(account, JSON.parse(abi));
+  
+    const code = await this.getContract(account);
+    return code;
+  }catch(e){
+    console.log(e);
+    return false;
+  }
+}
+
+/**
+ * create U3 instance
+ * @param config configuration information
+ * @returns {Object} instance of U3
+ */
+function createU3 (config) {
+  const network = config.httpEndpoint != null ? apiGen("v1", api, config): null
+  config.network = network;
+
+  config.assetCache = AssetCache(network);
+  config.abiCache = AbiCache(network, config);
+
+  if (!config.chainId) {
+    config.chainId = "cf057bbfb72640471fd910bcb67639c22df9f92470936cddc1ade0e2f2e7dc4f";
+  }
+
+  _checkChainId(network, config.chainId);
+
+  if (config.mockTransactions != null) {
+    if (typeof config.mockTransactions === "string") {
+      const mock = config.mockTransactions;
+      config.mockTransactions = () => mock;
+    }
+    assert.equal(typeof config.mockTransactions, "function", "config.mockTransactions");
+  }
+
+  const { structs, types, fromBuffer, toBuffer } = Structs(config);
+  const u3 = _mergeWriteFunctions(config, network, structs);
+
+  Object.assign(u3, {
+    fc: {
+      structs,
+      types,
+      fromBuffer,
+      toBuffer
+    }
+  });
+
+  if (!config.signProvider) {
+    config.signProvider = defaultSignProvider(u3, config);
+  }
+
+  return u3;
+}
+
+/**
+ * merge chain function and contract function
+ * @param config
+ * @param api
+ * @param structs
+ * @returns {*}
+ * @private
+ */
+function _mergeWriteFunctions (config, api, structs) {
+  assert(config, "network instance required");
+  const { network } = config;
+
+  // block api
+  const merge = Object.assign({}, network);
+
+  // add abi.json to schema
+  const list = glob.sync(path.join(process.cwd(),'build/*.json'));
+  let my_schema = Object.assign({},schema);
+  for(let i in list){
+    my_schema = Object.assign(my_schema,require(list[i]));
+  }
+
+  // contract abi
+  const writeApi = writeApiGen(api, network, structs, config, my_schema);
+
+  _throwOnDuplicate(merge, writeApi, "Conflicting methods in UltrainApi and Transaction Api");
+  Object.assign(merge, writeApi);
+
+  return merge;
+}
+
+/**
+ * throw if duplicate
+ * @param o1
+ * @param o2
+ * @param msg
+ * @private
+ */
+function _throwOnDuplicate (o1, o2, msg) {
+  for (const key in o1) {
+    if (o2[key]) {
+      throw new TypeError(msg + ": " + key);
+    }
+  }
+}
+
+/**
+ * check chainId
+ * @param api
+ * @param chainId
+ * @private
+ */
+function _checkChainId (api, chainId) {
+  api.getChainInfo({}).then(info => {
     if (info.chain_id !== chainId) {
       console.warn(
         "WARN: chainId mismatch, signatures will not match transaction authority. " +
@@ -252,3 +264,16 @@ function checkChainId (network, chainId) {
     console.error(error);
   });
 }
+
+Object.assign(U3, {
+    version: pkg.version,
+    modules: {
+      format,
+      ecc,
+      Fcbuffer
+    },
+    abi2json
+  }
+);
+
+module.exports = U3;
