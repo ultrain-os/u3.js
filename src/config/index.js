@@ -7,6 +7,6 @@ module.exports = configDefaults = {
   logger: {
     log: console.log,
     error: console.error,
-    debug: console.log,
+    debug: console.log
   }
 };

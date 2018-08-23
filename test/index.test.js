@@ -63,7 +63,7 @@ describe("offline", () => {
     });*/
 
   // 3.2 离线模式transactionHeaders
-  it("transactionHeaders callback", async function() {
+  /*it("transactionHeaders callback", async function() {
     const u3 = createU3({
       keyProvider: wif,
       //httpEndpoint: null,
@@ -84,7 +84,7 @@ describe("offline", () => {
 
       assert.equal(trx.transaction.signatures.length, 1, "signature count");
     });
-  });
+  });*/
 
 });
 
@@ -168,6 +168,7 @@ if (process.env["NODE_ENV"] === "development") {
 
   // 5 交易
   describe("transactions", () => {
+
     const signProvider = ({ sign, buf }) => sign(buf, wif);
 
     const promiseSigner = (args) => Promise.resolve(signProvider(args));
@@ -209,34 +210,141 @@ if (process.env["NODE_ENV"] === "development") {
 
     // TODO issue token by contract with ts version
 
-    it("newaccount (broadcast)", async () => {
+    it("createUser", async () => {
       const u3 = createU3({ signProvider });
       const pubkey = "UTR6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV";
       const name = randomName();
-      //console.log(ecc.privateToPublic(wif))
-
-      return u3.transaction(tr => {
-        tr.newaccount({
-          creator: "ultrainio",
-          name,
-          owner: pubkey,
-          active: pubkey,
-          updateable: 0
-        });
-        tr.buyrambytes({
-          payer: "ultrainio",
-          receiver: name,
-          bytes: 8192
-        });
-        tr.delegatebw({
-          from: "ultrainio",
-          receiver: name,
-          stake_net_quantity: "1.0000 SYS",
-          stake_cpu_quantity: "1.0000 SYS",
-          transfer: 0
+      let params = {
+        creator: "ultrainio",
+        name: name,
+        owner: pubkey,
+        active: pubkey,
+        updateable: 0,
+        ram_bytes: 8912,
+        stake_net_quantity: "1.0000 SYS",
+        stake_cpu_quantity: "1.0000 SYS",
+        transfer: 0
+      };
+      await u3.createUser(params).then(tr => {
+        return u3.getAccountInfo({
+          account_name: name
+        }).then(result => {
+          assert.equal(result.account_name, name);
         });
       });
     });
+
+    it("buyram", async () => {
+      const u3 = createU3({ signProvider });
+      await u3.getAccountInfo({
+        account_name: "test1"
+      }).then(async before => {
+        console.log("\n-----before:", before.ram_quota);
+        return await u3.buyram({
+          payer: "ultrainio",
+          receiver: "test1",
+          quant: "1 SYS"
+        }).then(async tr => {
+          return await u3.getAccountInfo({
+            account_name: "test1"
+          }).then(after => {
+            console.log("\n-----after:", after.ram_quota);
+            assert.ok(after.ram_quota - before.ram_quota > 0);
+          });
+        });
+      });
+    });
+
+    //TODO not increase accurate,wby?
+    it("buyrambytes", async () => {
+      const u3 = createU3({ signProvider });
+      await u3.getAccountInfo({
+        account_name: "test1"
+      }).then(async before => {
+        console.log("\n-----before:", before.ram_quota);
+        return await u3.buyrambytes({
+          payer: "ultrainio",
+          receiver: "test1",
+          bytes: 10000
+        }).then(async tr => {
+          return await u3.getAccountInfo({
+            account_name: "test1"
+          }).then(after => {
+            console.log("\n-----after:", after.ram_quota);
+            assert.ok(after.ram_quota - before.ram_quota > 0);
+          });
+        });
+      });
+    });
+
+    it("sellram", async () => {
+      const signProvider = ({ sign, buf }) => sign(buf, wif2);
+      const u3 = createU3({ signProvider });
+      await u3.getAccountInfo({
+        account_name: "test1"
+      }).then(async before => {
+        console.log("\n-----before:", before.ram_quota);
+        return await u3.sellram({
+          account: "test1",
+          bytes: 10000
+        }).then(async tr => {
+          return await u3.getAccountInfo({
+            account_name: "test1"
+          }).then(after => {
+            console.log("\n-----after:", after.ram_quota);
+            assert.ok(after.ram_quota - before.ram_quota < 0);
+          });
+        });
+      });
+    });
+
+    it("delegatebw", async () => {
+      const u3 = createU3({ signProvider });
+      await u3.getAccountInfo({
+        account_name: "test1"
+      }).then(async before => {
+        console.log("\n-----before:", before.net_weight, before.cpu_weight);
+        return await u3.delegatebw({
+          from: "ultrainio",
+          receiver: "test1",
+          stake_net_quantity: '1 SYS',
+          stake_cpu_quantity: '1 SYS',
+          transfer: 0
+        }).then(async tr => {
+          return await u3.getAccountInfo({
+            account_name: "test1"
+          }).then(after => {
+            console.log("\n-----after:", after.net_weight, after.cpu_weight);
+            assert.ok(after.net_weight - before.net_weight > 0);
+            assert.ok(after.cpu_weight - before.cpu_weight > 0);
+          });
+        });
+      });
+    });
+
+    //TODO cannot undelegate bandwidth until the chain is activated (at least 15% of all tokens participate in voting)
+    /*it("undelegatebw", async () => {
+      const u3 = createU3({ signProvider });
+      await u3.getAccountInfo({
+        account_name: "test1"
+      }).then(async before => {
+        console.log("\n-----before:", before.net_weight, before.cpu_weight);
+        return await u3.undelegatebw({
+          from: "ultrainio",
+          receiver: "test1",
+          unstake_net_quantity: '0.0010 SYS',
+          unstake_cpu_quantity: '0.0010 SYS',
+        }).then(async tr => {
+          return await u3.getAccountInfo({
+            account_name: "test1"
+          }).then(after => {
+            console.log("\n-----after:", after.net_weight, after.cpu_weight);
+            assert.ok(after.net_weight - before.net_weight < 0);
+            assert.ok(after.cpu_weight - before.cpu_weight < 0);
+          });
+        });
+      });
+    });*/
 
     it("mockTransactions pass", () => {
       const u3 = createU3({ signProvider, mockTransactions: "pass" });
@@ -488,6 +596,7 @@ if (process.env["NODE_ENV"] === "development") {
         { broadcast: false }
       );
     });
+
   });
 
   // ./ultrainioc set contract currency build/contracts/currency/currency.wasm build/contracts/currency/currency.abi
@@ -521,7 +630,7 @@ if (process.env["NODE_ENV"] === "development") {
 
 const randomName = () => {
   const name = String(Math.round(Math.random() * 1000000000)).replace(/[0,6-9]/g, "");
-  return "a" + name + "111222333444".substring(0, 11 - name.length); // always 12 in length
+  return "b" + name + "111222333444".substring(0, 11 - name.length); // always 12 in length
 };
 
 const randomAsset = () =>

@@ -167,6 +167,7 @@ const createU3 = (config = {}) => {
     }
     , deploy
     , abi2json
+    , createUser
   });
 
 
@@ -198,6 +199,56 @@ async function deploy(contract, account = "ultrainio") {
     return false;
   }
 }
+
+/**
+ * create a new user account by chain, and buy some ram, net, cpu
+ * @param params
+ * eg format:
+ * {
+    creator: "ultrainio",
+    name: "test123",
+    owner: "UTR6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV",
+    active: "UTR6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV",
+    updateable: 0,
+    ram_bytes: 8912,
+    stake_net_quantity: "1.0000 SYS",
+    stake_cpu_quantity: "1.0000 SYS",
+    transfer: 0
+  }
+ * @returns {Promise<*>}
+ */
+async function createUser(params) {
+  let defaults = {
+    updateable: 0,
+    ram_bytes: 8912,
+    stake_net_quantity: "1.0000 SYS",
+    stake_cpu_quantity: "1.0000 SYS",
+    transfer: 0
+  };
+  let data = Object.assign({}, defaults, params);
+  return this.transaction(tr => {
+    tr.newaccount({
+      creator: data.creator,
+      name: data.name,
+      owner: data.owner,
+      active: data.active,
+      updateable: data.updateable
+    });
+    tr.buyrambytes({
+      payer: data.creator,
+      receiver: data.name,
+      bytes: data.ram_bytes
+    });
+    tr.delegatebw({
+      from: data.creator,
+      receiver: data.name,
+      stake_net_quantity: data.stake_net_quantity,
+      stake_cpu_quantity: data.stake_cpu_quantity,
+      transfer: data.transfer
+    });
+  });
+}
+
 
 /**
  * merge chain function and contract function
