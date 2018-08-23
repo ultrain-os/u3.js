@@ -6,10 +6,10 @@ try {
   }
 }
 
-const abi2json = require('./utils/abi2json');
-const glob = require('glob');
-const fs = require('fs');
-const path = require('path');
+const abi2json = require("./utils/abi2json");
+const glob = require("glob");
+const fs = require("fs");
+const path = require("path");
 const configDefaults = require("./config");
 const ecc = require("./ecc");
 const Fcbuffer = require("fcbuffer");
@@ -25,21 +25,7 @@ const format = require("./format");
 const schema = require("./v1/schema");
 const pkg = require("../package.json");
 
-const U3 = (config = {}) => {
-  config = Object.assign({}, configDefaults, config);
-  const defaultLogger = {
-    log: config.verbose ? console.log : null,
-    error: console.error
-  };
-  config.logger = Object.assign({}, defaultLogger, config.logger);
-
-  let u3Obj = createU3(config);
-  Object.assign(u3Obj,{
-    deploy
-  });
-  return u3Obj;
-};
-
+const version = pkg.version;
 const defaultSignProvider = (u3, config) => async function({ sign, buf, transaction }) {
   const { keyProvider } = config;
 
@@ -121,7 +107,9 @@ const defaultSignProvider = (u3, config) => async function({ sign, buf, transact
 
       // const pubkeys = missingKeys.map(key => ecc.PublicKey(key).toStringLegacy())
       keyProvider({ pubkeys: missingKeys })
-        .forEach(pvt => { pvts.push(pvt); });
+        .forEach(pvt => {
+          pvts.push(pvt);
+        });
     }
 
     const sigs = [];
@@ -134,34 +122,20 @@ const defaultSignProvider = (u3, config) => async function({ sign, buf, transact
 };
 
 /**
- * deploy contract
- * @param contract name of contract，eg. utrio.system
- * @param account name of owner account，eg. ultrainio
- * @returns {Promise<*>}
- */
-async function deploy(contract, account = "ultrainio"){
-  try{
-    const wasm = fs.readFileSync(path.resolve(process.cwd(), `build/${contract}.wasm`));
-    const abi = fs.readFileSync(path.resolve(process.cwd(), `build/${contract}.abi`));
-  
-    this.setcode(account, 0, 0, wasm);
-    this.setabi(account, JSON.parse(abi));
-  
-    const code = await this.getContract(account);
-    return code;
-  }catch(e){
-    console.log(e);
-    return false;
-  }
-}
-
-/**
  * create U3 instance
  * @param config configuration information
  * @returns {Object} instance of U3
  */
-function createU3 (config) {
-  const network = config.httpEndpoint != null ? apiGen("v1", api, config): null
+const createU3 = (config = {}) => {
+  config = Object.assign({}, configDefaults, config);
+  const defaultLogger = {
+    log: config.verbose ? console.log : null,
+    error: console.error
+  };
+  config.logger = Object.assign({}, defaultLogger, config.logger);
+
+
+  const network = config.httpEndpoint != null ? apiGen("v1", api, config) : null;
   config.network = network;
 
   config.assetCache = AssetCache(network);
@@ -191,13 +165,38 @@ function createU3 (config) {
       fromBuffer,
       toBuffer
     }
+    , deploy
+    , abi2json
   });
+
 
   if (!config.signProvider) {
     config.signProvider = defaultSignProvider(u3, config);
   }
 
   return u3;
+};
+
+/**
+ * deploy contract
+ * @param contract name of contract，eg. utrio.system
+ * @param account name of owner account，eg. ultrainio
+ * @returns {Promise<*>}
+ */
+async function deploy(contract, account = "ultrainio") {
+  try {
+    const wasm = fs.readFileSync(path.resolve(process.cwd(), `build/${contract}.wasm`));
+    const abi = fs.readFileSync(path.resolve(process.cwd(), `build/${contract}.abi`));
+
+    this.setcode(account, 0, 0, wasm);
+    this.setabi(account, JSON.parse(abi));
+
+    const code = await this.getContract(account);
+    return code;
+  } catch (e) {
+    console.log(e);
+    return false;
+  }
 }
 
 /**
@@ -208,7 +207,7 @@ function createU3 (config) {
  * @returns {*}
  * @private
  */
-function _mergeWriteFunctions (config, api, structs) {
+function _mergeWriteFunctions(config, api, structs) {
   assert(config, "network instance required");
   const { network } = config;
 
@@ -216,10 +215,10 @@ function _mergeWriteFunctions (config, api, structs) {
   const merge = Object.assign({}, network);
 
   // add abi.json to schema
-  const list = glob.sync(path.join(process.cwd(),'build/*.json'));
-  let my_schema = Object.assign({},schema);
-  for(let i in list){
-    my_schema = Object.assign(my_schema,require(list[i]));
+  const list = glob.sync(path.join(process.cwd(), "build/*.json"));
+  let my_schema = Object.assign({}, schema);
+  for (let i in list) {
+    my_schema = Object.assign(my_schema, require(list[i]));
   }
 
   // contract abi
@@ -238,7 +237,7 @@ function _mergeWriteFunctions (config, api, structs) {
  * @param msg
  * @private
  */
-function _throwOnDuplicate (o1, o2, msg) {
+function _throwOnDuplicate(o1, o2, msg) {
   for (const key in o1) {
     if (o2[key]) {
       throw new TypeError(msg + ": " + key);
@@ -252,7 +251,7 @@ function _throwOnDuplicate (o1, o2, msg) {
  * @param chainId
  * @private
  */
-function _checkChainId (api, chainId) {
+function _checkChainId(api, chainId) {
   api.getChainInfo({}).then(info => {
     if (info.chain_id !== chainId) {
       console.warn(
@@ -265,15 +264,10 @@ function _checkChainId (api, chainId) {
   });
 }
 
-Object.assign(U3, {
-    version: pkg.version,
-    modules: {
-      format,
-      ecc,
-      Fcbuffer
-    },
-    abi2json
-  }
-);
-
-module.exports = U3;
+module.exports = {
+  createU3,
+  format,
+  ecc,
+  Fcbuffer,
+  version
+};
