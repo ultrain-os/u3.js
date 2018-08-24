@@ -2,8 +2,10 @@ const Aes = require("./aes");
 const PrivateKey = require("./key_private");
 const PublicKey = require("./key_public");
 const Signature = require("./signature");
-const key_utils = require("./key_utils");
 const hash = require("./hash");
+const assert = require("assert");
+const _ = require("lodash");
+const BIP39 = require("bip39");
 
 /** @namespace */
 const ecc = {
@@ -58,7 +60,7 @@ const ecc = {
     return signature.verify(data, pubkey, encoding);
   },
 
-  verifyHash (signature, dataSha256, pubkey, encoding = "hex") {
+  verifyHash(signature, dataSha256, pubkey, encoding = "hex") {
     signature = Signature.from(signature);
     return signature.verifyHash(dataSha256, pubkey, encoding);
   },
@@ -80,7 +82,56 @@ const ecc = {
     return signature.recoverHash(dataSha256, encoding).toString();
   },
 
-  sha256: (data, encoding = "hex") => hash.sha256(data, encoding)
+  sha256: (data, encoding = "hex") => hash.sha256(data, encoding),
+
+  /**
+   * generate key pair by seed
+   * @param seed  a seed can regenerate the same key pair
+   * @returns {{public_key: (*|string), private_key: *}}
+   */
+  generateKeyPairBySeed: (seed) => {
+    if (_.isEmpty(seed) || !_.isString(seed)) {
+      assert.error("seed must a not empty string");
+    }
+    const wif = ecc.seedPrivate(seed);
+    const pubkey = ecc.privateToPublic(wif);
+    return {
+      public_key: pubkey,
+      private_key: wif
+    };
+  },
+
+  /**
+   * generate key pair with mnemonic
+   * @returns {{mnemonic: *, public_key: (*|string), private_key: *}}
+   */
+  generateKeyPairWithMnemonic: () => {
+    const mnemonic = BIP39.generateMnemonic();
+    const seed = BIP39.mnemonicToSeed(mnemonic).toString("hex");
+    const wif = ecc.seedPrivate(seed);
+    const pubkey = ecc.privateToPublic(wif);
+    return {
+      mnemonic: mnemonic,
+      public_key: pubkey,
+      private_key: wif
+    };
+  },
+
+  /**
+   * regenerate key pair by mnemonic
+   * @param mnemonic
+   * @returns {{mnemonic: *, public_key: (*|string), private_key: *}}
+   */
+  generateKeyPairByMnemonic: (mnemonic) => {
+    const seed = BIP39.mnemonicToSeed(mnemonic).toString("hex");
+    const wif = ecc.seedPrivate(seed);
+    const pubkey = ecc.privateToPublic(wif);
+    return {
+      mnemonic: mnemonic,
+      public_key: pubkey,
+      private_key: wif
+    };
+  }
 };
 
 module.exports = ecc;

@@ -15,8 +15,8 @@ const ecc = require("./ecc");
 const Fcbuffer = require("fcbuffer");
 const apiGen = require("./utils/apigen");
 const api = require("./v1/chain");
-
 const assert = require("assert");
+const _ = require("lodash");
 const Structs = require("./structs");
 const AbiCache = require("./abi-cache");
 const AssetCache = require("./asset-cache");
@@ -134,7 +134,6 @@ const createU3 = (config = {}) => {
   };
   config.logger = Object.assign({}, defaultLogger, config.logger);
 
-
   const network = config.httpEndpoint != null ? apiGen("v1", api, config) : null;
   config.network = network;
 
@@ -239,6 +238,7 @@ async function createUser(params) {
       receiver: data.name,
       bytes: data.ram_bytes
     });
+    //optional
     tr.delegatebw({
       from: data.creator,
       receiver: data.name,

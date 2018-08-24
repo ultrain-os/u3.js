@@ -9,7 +9,7 @@ const wif = "5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79zkvFD3"; //ultrainio
 const pubkey = "UTR6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV"; //ultrainio
 
 const wif2 = "5JbWt7ikXhe8ihrwwxBd3WQoCCwDTUPshUrPZUU66bcMmb8SZqR";//other
-const pubkey2 = "UTR7Dyga8Yw17AN18YogNNmzdf29cqfdZCjj23obrVdkuxqpUeieY"
+const pubkey2 = "UTR7Dyga8Yw17AN18YogNNmzdf29cqfdZCjj23obrVdkuxqpUeieY";
 
 // 1.打印链信息
 describe("chainInfo", () => {
@@ -88,6 +88,36 @@ describe("offline", () => {
       assert.equal(trx.transaction.signatures.length, 1, "signature count");
     });
   });*/
+
+  it("generateKeyPairBySeed", function() {
+    let seed = randomName();
+    let keys = ecc.generateKeyPairBySeed(seed);
+    assert.equal(ecc.isValidPrivate(keys.private_key), true);
+    assert.equal(ecc.isValidPublic(keys.public_key), true);
+  });
+
+  it("generateKeyPairBySeed(same keys with same seed)", function() {
+    let seed = randomName();
+    let keys1 = ecc.generateKeyPairBySeed(seed);
+    let keys2 = ecc.generateKeyPairBySeed(seed);
+    assert.equal(keys1.public_key, keys2.public_key);
+    assert.equal(keys1.private_key, keys2.private_key);
+  });
+
+  it("generateKeyPairWithMnemonic", function() {
+    let result = ecc.generateKeyPairWithMnemonic();
+    console.log(result);
+    assert.ok(_.isString((result.mnemonic) && !_.isEmpty(result.mnemonic)), true);
+    assert.equal(ecc.isValidPrivate(result.private_key), true);
+    assert.equal(ecc.isValidPublic(result.public_key), true);
+  });
+
+  it("generateKeyPairWithMnemonic(same mnemonic same key pair)", function() {
+    let result = ecc.generateKeyPairWithMnemonic();
+    let result2 = ecc.generateKeyPairByMnemonic(result.mnemonic);
+    assert.equal(result.public_key, result2.public_key);
+    assert.equal(result.private_key, result2.private_key);
+  });
 
 });
 
@@ -354,10 +384,9 @@ if (process.env["NODE_ENV"] === "development") {
     it("getKeyAccounts", async () => {
       const u3 = createU3({ signProvider });
       await u3.getKeyAccounts(pubkey2).then(accounts => {
-        assert.ok(accounts.account_names.includes('test1'))
+        assert.ok(accounts.account_names.includes("test1"));
       });
     });
-
 
     it("mockTransactions pass", () => {
       const u3 = createU3({ signProvider, mockTransactions: "pass" });
