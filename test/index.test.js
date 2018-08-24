@@ -9,8 +9,8 @@ const { createU3, format, ecc, Fcbuffer, version } = require("../src");
 const wif = "5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79zkvFD3"; //ultrainio
 const pubkey = "UTR6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV"; //ultrainio
 
-const wif2 = "5JbWt7ikXhe8ihrwwxBd3WQoCCwDTUPshUrPZUU66bcMmb8SZqR";//other
-const pubkey2 = "UTR7Dyga8Yw17AN18YogNNmzdf29cqfdZCjj23obrVdkuxqpUeieY";
+const wif2 = "5J9QFdMyHzQrxT4y38SDuL4qWS364YBzrRULVgn2c9Nuk2HjNNs";//other
+const pubkey2 = "UTR68Tkuu8k27V3MGdC7DoosvqVgXQVAouspnqcGs6NyByyrqTbv6";
 
 // 1.打印链信息
 describe("chainInfo", () => {
@@ -127,76 +127,81 @@ describe("offline", () => {
 if (process.env["NODE_ENV"] === "development") {
 
   // 4
-/*  describe("Contracts", () => {
-    it("Messages do not sort", async function() {
-      const local = createU3();
-      const opts = { sign: false, broadcast: false };
-      const tx = await local.transaction(["currency", "utrio.token"], ({ currency, ultrainio_token }) => {
-        // make sure {account: 'utrio.token', ..} remains first
-        ultrainio_token.transfer("ultrainio", "user", "1.1 SYS", "");
+  describe("Contracts", () => {
+    /* it("Messages do not sort", async function() {
+       const local = createU3();
+       const opts = { sign: false, broadcast: false };
+       const tx = await local.transaction(["currency", "utrio.token"], ({ currency, ultrainio_token }) => {
+         // make sure {account: 'utrio.token', ..} remains first
+         ultrainio_token.transfer("ultrainio", "user", "1.1 SYS", "");
 
-        // {account: 'currency', ..} remains second (reverse sort)
-        currency.transfer("ultrainio", "user", "1.2 SYS", "");
+         // {account: 'currency', ..} remains second (reverse sort)
+         currency.transfer("ultrainio", "user", "1.2 SYS", "");
 
-      }, opts);
-      assert.equal(tx.transaction.transaction.actions[0].account, "utrio.token");
-      assert.equal(tx.transaction.transaction.actions[1].account, "currency");
+       }, opts);
+       assert.equal(tx.transaction.transaction.actions[0].account, "utrio.token");
+       assert.equal(tx.transaction.transaction.actions[1].account, "currency");
+     });
+   });
+
+   describe("Contract", () => {
+     function deploy(contract, account = "ultrainio") {
+       it(`deploy ${contract}@${account}`, async function() {
+         this.timeout(4000);
+         // console.log('todo, skipping deploy ' + `${contract}@${account}`)
+         const config = { binaryen: require("binaryen"), keyProvider: wif };
+         const u3 = createU3(config);
+
+         const code = await u3.deploy(contract, account);
+
+         // const wasm = fs.readFileSync(path.resolve(__dirname, `../build/${contract}.wasm`));
+         const abi = fs.readFileSync(path.resolve(__dirname, `../build/${contract}.abi`));
+
+         // u3.setcode(account, 0, 0, wasm);
+         // u3.setabi(account, JSON.parse(abi));
+
+         // const code = await u3.getContract(account);
+
+         const diskAbi = JSON.parse(abi);
+         delete diskAbi.____comment;
+         if (!diskAbi.error_messages) {
+           diskAbi.error_messages = [];
+         }
+
+         assert.deepEqual(diskAbi, code.abi);
+       });
+     }
+
+     // When ran multiple times, deploying to the same account
+     // avoids a same contract version deploy error.
+     // TODO: undeploy contract instead (when API allows this)
+
+     //deploy("ultrainio.msig","utrio.msig");
+     deploy("ultrainio.token", "utrio.token");
+     //deploy("ultrainio.bios","utrio.bios");
+     //deploy("ultrainio.UTRtem","utrio.UTRtem");*/
+
+
+    //load contract with function
+    it("contract(load)", async () => {
+      const config = { keyProvider: wif };
+      const u3 = createU3(config);
+      let account = "utrio.token";
+      const contract = await u3.contract(account);
+      console.log(contract)
+      assert(contract, "contract");
     });
-  });
 
-  describe("Contract", () => {
-    function deploy(contract, account = "ultrainio") {
-      it(`deploy ${contract}@${account}`, async function() {
-        this.timeout(4000);
-        // console.log('todo, skipping deploy ' + `${contract}@${account}`)
-        const config = { binaryen: require("binaryen"), keyProvider: wif };
-        const u3 = createU3(config);
+    //get contract detail (wast,abi)
+    it("getContract", async () => {
+      const config = { keyProvider: wif };
+      const u3 = createU3(config);
+      let account = "utrio.token";
+      const contract = await u3.getContract(account);
+      console.log(contract)
+      assert(contract, "contract");
+    });
 
-        const code = await u3.deploy(contract, account);
-
-        // const wasm = fs.readFileSync(path.resolve(__dirname, `../build/${contract}.wasm`));
-        const abi = fs.readFileSync(path.resolve(__dirname, `../build/${contract}.abi`));
-
-        // u3.setcode(account, 0, 0, wasm);
-        // u3.setabi(account, JSON.parse(abi));
-
-        // const code = await u3.getContract(account);
-
-        const diskAbi = JSON.parse(abi);
-        delete diskAbi.____comment;
-        if (!diskAbi.error_messages) {
-          diskAbi.error_messages = [];
-        }
-
-        assert.deepEqual(diskAbi, code.abi);
-      });
-    }
-
-    // When ran multiple times, deploying to the same account
-    // avoids a same contract version deploy error.
-    // TODO: undeploy contract instead (when API allows this)
-
-    //deploy("ultrainio.msig","utrio.msig");
-    deploy("ultrainio.token", "utrio.token");
-    //deploy("ultrainio.bios","utrio.bios");
-    //deploy("ultrainio.UTRtem","utrio.UTRtem");
-  });*/
-
-  describe("Contracts Load", () => {
-    /*
-     * must be a contract account
-     * @param account
-     */
-    function load(account) {
-      it(account, async function() {
-        const config = { keyProvider: wif };
-        const u3 = createU3(config);
-        const contract = await u3.contract(account);
-        assert(contract, "contract");
-      });
-    }
-
-    load("utrio.token");
   });
 
   // 5 交易
