@@ -6,7 +6,10 @@ const path = require("path");
 const { createU3, format, ecc, Fcbuffer, version } = require("../src");
 
 const wif = "5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79zkvFD3"; //ultrainio
+const pubkey = "UTR6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV"; //ultrainio
+
 const wif2 = "5JbWt7ikXhe8ihrwwxBd3WQoCCwDTUPshUrPZUU66bcMmb8SZqR";//other
+const pubkey2 = "UTR7Dyga8Yw17AN18YogNNmzdf29cqfdZCjj23obrVdkuxqpUeieY"
 
 // 1.打印链信息
 describe("chainInfo", () => {
@@ -196,7 +199,7 @@ if (process.env["NODE_ENV"] === "development") {
     it("signProvider", () => {
       const customSignProvider = ({ buf, sign, transaction }) => {
         // All potential keys (UTR6MRy.. is the pubkey for 'wif')
-        const pubkeys = ["UTR6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV"];
+        const pubkeys = [pubkey];
 
         return u3.getRequiredKeys(transaction, pubkeys).then(res => {
           // Just the required_keys need to sign
@@ -212,7 +215,7 @@ if (process.env["NODE_ENV"] === "development") {
 
     it("createUser", async () => {
       const u3 = createU3({ signProvider });
-      const pubkey = "UTR6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV";
+      const pubkey = pubkey2;
       const name = randomName();
       let params = {
         creator: "ultrainio",
@@ -261,7 +264,7 @@ if (process.env["NODE_ENV"] === "development") {
       await u3.getAccountInfo({
         account_name: "test1"
       }).then(async before => {
-        console.log("\n-----before:", before.ram_quota);
+        console.log("\n-----before:", before.ram_quota, "\n");
         return await u3.buyrambytes({
           payer: "ultrainio",
           receiver: "test1",
@@ -270,7 +273,7 @@ if (process.env["NODE_ENV"] === "development") {
           return await u3.getAccountInfo({
             account_name: "test1"
           }).then(after => {
-            console.log("\n-----after:", after.ram_quota);
+            console.log("\n-----after:", after.ram_quota, "\n");
             assert.ok(after.ram_quota - before.ram_quota > 0);
           });
         });
@@ -283,7 +286,7 @@ if (process.env["NODE_ENV"] === "development") {
       await u3.getAccountInfo({
         account_name: "test1"
       }).then(async before => {
-        console.log("\n-----before:", before.ram_quota);
+        console.log("\n-----before:", before.ram_quota, "\n");
         return await u3.sellram({
           account: "test1",
           bytes: 10000
@@ -291,7 +294,7 @@ if (process.env["NODE_ENV"] === "development") {
           return await u3.getAccountInfo({
             account_name: "test1"
           }).then(after => {
-            console.log("\n-----after:", after.ram_quota);
+            console.log("\n-----after:", after.ram_quota, "\n");
             assert.ok(after.ram_quota - before.ram_quota < 0);
           });
         });
@@ -303,18 +306,18 @@ if (process.env["NODE_ENV"] === "development") {
       await u3.getAccountInfo({
         account_name: "test1"
       }).then(async before => {
-        console.log("\n-----before:", before.net_weight, before.cpu_weight);
+        console.log("\n-----before:", before.net_weight, before.cpu_weight, "\n");
         return await u3.delegatebw({
           from: "ultrainio",
           receiver: "test1",
-          stake_net_quantity: '1 SYS',
-          stake_cpu_quantity: '1 SYS',
+          stake_net_quantity: "1 SYS",
+          stake_cpu_quantity: "1 SYS",
           transfer: 0
         }).then(async tr => {
           return await u3.getAccountInfo({
             account_name: "test1"
           }).then(after => {
-            console.log("\n-----after:", after.net_weight, after.cpu_weight);
+            console.log("\n-----after:", after.net_weight, after.cpu_weight, "\n");
             assert.ok(after.net_weight - before.net_weight > 0);
             assert.ok(after.cpu_weight - before.cpu_weight > 0);
           });
@@ -345,6 +348,16 @@ if (process.env["NODE_ENV"] === "development") {
         });
       });
     });*/
+
+
+    // get accounts array by public key
+    it("getKeyAccounts", async () => {
+      const u3 = createU3({ signProvider });
+      await u3.getKeyAccounts(pubkey2).then(accounts => {
+        assert.ok(accounts.account_names.includes('test1'))
+      });
+    });
+
 
     it("mockTransactions pass", () => {
       const u3 = createU3({ signProvider, mockTransactions: "pass" });
