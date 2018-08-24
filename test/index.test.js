@@ -2,6 +2,7 @@
 const assert = require("assert");
 const fs = require("fs");
 const path = require("path");
+const _ = require("lodash");
 
 const { createU3, format, ecc, Fcbuffer, version } = require("../src");
 
@@ -107,12 +108,12 @@ describe("offline", () => {
   it("generateKeyPairWithMnemonic", function() {
     let result = ecc.generateKeyPairWithMnemonic();
     console.log(result);
-    assert.ok(_.isString((result.mnemonic) && !_.isEmpty(result.mnemonic)), true);
+    assert.ok((_.isString(result.mnemonic) && !_.isEmpty(result.mnemonic)), true);
     assert.equal(ecc.isValidPrivate(result.private_key), true);
     assert.equal(ecc.isValidPublic(result.public_key), true);
   });
 
-  it("generateKeyPairWithMnemonic(same mnemonic same key pair)", function() {
+  it("generateKeyPairByMnemonic(same mnemonic same key pair)", function() {
     let result = ecc.generateKeyPairWithMnemonic();
     let result2 = ecc.generateKeyPairByMnemonic(result.mnemonic);
     assert.equal(result.public_key, result2.public_key);
@@ -126,7 +127,7 @@ describe("offline", () => {
 if (process.env["NODE_ENV"] === "development") {
 
   // 4
-  /*describe("Contracts", () => {
+/*  describe("Contracts", () => {
     it("Messages do not sort", async function() {
       const local = createU3();
       const opts = { sign: false, broadcast: false };
@@ -141,18 +142,17 @@ if (process.env["NODE_ENV"] === "development") {
       assert.equal(tx.transaction.transaction.actions[0].account, "utrio.token");
       assert.equal(tx.transaction.transaction.actions[1].account, "currency");
     });
-  });*/
+  });
 
-  /*describe("Contract", () => {
-
-    function deploy (contract, account = "ultrainio") {
+  describe("Contract", () => {
+    function deploy(contract, account = "ultrainio") {
       it(`deploy ${contract}@${account}`, async function() {
         this.timeout(4000);
         // console.log('todo, skipping deploy ' + `${contract}@${account}`)
         const config = { binaryen: require("binaryen"), keyProvider: wif };
         const u3 = createU3(config);
 
-        const code = await u3.deploy(contract,account);
+        const code = await u3.deploy(contract, account);
 
         // const wasm = fs.readFileSync(path.resolve(__dirname, `../build/${contract}.wasm`));
         const abi = fs.readFileSync(path.resolve(__dirname, `../build/${contract}.abi`));
@@ -177,17 +177,17 @@ if (process.env["NODE_ENV"] === "development") {
     // TODO: undeploy contract instead (when API allows this)
 
     //deploy("ultrainio.msig","utrio.msig");
-    deploy("ultrainio.token","utrio.token");
+    deploy("ultrainio.token", "utrio.token");
     //deploy("ultrainio.bios","utrio.bios");
     //deploy("ultrainio.UTRtem","utrio.UTRtem");
-  });
+  });*/
 
   describe("Contracts Load", () => {
-    /!**
+    /*
      * must be a contract account
      * @param account
-     *!/
-    function load (account) {
+     */
+    function load(account) {
       it(account, async function() {
         const config = { keyProvider: wif };
         const u3 = createU3(config);
@@ -197,7 +197,7 @@ if (process.env["NODE_ENV"] === "development") {
     }
 
     load("utrio.token");
-  });*/
+  });
 
   // 5 交易
   describe("transactions", () => {
