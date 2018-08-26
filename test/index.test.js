@@ -9,10 +9,10 @@ const { createU3, format, ecc, Fcbuffer, version } = require("../src");
 const wif = "5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79zkvFD3"; //ultrainio
 const pubkey = "UTR6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV"; //ultrainio
 
-const wif2 = "5J9QFdMyHzQrxT4y38SDuL4qWS364YBzrRULVgn2c9Nuk2HjNNs";//other
-const pubkey2 = "UTR68Tkuu8k27V3MGdC7DoosvqVgXQVAouspnqcGs6NyByyrqTbv6";
+const wif2 = "5JwUfamL4jQRYjVNuHhstUXcaQK55C5PpL4AgAs3uDo44XNmRtJ";//other
+const pubkey2 = "UTR8hGAY4o21gALq96Sy8B39Re7LKWxWUC5G9g9vbTXtYrHAKPRpu";
 
-// 1.打印链信息
+// 1.print chain info
 describe("chainInfo", () => {
   it("chainInfo", (done) => {
 
@@ -27,14 +27,14 @@ describe("chainInfo", () => {
   });
 });
 
-// 2.打印u3.js版本信息
+// 2.print version info
 describe("version", () => {
   it("exposes a version number", () => {
     assert.ok(version);
   });
 });
 
-// 3.离线(broadcast: false)
+// 3. offline(broadcast: false)
 describe("offline", () => {
   const headers = {
     expiration: new Date().toISOString().split(".")[0], // Don't use `new Date` in production
@@ -90,6 +90,7 @@ describe("offline", () => {
     });
   });*/
 
+  // generate key pair by seed
   it("generateKeyPairBySeed", function() {
     let seed = randomName();
     let keys = ecc.generateKeyPairBySeed(seed);
@@ -97,6 +98,7 @@ describe("offline", () => {
     assert.equal(ecc.isValidPublic(keys.public_key), true);
   });
 
+  // re-generate key pair by the same seed
   it("generateKeyPairBySeed(same keys with same seed)", function() {
     let seed = randomName();
     let keys1 = ecc.generateKeyPairBySeed(seed);
@@ -105,6 +107,7 @@ describe("offline", () => {
     assert.equal(keys1.private_key, keys2.private_key);
   });
 
+  // generate key pair with mnemonic
   it("generateKeyPairWithMnemonic", function() {
     let result = ecc.generateKeyPairWithMnemonic();
     console.log(result);
@@ -113,6 +116,7 @@ describe("offline", () => {
     assert.equal(ecc.isValidPublic(result.public_key), true);
   });
 
+  // re-generate key pair by the same mnemonic
   it("generateKeyPairByMnemonic(same mnemonic same key pair)", function() {
     let result = ecc.generateKeyPairWithMnemonic();
     let result2 = ecc.generateKeyPairByMnemonic(result.mnemonic);
@@ -123,101 +127,57 @@ describe("offline", () => {
 });
 
 // some transactions that don't broadcast may require Api lookups
-// if development
+// if duser_resourcesuser_resourcesevelopmentuser_r
 if (process.env["NODE_ENV"] === "development") {
 
-  // 4
+  // 4 contract relative
   describe("Contracts", () => {
-    /* it("Messages do not sort", async function() {
-       const local = createU3();
-       const opts = { sign: false, broadcast: false };
-       const tx = await local.transaction(["currency", "utrio.token"], ({ currency, ultrainio_token }) => {
-         // make sure {account: 'utrio.token', ..} remains first
-         ultrainio_token.transfer("ultrainio", "user", "1.1 SYS", "");
 
-         // {account: 'currency', ..} remains second (reverse sort)
-         currency.transfer("ultrainio", "user", "1.2 SYS", "");
-
-       }, opts);
-       assert.equal(tx.transaction.transaction.actions[0].account, "utrio.token");
-       assert.equal(tx.transaction.transaction.actions[1].account, "currency");
-     });
-   });
-
-   describe("Contract", () => {
-     function deploy(contract, account = "ultrainio") {
-       it(`deploy ${contract}@${account}`, async function() {
-         this.timeout(4000);
-         // console.log('todo, skipping deploy ' + `${contract}@${account}`)
-         const config = { binaryen: require("binaryen"), keyProvider: wif };
-         const u3 = createU3(config);
-
-         const code = await u3.deploy(contract, account);
-
-         // const wasm = fs.readFileSync(path.resolve(__dirname, `../build/${contract}.wasm`));
-         const abi = fs.readFileSync(path.resolve(__dirname, `../build/${contract}.abi`));
-
-         // u3.setcode(account, 0, 0, wasm);
-         // u3.setabi(account, JSON.parse(abi));
-
-         // const code = await u3.getContract(account);
-
-         const diskAbi = JSON.parse(abi);
-         delete diskAbi.____comment;
-         if (!diskAbi.error_messages) {
-           diskAbi.error_messages = [];
-         }
-
-         assert.deepEqual(diskAbi, code.abi);
-       });
-     }
-
-     // When ran multiple times, deploying to the same account
-     // avoids a same contract version deploy error.
-     // TODO: undeploy contract instead (when API allows this)
-
-     //deploy("ultrainio.msig","utrio.msig");
-     deploy("ultrainio.token", "utrio.token");
-     //deploy("ultrainio.bios","utrio.bios");
-     //deploy("ultrainio.UTRtem","utrio.UTRtem");*/
-
-
-    //load contract with function
-    it("contract(load)", async () => {
-      const config = { keyProvider: wif };
+    // 4.1 deploy contract
+    it("deploy contract", async function() {
+      const config = { keyProvider: wif2 };
       const u3 = createU3(config);
-      let account = "utrio.token";
-      const contract = await u3.contract(account);
-      console.log(contract)
-      assert(contract, "contract");
+      const code = await u3.deploy("u3.js/build/MyContract", "test1");
+      console.log(code);
+      assert.ok(!_.isEmpty(code.abi));
     });
 
-    //get contract detail (wast,abi)
-    it("getContract", async () => {
-      const config = { keyProvider: wif };
+    // 4.2 load contract with function
+    it("contract(load)", async () => {
+      const config = { keyProvider: wif2 };
       const u3 = createU3(config);
-      let account = "utrio.token";
+      let account = "test1";
+      const contract = await u3.contract(account);
+      console.log(contract);
+      assert(typeof contract.sum === 'function', 'unrecognized contract')
+    });
+
+    //4.3 get contract detail (wast,abi)
+    it("getContract", async () => {
+      const config = { keyProvider: wif2 };
+      const u3 = createU3(config);
+      let account = "test1";
       const contract = await u3.getContract(account);
-      console.log(contract)
-      assert(contract, "contract");
+      console.log(contract);
+      assert.ok(!_.isEmpty(contract.abi));
     });
 
   });
 
-  // 5 交易
+  // 5 transactions
   describe("transactions", () => {
 
     const signProvider = ({ sign, buf }) => sign(buf, wif);
 
     const promiseSigner = (args) => Promise.resolve(signProvider(args));
 
-    // 5.1 方法使用
+    // 5.1 usage
     it("usage", () => {
       const u3 = createU3({ signProvider });
       u3.transfer();
     });
 
-    // 5.2 转账keyProvider
+    // 5.2 keyProvider
     it("keyProvider private key", () => {
       const keyProvider = () => {
         return [wif];
@@ -230,7 +190,7 @@ if (process.env["NODE_ENV"] === "development") {
       });
     });
 
-    // 5.3 转账signProvider
+    // 5.3 signProvider
     it("signProvider", () => {
       const customSignProvider = ({ buf, sign, transaction }) => {
         // All potential keys (UTR6MRy.. is the pubkey for 'wif')

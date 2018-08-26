@@ -183,10 +183,10 @@ const createU3 = (config = {}) => {
  * @param account name of owner account，eg. ultrainio
  * @returns {Promise<*>}
  */
-async function deploy(contract, account = "ultrainio") {
+async function deploy(contract, account) {
   try {
-    const wasm = fs.readFileSync(path.resolve(process.cwd(), `build/${contract}.wasm`));
-    const abi = fs.readFileSync(path.resolve(process.cwd(), `build/${contract}.abi`));
+    const wasm = fs.readFileSync(path.resolve(process.cwd(), `${contract}.wasm`));
+    const abi = fs.readFileSync(path.resolve(process.cwd(), `${contract}.abi`));
 
     this.setcode(account, 0, 0, wasm);
     this.setabi(account, JSON.parse(abi));
