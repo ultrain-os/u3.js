@@ -77,21 +77,5 @@
     "should": "1.2.2",
     "travis-cov": "*"
   },
-  "license": "MIT",
-  "babel": {
-    "presets": [
-      "es2015"
-    ],
-    "plugins": [
-      "syntax-async-functions",
-      "transform-regenerator",
-      [
-        "transform-runtime",
-        {
-          "polyfill": false,
-          "regenerator": true
-        }
-      ]
-    ]
-  }
+  "license": "MIT"
 }
