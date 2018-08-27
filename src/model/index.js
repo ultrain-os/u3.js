@@ -35,3 +35,4 @@ exports.Blocks = require("./block");
 exports.Txs = require("./transaction");
 exports.Accounts = require("./account");
 exports.dbHelper = require("../utils/dbHelper");
+exports.Actions = require("./action");
