@@ -9,13 +9,9 @@ let TxSchema = new Schema({
     actions : Object
 })
 
-TxSchema.static('getActionsById',async function(trx_id){
-    const res = await this.findOne({ trx_id });
-    let actions = [];
-    if(res){
-        actions = res.actions;
-    }
-    return actions;
+TxSchema.static('getTxsByUsername',async function(username){
+    const res = await this.find({ $or: [ { "actions.data.to": username }, { "actions.data.from": username } ] });
+    return res;
 })
 
 TxSchema.set('toJSON', {getters: true, virtuals: true})
