@@ -8,7 +8,7 @@ let BlockSchema = new Schema({
     block_id : String,
     block_num : Number,
     block : Object
-});
+})
 
 BlockSchema.static('getTxByBlockId', async function (block_num) {
     const res = await this.findOne({block_num});
@@ -17,11 +17,11 @@ BlockSchema.static('getTxByBlockId', async function (block_num) {
         trx = res.block.transactions;
     }
     return trx;
-});
+})
 
 BlockSchema.set('toJSON', {getters: true, virtuals: true});
 BlockSchema.set('toObject', {getters: true, virtuals: true});
 
-let Blocks = mongoose.model("blocks", BlockSchema)
-module.exports = Blocks
+let Blocks = mongoose.model("blocks", BlockSchema);
+module.exports = Blocks;
 
