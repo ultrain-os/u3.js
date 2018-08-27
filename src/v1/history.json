@@ -2,8 +2,14 @@
   "get_actions": {
     "params": {
       "account_name": "account_name",
-      "pos": "int32?",
-      "offset": "int32?"
+      "pos": {
+        "type": "int32?",
+        "doc": "An absolute sequence positon -1 is the end/last action"
+      },
+      "offset": {
+        "type": "int32?",
+        "doc": "The number of actions relative to pos, negative numbers return [pos-offset,pos), positive numbers return [pos,pos+offset)"
+      }
     },
     "results": {
       "actions": "ordered_action_result[]",
@@ -21,12 +27,19 @@
       }
     }]
   },
-  "get_controlled_accounts": {
+  "get_transaction": {
+    "brief": "Retrieve a transaction from the blockchain.",
     "params": {
-      "controlling_account": "account_name"
+      "id": "transaction_id_type",
+      "block_num_hint": "uint32?"
     },
     "results": {
-      "controlled_accounts": "account_name[]"
+      "id": "transaction_id_type",
+      "trx": "variant",
+      "block_time": "block_timestamp_type",
+      "block_num": "uint32",
+      "last_irreversible_block": "uint32",
+      "traces": "variant[]"
     }
   },
   "get_key_accounts": {
@@ -37,18 +50,12 @@
       "account_names": "account_name[]"
     }
   },
-  "get_transaction": {
-    "brief": "Retrieve a transaction from the blockchain.",
+  "get_controlled_accounts": {
     "params": {
-      "id": "transaction_id_type"
+      "controlling_account": "account_name"
     },
     "results": {
-      "id": "transaction_id_type",
-      "trx": "variant",
-      "block_time": "block_timestamp_type",
-      "block_num": "uint32",
-      "last_irreversible_block": "uint32",
-      "traces": "variant[]"
+      "controlled_accounts": "account_name[]"
     }
   }
 }
