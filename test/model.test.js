@@ -1,6 +1,7 @@
 const assert = require('assert');
 const { U3 } = require('../index');
 const u3Instance = U3.createU3();
+u3Instance.connectMongo();
 
 describe('block', () => {
 
@@ -52,7 +53,7 @@ describe('account', ()=>{
         assert.ok(r);
     })
     it("getAccounts", async () => {
-        const r = await u3Instance.getAllAccounts(1,5,{},{_id : -1})
+        const r = await u3Instance.getAllAccounts(1,5,{},{_id : -1});
         console.log(r);
         assert.ok(r);
     })
