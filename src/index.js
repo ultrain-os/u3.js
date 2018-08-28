@@ -23,7 +23,6 @@ const writeApiGen = require("./write-api");
 const format = require("./format");
 const schema = require("./v1/schema");
 const pkg = require("../package.json");
-const Mongo = require('./model/');
 const History = require('./history');
 
 const version = pkg.version;
@@ -128,9 +127,6 @@ const defaultSignProvider = (u3, config) => async function({ sign, buf, transact
  * @returns {Object} instance of U3
  */
 const createU3 = (config = {}) => {
-  // init mongo
-  Mongo.init();
-
   config = Object.assign({}, configDefaults, config);
   const defaultLogger = {
     log: config.verbose ? console.log : null,
