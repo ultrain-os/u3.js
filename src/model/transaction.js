@@ -14,6 +14,11 @@ TxSchema.static('getTxsByUsername',async function(username){
     return res;
 })
 
+TxSchema.static('getTxCountByName',async function(name){
+    const count = await this.count({ "actions.authorization.actor": name });
+    return count;
+})
+
 TxSchema.set('toJSON', {getters: true, virtuals: true})
 TxSchema.set('toObject', {getters: true, virtuals: true})
 
