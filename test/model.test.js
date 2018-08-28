@@ -1,22 +1,31 @@
-const assert = require('assert')
-const DB = require("../db");
-const { Blocks,Txs,Actions,dbHelper,Accounts } = DB;
-DB.init({
-    ip: "127.0.0.1",
-    port: "27017",
-    db: "ultrain"
-});
+const assert = require('assert');
+const { U3 } = require('../index');
+const u3Instance = U3.createU3();
+
 describe('block', () => {
-    it("getTxByBlockId", async () => {
-        const r = await Blocks.getTxByBlockId("424");
-        console.log(r);
-        assert.ok(r);
+
+    it("getTxsByBlockId", async () => {
+        const rs = await u3Instance.getTxsByBlockId("92")
+        console.log(rs);
+        assert.ok(rs);
     });
+
+    it("getAllBlocks", async () =>{
+        const rs = await u3Instance.getAllBlocks(1,5,{},{id:-1});
+        console.log(rs);
+        assert.ok(rs);
+    })
 })
 
 describe('tx', () => {
     it("getTxsByUsername", async () => {
-        const r = await Txs.getTxsByUsername("test1");
+        // const r = await Txs.getTxsByUsername("test1");
+        // console.log(r);
+        // assert.ok(r);
+    });
+
+    it("getAllTxs", async () => {
+        const r = await u3Instance.getAllTxs(1,5,{},{id:-1});
         console.log(r);
         assert.ok(r);
     });
@@ -24,32 +33,26 @@ describe('tx', () => {
 
 describe('action', () => {
     it("getActionsByTxid", async () => {
-        const r = await Actions.getActionsByTxid("4da757966839a3d2df746c062befa0fdae6a334042d3f0ab007b0ec6af7185dd");
+        const r = await u3Instance.getActionsByTxid("6572c5154c146df6e10650b87ac3116b4650e9a24ae4881759924259784a529b");
         console.log(r);
         assert.ok(r);
     });
 })
 
 describe('account', ()=>{
-    it("getContractsByPageQuery", async () => {
-        const r = await dbHelper.pageQuery(1,10,Accounts,{ "abi": { $exists: true }},{_id : -1})
-        console.log(r);
-        assert.ok(r);
-    })
-
     it("getContracts", async () => {
-        const r = await Accounts.getContracts();
+        const r = await u3Instance.getContracts();
         console.log(r);
         assert.ok(r);
     })
 
     it("getContractByName", async ()=> {
-        const r = await Accounts.getContractByName("ultrainio2");
+        const r = await u3Instance.getContractByName("ultrainio");
         console.log(r);
         assert.ok(r);
     })
     it("getAccounts", async () => {
-        const r = await dbHelper.pageQuery(1,20,Accounts,{},{_id : -1})
+        const r = await u3Instance.getAllAccounts(1,5,{},{_id : -1})
         console.log(r);
         assert.ok(r);
     })

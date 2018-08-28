@@ -4,11 +4,16 @@ const mongoose = require("mongoose");
  * db init
  * @param {*} param 
  */
-function init (param) {
+function init (param = {}) {
   let username_pwd = '';
   if (param.username && param.pwd) {
     username_pwd = `${param.username}:${param.pwd}@`;
   }
+
+  param.ip = param.ip || '127.0.0.1';
+  param.port = param.port || '27017';
+  param.db = param.db || 'ultrain';
+
   let db_url = `mongodb://${username_pwd}${param.ip}:${param.port}/${param.db}`
   console.log(db_url);
   mongoose.connect(db_url, { useNewUrlParser: true });
@@ -31,8 +36,8 @@ function init (param) {
 
 // init(...args)
 exports.init = init;
-exports.Blocks = require("./block");
-exports.Txs = require("./transaction");
-exports.Accounts = require("./account");
-exports.dbHelper = require("../utils/dbHelper");
-exports.Actions = require("./action");
+// exports.Blocks = require("./block");
+// exports.Txs = require("./transaction");
+// exports.Accounts = require("./account");
+// exports.dbHelper = require("../utils/dbHelper");
+// exports.Actions = require("./action");
