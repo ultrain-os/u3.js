@@ -19,7 +19,8 @@ exports.connectMongo = function(param){
  * @returns { Object }
  */
 exports.getContractByName = function (name) {
-    return Accounts.getContractByName(name);
+    const rs = Accounts.getContractByName(name);
+    return JSON.parse(JSON.stringify(rs));
 }
 
 /**
@@ -27,7 +28,8 @@ exports.getContractByName = function (name) {
  * @returns {Array}
  */
 exports.getContracts = async function () {
-    return Accounts.getContracts();
+    const rs = Accounts.getContracts();
+    return JSON.parse(JSON.stringify(rs));
 }
 
 /**
@@ -40,7 +42,7 @@ exports.getContracts = async function () {
  */
 exports.getAllBlocks = async function (page, pageSize, queryParams, sortParams) {
     const rs = await dbHelper.pageQuery(page, pageSize, Blocks, queryParams, sortParams);
-    return rs;
+    return JSON.parse(JSON.stringify(rs));
 }
 
 /**
@@ -83,7 +85,7 @@ exports.getAllAccounts = async function (page, pageSize, queryParams, sortParams
  */
 exports.getAllTxs = async function (page, pageSize, queryParams, sortParams) {
     const rs = await dbHelper.pageQuery(page, pageSize, Txs, queryParams, sortParams);
-    return rs;
+    return JSON.parse(JSON.stringify(rs));
 }
 
 /**
@@ -92,7 +94,8 @@ exports.getAllTxs = async function (page, pageSize, queryParams, sortParams) {
  * @returns {Object}
  */
 exports.getActionsByTxid = function(trx_id){
-    return Actions.getActionsByTxid(trx_id);
+    const rs= Actions.getActionsByTxid(trx_id);
+    return JSON.parse(JSON.stringify(rs));
 }
 
 /**
@@ -101,5 +104,6 @@ exports.getActionsByTxid = function(trx_id){
  * @returns {Object}
  */
 exports.getTxsByBlockId = function(block_num){
-    return Blocks.getTxsByBlockId(block_num);
+    const rs = Blocks.getTxsByBlockId(block_num);
+    return JSON.parse(JSON.stringify(rs));
 }
