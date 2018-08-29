@@ -12,7 +12,7 @@ describe('block', () => {
     });
 
     it("getAllBlocks", async () =>{
-        const rs = await u3Instance.getAllBlocks(1,5,{},{id:-1});
+        const rs = await u3Instance.getAllBlocks(1,5,{},{_id:-1});
         console.log(rs);
         assert.ok(rs);
     })
@@ -26,7 +26,7 @@ describe('tx', () => {
     });
 
     it("getAllTxs", async () => {
-        const r = await u3Instance.getAllTxs(1,5,{},{id:-1});
+        const r = await u3Instance.getAllTxs(1,5,{},{_id:-1});
         console.log(r);
         assert.ok(r);
     });
