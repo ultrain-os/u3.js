@@ -13,6 +13,7 @@ const MongoConnect = require('./model');
 exports.connectMongo = function(param){
     MongoConnect.init(param);
 }
+
 /**
  * getContractByName
  * @param { String } name name of contract，eg. utrio.system
@@ -89,7 +90,17 @@ exports.getAllTxs = async function (page, pageSize, queryParams, sortParams) {
 }
 
 /**
- * get actions by getActionsByTxid
+ * get tx by trx_id
+ * @param {String} trx_id id of tx
+ * @returns {Object}
+ */
+exports.getTxByTxId = async function(trx_id){
+    const rs = await Txs.getTxByTxId(trx_id);
+    return JSON.parse(JSON.stringify(rs));
+}
+
+/**
+ * get actions by trx_id
  * @param {String} trx_id transaction_id
  * @returns {Object}
  */
