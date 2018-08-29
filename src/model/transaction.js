@@ -14,6 +14,12 @@ TxSchema.static('getTxsByUsername',async function(username){
     return res;
 })
 
+TxSchema.static('getTxByTxId',async function(trx_id){
+    const res = await this.findOne({trx_id});
+    if(!res) return {};
+    return res;
+})
+
 TxSchema.static('getTxCountByName',async function(name){
     const count = await this.count({ "actions.authorization.actor": name });
     return count;
