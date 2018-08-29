@@ -12,7 +12,7 @@ describe('block', () => {
     });
 
     it("getAllBlocks", async () =>{
-        const rs = await u3Instance.getAllBlocks(1,5,{},{_id:-1});
+        const rs = await u3Instance.getAllBlocks(5473,20,{},{_id:-1});
         console.log(rs);
         assert.ok(rs);
     })
@@ -30,6 +30,12 @@ describe('tx', () => {
         console.log(r);
         assert.ok(r);
     });
+
+    it("getTxByTxId", async ()=>{
+        const r = await u3Instance.getTxByTxId("e2b8d473bc071efb2c846505a25665850b9c170334f48d51ccc44d1eb2a676e1");
+        console.log(r);
+        assert.ok(r);
+    })
 })
 
 describe('action', () => {
