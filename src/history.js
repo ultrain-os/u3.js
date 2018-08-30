@@ -86,7 +86,18 @@ exports.getAllAccounts = async function (page, pageSize, queryParams, sortParams
  */
 exports.getAllTxs = async function (page, pageSize, queryParams, sortParams) {
     const rs = await dbHelper.pageQuery(page, pageSize, Txs, queryParams, sortParams);
-    return JSON.parse(JSON.stringify(rs));
+    let pageInfo = JSON.parse(JSON.stringify(rs));
+    let txs = pageInfo.results;
+
+    for(let i in txs){
+        // get block_num by trx_id
+        let block = await Blocks.findOne({ "block.transactions.trx.id": txs[i].trx_id });
+        if(block) {
+            txs[i].block_num = block.block_num;
+        }
+    }
+
+    return pageInfo;
 }
 
 /**
