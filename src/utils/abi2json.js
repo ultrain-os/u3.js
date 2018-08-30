@@ -3,6 +3,7 @@ const path = require('path');
 
 module.exports = function (contract, account) {
     let abi = JSON.parse(fs.readFileSync(path.join(process.cwd(), `build/${contract}.abi`), 'utf8'));
+    // let abi = JSON.parse(fs.readFileSync('/Users/liuff/Desktop/ultrainio.token.abi', 'utf8'));
 
     let actions = {};
     for ({ name, type } of abi.actions)
@@ -12,24 +13,31 @@ module.exports = function (contract, account) {
     for (let type of abi.types)
         gen[type.new_type_name] = type.type;
 
-    for (let { name, fields, ...rest } of abi.structs) {
-        let genFields = {};
-        for (let { name, type } of fields)
-            genFields[name] = type;
+    for(let structs of abi.structs){
+        let rest = {}
+        for(let key in structs){
+            if(key != 'name' && key != 'fields'){
+                rest[key] = structs[key];
+            }
+        }
 
-        if (actions[name]) {
+        let genFields = {};
+        for (let { name, type } of structs.fields)
+            genFields[name] = type;
+        
+        if (actions[structs.name]) {
             rest.action = {
-                name: actions[name],
+                name: actions[structs.name],
                 account
             }
         }
 
-        gen[name] = { ...rest, fields: genFields };
+        gen[structs.name] = Object.assign({},rest,{ fields: genFields });
     }
 
     let sorted = {};
     for (let key of Object.keys(gen).sort())
         sorted[key] = gen[key];
 
-    fs.writeFileSync(path.join(process.cwd(), `build/${contract}.json`), JSON.stringify(sorted, null, 2), 'utf8');
+    fs.writeFileSync(path.join(process.cwd(), `build/${contract}2.json`), JSON.stringify(sorted, null, 2), 'utf8');
 }
