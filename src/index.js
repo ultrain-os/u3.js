@@ -24,6 +24,7 @@ const format = require("./format");
 const schema = require("./v1/schema");
 const pkg = require("../package.json");
 const History = require('./history');
+const abi2json = require('./utils/abi2json');
 
 const version = pkg.version;
 const defaultSignProvider = (u3, config) => async function({ sign, buf, transaction }) {
@@ -321,5 +322,6 @@ module.exports = {
   format,
   ecc,
   Fcbuffer,
-  version
+  version,
+  abi2json
 };
