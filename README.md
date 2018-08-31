@@ -1,5 +1,3 @@
-# **u3.js**
-
 ## Introduction
 
 U3.js is a set of sdk for javascript.
