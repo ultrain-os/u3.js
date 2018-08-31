@@ -19,8 +19,8 @@ exports.connectMongo = function(param){
  * @param { String } name name of contract，eg. utrio.system
  * @returns { Object }
  */
-exports.getContractByName = function (name) {
-    const rs = Accounts.getContractByName(name);
+exports.getContractByName = async function (name) {
+    const rs = await Accounts.getContractByName(name);
     return JSON.parse(JSON.stringify(rs));
 }
 
@@ -29,7 +29,7 @@ exports.getContractByName = function (name) {
  * @returns {Array}
  */
 exports.getContracts = async function () {
-    const rs = Accounts.getContracts();
+    const rs = await Accounts.getContracts();
     return JSON.parse(JSON.stringify(rs));
 }
 
@@ -115,8 +115,8 @@ exports.getTxByTxId = async function(trx_id){
  * @param {String} trx_id transaction_id
  * @returns {Object}
  */
-exports.getActionsByTxid = function(trx_id){
-    const rs= Actions.getActionsByTxid(trx_id);
+exports.getActionsByTxid = async function(trx_id){
+    const rs= await Actions.getActionsByTxid(trx_id);
     return JSON.parse(JSON.stringify(rs));
 }
 
@@ -125,7 +125,7 @@ exports.getActionsByTxid = function(trx_id){
  * @param {*} block_num 
  * @returns {Object}
  */
-exports.getTxsByBlockId = function(block_num){
-    const rs = Blocks.getTxsByBlockId(block_num);
+exports.getTxsByBlockId = async function(block_num){
+    const rs = await Blocks.getTxsByBlockId(block_num);
     return JSON.parse(JSON.stringify(rs));
 }
