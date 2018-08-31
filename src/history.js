@@ -5,13 +5,15 @@ const Blocks = require('./model/block');
 const Txs = require('./model/transaction');
 const dbHelper = require('./utils/dbHelper');
 const MongoConnect = require('./model');
+const { dbUrl } = require("./config");
 
 /**
  * connect to mongodb
- * @param {*} param 
+ * @param {Object} { dbUrl: "mongodb://127.0.0.1:20718/ultrain" } 
  */
 exports.connectMongo = function(param){
-    MongoConnect.init(param);
+    const config = Object.assign({},{ dbUrl },param);
+    MongoConnect.init(config);
 }
 
 /**
@@ -70,7 +72,14 @@ exports.getAllAccounts = async function (page, pageSize, queryParams, sortParams
             account: accounts[i].name,
             symbol: "SYS"
         })
+
+        // get net_weight cpu_weight ram_bytes
+        let accountInfo = await u3.getAccountInfo({
+            account_name: accounts[i].name
+        });
+
         accounts[i].balance = balance[0];
+        accounts[i].total_resources = accountInfo.total_resources;
     }
 
     return pageInfo;
