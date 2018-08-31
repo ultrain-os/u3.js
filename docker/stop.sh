@@ -1,2 +1,2 @@
 #!/usr/bin/env bash
-docker stop inst1 && rm -rf /Users/benyasin/log:/data/log
+docker stop inst1 && rm -rf $HOME/log:/data/log
