@@ -30,6 +30,7 @@ NodeJS or ES6 for browser
 
 ## Configuration
 
+...
 
 ## Contracts
 
