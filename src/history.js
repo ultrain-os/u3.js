@@ -72,7 +72,14 @@ exports.getAllAccounts = async function (page, pageSize, queryParams, sortParams
             account: accounts[i].name,
             symbol: "SYS"
         })
+
+        // get net_weight cpu_weight ram_bytes
+        let accountInfo = await u3.getAccountInfo({
+            account_name: accounts[i].name
+        });
+
         accounts[i].balance = balance[0];
+        accounts[i].total_resources = accountInfo.total_resources;
     }
 
     return pageInfo;
