@@ -1,13 +1,13 @@
 FROM registry.cn-hangzhou.aliyuncs.com/ultrain/ultraind:1.0.0
 COPY config.ini /root/.local/share/ultrainio/nodultrain/config/
+COPY init.sh /
+#COPY init2.sh /
 
 #COPY contracts/ /contracts/
 #RUN ls -la /contracts/*
 #COPY nodultrain /
 #COPY clultrain /
 #COPY kultraind /
-#COPY init.sh /
-#COPY init2.sh /
 #RUN mkdir -p /data/db
 
 USER root
