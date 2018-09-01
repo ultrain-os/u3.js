@@ -6,6 +6,7 @@ const mongoose = require("mongoose");
  */
 function init ({ dbUrl }) {
   mongoose.connect(dbUrl, { useNewUrlParser: true });
+  mongoose.set('useFindAndModify', false);
 
   const db = mongoose.connection;
 

@@ -1,17 +1,17 @@
 ## Introduction
 
-a nodultrain-chain local environment.
+a ultrain-chain local environment.
 
 ## Usage
 
-initialize a local nodultrain-chain environment （every time start width a clean environment） 
+initialize a local ultrain-chain environment （every time start width a clean environment） 
 
 `> .start.sh`
 
-stop the local nodultrain-chain environment and keep data in mongodb
+stop the local ultrain-chain environment and keep data in mongodb
 
 `> .stop.sh`
 
-restart local nodultrain-chain environment and restore data in mongodb
+restart local ultrain-chain environment and restore data in mongodb
 
 `> .restart.sh`

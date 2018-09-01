@@ -1,15 +1,7 @@
 FROM registry.cn-hangzhou.aliyuncs.com/ultrain/ultraind:1.0.0
 COPY config.ini /root/.local/share/ultrainio/nodultrain/config/
 COPY init.sh /
-#COPY init2.sh /
-
-#COPY contracts/ /contracts/
-#RUN ls -la /contracts/*
-#COPY nodultrain /
-#COPY clultrain /
-#COPY kultraind /
-#RUN mkdir -p /data/db
-
+COPY init2.sh /
 USER root
 EXPOSE 27017
 EXPOSE 8888
