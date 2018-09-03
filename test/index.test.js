@@ -1,7 +1,5 @@
 /* eslint-env mocha */
 const assert = require("assert");
-const fs = require("fs");
-const path = require("path");
 const _ = require("lodash");
 const mockUsers = require("../src/mock-users");
 

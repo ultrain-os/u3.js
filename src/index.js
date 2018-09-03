@@ -193,8 +193,7 @@ async function deploy(contract, account) {
     this.setcode(account, 0, 0, wasm);
     this.setabi(account, JSON.parse(abi));
 
-    const code = await this.getContract(account);
-    return code;
+    return await this.getContract(account);
   } catch (e) {
     console.log(e);
     return false;
