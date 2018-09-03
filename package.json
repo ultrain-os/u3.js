@@ -10,7 +10,7 @@
     "test": "NODE_ENV=development mocha test/index.test.js --timeout 10000",
     "docs": "node test/gendoc.js && rm -rf docs && mkdir docs && node_modules/.bin/jsdoc -c jsdoc.json",
     "es5": "rm -fr es5 && babel --copy-files src --out-dir es5",
-    "build": "rm -rf dist && mkdir dist && browserify -o dist/u3.js -s U3.js es5/index.js && uglifyjs dist/u3.js -o dist/u3.min.js --source-map --compress --mangle"
+    "build": "rm -rf dist && mkdir dist && browserify -o dist/u3.js -s U3 es5/index.js && uglifyjs dist/u3.js -o dist/u3.min.js --source-map --compress --mangle"
   },
   "repository": {
     "type": "git",
@@ -45,7 +45,6 @@
     "lodash.isempty": "^4.4.0",
     "lodash.isstring": "^4.0.1",
     "minimatch": "^3.0.4",
-    "mongoose": "^5.2.12",
     "node-localstorage": "^1.3.1",
     "randombytes": "^2.0.5"
   },
