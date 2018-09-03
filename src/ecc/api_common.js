@@ -4,7 +4,8 @@ const PublicKey = require("./key_public");
 const Signature = require("./signature");
 const hash = require("./hash");
 const assert = require("assert");
-const _ = require("lodash");
+const isEmpty = require("lodash.isEmpty");
+const isString = require("lodash.isString");
 const BIP39 = require("bip39");
 
 /** @namespace */
@@ -90,7 +91,7 @@ const ecc = {
    * @returns {{public_key: (*|string), private_key: *}}
    */
   generateKeyPairBySeed: (seed) => {
-    if (_.isEmpty(seed) || !_.isString(seed)) {
+    if (isEmpty(seed) || !isString(seed)) {
       assert.error("seed must a not empty string");
     }
     const wif = ecc.seedPrivate(seed);

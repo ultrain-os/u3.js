@@ -6,7 +6,6 @@ try {
   }
 }
 
-const glob = require("glob");
 const fs = require("fs");
 const path = require("path");
 const configDefaults = require("./config");
@@ -15,7 +14,6 @@ const Fcbuffer = require("fcbuffer");
 const apiGen = require("./utils/apigen");
 const api = require("./v1/chain");
 const assert = require("assert");
-const _ = require("lodash");
 const Structs = require("./structs");
 const AbiCache = require("./abi-cache");
 const AssetCache = require("./asset-cache");
@@ -23,7 +21,6 @@ const writeApiGen = require("./write-api");
 const format = require("./format");
 const schema = require("./v1/schema");
 const pkg = require("../package.json");
-const History = require('./history');
 const abi2json = require('./utils/abi2json');
 
 const version = pkg.version;
@@ -167,9 +164,7 @@ const createU3 = (config = {}) => {
     }
     , deploy
     , createUser
-  },
-  History
-);
+  });
 
 
   if (!config.signProvider) {
@@ -266,15 +261,8 @@ function _mergeWriteFunctions(config, api, structs) {
   // block api
   const merge = Object.assign({}, network);
 
-  // add abi.json to schema
-  const list = glob.sync(path.join(process.cwd(), "build/*.json"));
-  let my_schema = Object.assign({}, schema);
-  for (let i in list) {
-    my_schema = Object.assign(my_schema, require(list[i]));
-  }
-
   // contract abi
-  const writeApi = writeApiGen(api, network, structs, config, my_schema);
+  const writeApi = writeApiGen(api, network, structs, config, schema);
 
   _throwOnDuplicate(merge, writeApi, "Conflicting methods in UltrainApi and Transaction Api");
   Object.assign(merge, writeApi);
@@ -321,6 +309,5 @@ module.exports = {
   format,
   ecc,
   Fcbuffer,
-  version,
-  abi2json
+  version
 };
