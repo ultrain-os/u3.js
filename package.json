@@ -28,6 +28,7 @@
     "node >= 8"
   ],
   "dependencies": {
+    "axios": "^0.18.0",
     "babel-polyfill": "^6.26.0",
     "bigi": "^1.4.2",
     "binaryen": "^37.0.0",

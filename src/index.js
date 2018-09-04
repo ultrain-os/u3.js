@@ -21,6 +21,7 @@ const writeApiGen = require("./write-api");
 const format = require("./format");
 const schema = require("./v1/schema");
 const pkg = require("../package.json");
+const history = require("./history");
 
 const version = pkg.version;
 const defaultSignProvider = (u3, config) => async function({ sign, buf, transaction }) {
@@ -163,7 +164,9 @@ const createU3 = (config = {}) => {
     }
     , deploy
     , createUser
-  });
+  },
+  history
+);
 
 
   if (!config.signProvider) {

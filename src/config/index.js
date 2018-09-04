@@ -1,6 +1,6 @@
 let configDefaults = {
   httpEndpoint: "http://127.0.0.1:8888",
-  dbUrl:"mongodb://127.0.0.1:27018/ultrain",
+  httpEndpoint_history: "http://127.0.0.1:3000",
   broadcast: true,
   debug: false,
   verbose: false,
