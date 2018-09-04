@@ -3,11 +3,19 @@ const Schema = mongoose.Schema;
 
 let ActionSchema = new Schema({
     trx_id : String,
-    name : String
+    name : String,
+    actions : Object
 })
 
 ActionSchema.static('getActionsByTxid',async function(trx_id){
     const res = await this.find({trx_id});
+    return res;
+})
+
+ActionSchema.static('getActionsByAccount',async function(account){
+    console.log(account);
+    const res = await this.find({"authorization.actor": account});
+    console.log(res);
     return res;
 })
 
