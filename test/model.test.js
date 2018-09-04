@@ -26,7 +26,7 @@ describe('tx', () => {
     });
 
     it("getAllTxs", async () => {
-        const r = await u3Instance.getAllTxs(1,5,{},{_id:-1});
+        const r = await u3Instance.getAllTxs(1000,5,{},{_id:-1});
         console.log(r);
         assert.ok(r);
     });
@@ -40,7 +40,13 @@ describe('tx', () => {
 
 describe('action', () => {
     it("getActionsByTxid", async () => {
-        const r = await u3Instance.getActionsByTxid("6572c5154c146df6e10650b87ac3116b4650e9a24ae4881759924259784a529b");
+        const r = await u3Instance.getActionsByTxid("195a89e231fb5935371ff7fc7e412bbc53e80f7a8786cbc3545fddaf10bb0834");
+        console.log(r);
+        assert.ok(r);
+    });
+
+    it("getActionsByAccount", async () => {
+        const r = await u3Instance.getActionsByAccount("test1");
         console.log(r);
         assert.ok(r);
     });
@@ -60,7 +66,7 @@ describe('account', ()=>{
     })
     it("getAccounts", async () => {
         const r = await u3Instance.getAllAccounts(1,5,{},{_id : -1});
-        console.log(r);
+        // console.log(r);
         assert.ok(r);
     })
 })
