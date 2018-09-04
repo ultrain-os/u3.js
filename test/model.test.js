@@ -1,7 +1,6 @@
 const assert = require('assert');
 const { U3 } = require('../index');
 const u3Instance = U3.createU3();
-u3Instance.connectMongo();
 
 describe('block', () => {
 
