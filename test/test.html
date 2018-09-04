@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>test</title>
+    <script src="../dist/u3.js"></script>
+    <script>
+      let u3 = U3.createU3({
+        keyProvider: '5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79zkvFD3',// private key
+        httpEndpoint: 'http://127.0.0.1:8888'
+      });
+
+      u3.getChainInfo((err, info) => {
+        if (err) {
+          throw err;
+        }
+        console.log(info);
+      });
+    </script>
+</head>
+<body>
+
+</body>
+</html>

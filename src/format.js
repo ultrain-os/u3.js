@@ -210,7 +210,7 @@ function decodeNameEx(valueH, valueL, littleEndian = true) {
   let tmpL = convert(valueL);
 
   for(let i = 0; i <= 20; i++) {
-    const c = ''
+    let c = ''
     if (i <= 9) {
       c = NameExMapStr[tmpL.and(sixBits)];
       tmpL = tmpL.shiftRight(6);

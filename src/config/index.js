@@ -1,4 +1,4 @@
-module.exports = configDefaults = {
+let configDefaults = {
   httpEndpoint: "http://127.0.0.1:8888",
   dbUrl:"mongodb://127.0.0.1:27018/ultrain",
   broadcast: true,
@@ -11,3 +11,4 @@ module.exports = configDefaults = {
     debug: console.log
   }
 };
+module.exports = configDefaults
