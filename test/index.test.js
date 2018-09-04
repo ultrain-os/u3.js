@@ -161,8 +161,8 @@ describe("u3.js test suites", () => {
         it("deploy contract", async function() {
           const config = { keyProvider: wif2 };
           const u3 = createU3(config);
-          const code = await u3.deploy("u3.js/build/MyContract", "test1");
-          console.log(code);
+          const code = await u3.deploy("u3.js/build/MyContract", "ultrainio");
+          //console.log(code);
           assert.ok(!_.isEmpty(code.abi));
         });
 
