@@ -130,6 +130,15 @@ exports.getActionsByTxid = async function(trx_id){
 }
 
 /**
+ * get actions by account
+ * @param {String} account name of account eg. test1
+ */
+exports.getActionsByAccount = async function(account){
+    const rs = await Actions.getActionsByAccount(account);
+    return JSON.parse(JSON.stringify(rs));
+}
+
+/**
  * getTxsByBlockId
  * @param {*} block_num 
  * @returns {Object}
