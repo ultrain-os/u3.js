@@ -140,10 +140,10 @@ exports.getTxsByBlockId = function(block_id){
 }
 
 /**
- * isAccountExist
+ * getExistAccount
  * @returns {account|null}
  */
-exports.isAccountExist = async function(name) {
+exports.getExistAccount = async function(name) {
   return fetchUrl(`${httpEndPoint}/accounts/${name}`);
 };
 
