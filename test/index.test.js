@@ -1,28 +1,29 @@
 /* eslint-env mocha */
 const assert = require("assert");
-const fs = require("fs");
-const path = require("path");
-const _ = require("lodash");
+const isEmpty = require("lodash.isempty");
+const isString = require("lodash.isstring");
+const mockUsers = require("../src/mock-users");
 
 const { createU3, format, ecc, Fcbuffer, version } = require("../src");
 
 const wif = "5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79zkvFD3"; //ultrainio
 const pubkey = "UTR6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV"; //ultrainio
 
-const wif2 = "5KaicqLvoPYFq56hX4acyYXz5ijzo1gqix6w87KgdWqoDMo2edR";//other
-const pubkey2 = "UTR6jAahTimggg9oEKpgJ5LJrC8bzdSURNoUZ1zyyCWFq1MjQpJjJ";
-
 describe("u3.js test suites", () => {
-  let opts;
-  before(() => {
-    opts = {
-      foo: "foo",
-      bar: "bar"
-    };
+
+  let mockedUsers = {};
+
+  before(async () => {
+    console.log("initialize 8 test users...\n");
+    mockedUsers = await mockUsers();
   });
 
   beforeEach(() => {
-    console.log('fdsafdsa')
+    //console.log('test case before:\n')
+  });
+
+  afterEach(() => {
+    //console.log('test case after:\n')
   });
 
 // 1.print chain info
@@ -135,7 +136,7 @@ describe("u3.js test suites", () => {
       it("generateKeyPairWithMnemonic", function() {
         let result = ecc.generateKeyPairWithMnemonic();
         console.log(result);
-        assert.ok((_.isString(result.mnemonic) && !_.isEmpty(result.mnemonic)), true);
+        assert.ok((isString(result.mnemonic) && !isEmpty(result.mnemonic)), true);
         assert.equal(ecc.isValidPrivate(result.private_key), true);
         assert.equal(ecc.isValidPublic(result.public_key), true);
       });
