@@ -4,11 +4,11 @@ COPY init.sh /
 COPY init2.sh /
 USER root
 
-#COPY ultrain-rest-api /history/
+#COPY config.json /history/config.json
 #RUN ls -la /history/*
 #RUN apt-get install --yes \
 #    curl \
-##    sudo
+#    sudo
 #RUN curl --silent --location https://deb.nodesource.com/setup_8.x | sudo bash -
 #RUN apt-get install --yes \
 #   nodejs \

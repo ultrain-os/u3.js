@@ -165,7 +165,7 @@ describe('u3.js test suites：', () => {
         const u3 = createU3(config);
         const code = await u3.deploy('build/MyContract', 'ben');
         console.log(code);
-        assert.ok(!_.isEmpty(code.abi));
+        assert.ok(!isEmpty(code.abi));
 
       });
 
@@ -186,7 +186,7 @@ describe('u3.js test suites：', () => {
         let account = 'ben';
         const contract = await u3.getContract(account);
         console.log(contract);
-        assert.ok(!_.isEmpty(contract.abi));
+        assert.ok(!isEmpty(contract.abi));
       });
 
     });

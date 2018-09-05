@@ -1,6 +1,7 @@
 const { createU3, ecc } = require('../src');
 const path = require('path');
 const Storage = require('node-localstorage');
+const isEmpty = require('lodash.isempty');
 const wif = '5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79zkvFD3'; //ultrainio
 
 if (typeof localStorage === 'undefined' || localStorage === null) {
@@ -25,7 +26,7 @@ const mockUsers = async (callback) => {
   for (let i in users) {
     let existUser = await u3.getExistAccount(users[i]);
     checked++;
-    if (existUser) {
+    if (!isEmpty(existUser)) {
       mockedUsers[users[i]] = JSON.parse(localStorage.getItem(users[i]));
     } else {
       let keys = ecc.generateKeyPairWithMnemonic();
