@@ -25,7 +25,7 @@ const mockUsers = async (callback) => {
   let checked = 0;
 
   for (let i in users) {
-    let existUser = await u3.isAccountExist(users[i]);
+    let existUser = await u3.getExistAccount(users[i]);
     checked++;
     if (existUser) {
       mockedUsers[users[i]] = JSON.parse(localStorage.getItem(users[i]));

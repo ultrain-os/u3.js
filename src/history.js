@@ -139,6 +139,14 @@ exports.getTxsByBlockId = function(block_id){
     return fetchUrl(`${httpEndPoint}/txs/block/${block_id}`);
 }
 
+/**
+ * getExistAccount
+ * @returns {account|null}
+ */
+exports.getExistAccount = async function(name) {
+  return fetchUrl(`${httpEndPoint}/accounts/${name}`);
+};
+
 function fetchUrl(url, data = {}) {
     return axios.post(url, data)
         .then(function (response) {
