@@ -1,8 +1,8 @@
-##Introduction
+## Introduction
 
 U3.js is a set of sdk for javascript.
 
-##Precondition
+## Precondition
 
 * Install docker on your machine
 
@@ -25,21 +25,21 @@ Note:
 > * httpEndpoint: "http://127.0.0.1:8888",
 > * httpEndpoint_history: "http://127.0.0.1:3000"
 
-##Install
+## Install
 
 install width `npm install u3.js` or `yarn add u3.js`
 
-##Enviroment
+## Enviroment
 
 NodeJS or ES6 for browser
 
-##Configuration
+## Configuration
 
 
-##Contracts
+## Contracts
 
-####deploy
+#### deploy
 
-####call
+#### call
 
-##Call Actions
+## Call Actions
