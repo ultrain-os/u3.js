@@ -7,7 +7,7 @@
     "test": "test"
   },
   "scripts": {
-    "test": "NODE_ENV=development mocha test/index.test.js --timeout 10000",
+    "test": "NODE_ENV=development mocha test/index.test.js && mocha test/history.test.js --timeout 10000",
     "docs": "node test/gendoc.js && rm -rf docs && mkdir docs && node_modules/.bin/jsdoc -c jsdoc.json",
     "es5": "rm -fr es5 && babel --copy-files src --out-dir es5",
     "build": "rm -rf dist && mkdir dist && browserify -o dist/u3.js -s U3 es5/index.js && uglifyjs dist/u3.js -o dist/u3.min.js --source-map --compress --mangle"
