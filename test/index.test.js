@@ -19,7 +19,11 @@ describe('u3.js test suites：', () => {
   });
 
   beforeEach(() => {
-    console.log('fdsafdsa')
+    //console.log('test case before:\n')
+  });
+
+  afterEach(() => {
+    //console.log('test case after:\n')
   });
 
 

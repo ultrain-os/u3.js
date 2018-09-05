@@ -1,5 +1,4 @@
 const { createU3, ecc } = require('../src');
-//const { connectMongo } = require('./history');
 const path = require('path');
 const Storage = require('node-localstorage');
 const wif = '5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79zkvFD3'; //ultrainio
@@ -20,7 +19,6 @@ const mockUsers = async (callback) => {
     stake_cpu_quantity: '100.0000 SYS',
     transfer: 0
   };
-  //connectMongo();
   const u3 = createU3({ keyProvider: wif });
   let checked = 0;
 
