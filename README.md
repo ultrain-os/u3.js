@@ -33,6 +33,35 @@ install width `npm install u3.js` or `yarn add u3.js`
 
 NodeJS or ES6 for browser
 
+## Usage
+
+if you use u3.js in browser environment, reference the below example.
+
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <title>test</title>
+            <script src="../dist/u3.js"></script>
+            <script>
+        
+              let u3 = U3.createU3({
+                httpEndpoint: 'http://127.0.0.1:8888',
+                httpEndpoint_history: 'http://127.0.0.1:3000'
+              });
+        
+              u3.getChainInfo((err, info) => {
+                if (err) {
+                  throw err;
+                }
+                console.log(info);
+              });
+            </script>
+        </head>
+        <body>
+        </body>
+        </html>
+
 ## Configuration
 
 ## Sign
