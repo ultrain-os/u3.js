@@ -6,22 +6,21 @@ try {
   }
 }
 
-const fs = require('fs');
-const path = require('path');
-const configDefaults = require('./config');
-const ecc = require('./ecc');
-const Fcbuffer = require('fcbuffer');
-const apiGen = require('./utils/apigen');
-const api = require('./v1/chain');
-const assert = require('assert');
-const Structs = require('./structs');
-const AbiCache = require('./abi-cache');
-const AssetCache = require('./asset-cache');
-const writeApiGen = require('./write-api');
-const format = require('./format');
-const schema = require('./v1/schema');
-const pkg = require('../package.json');
-const history = require('./history');
+const fs = require("fs");
+const path = require("path");
+const configDefaults = require("./config");
+const ecc = require("./ecc");
+const Fcbuffer = require("fcbuffer");
+const apiGen = require("./utils/apigen");
+const api = require("./v1/chain");
+const assert = require("assert");
+const Structs = require("./structs");
+const AbiCache = require("./abi-cache");
+const AssetCache = require("./asset-cache");
+const writeApiGen = require("./write-api");
+const format = require("./format");
+const schema = require("./v1/schema");
+const pkg = require("../package.json");
 
 const version = pkg.version;
 
@@ -127,6 +126,7 @@ const defaultSignProvider = (u3, config) => async function({ sign, buf, transact
  */
 const createU3 = (config = {}) => {
   config = Object.assign({}, configDefaults, config);
+  const history = require("./history")(config);
   const defaultLogger = {
     log: config.verbose ? console.log : null,
     error: console.error

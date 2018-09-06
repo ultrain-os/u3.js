@@ -1,5 +1,22 @@
 const axios = require('axios');
-const httpEndPoint = require('./config').httpEndpoint_history;
+let httpEndPoint = require('./config').httpEndpoint_history;
+
+module.exports = function(config){
+    httpEndPoint = config.httpEndpoint_history;
+    console.log(httpEndPoint);
+    return {
+        getAllBlocks,
+        getContracts,
+        getContractByName,
+        getAllAccounts,
+        getAllTxs,
+        getTxByTxId,
+        getActionsByTxid,
+        getActionsByAccount,
+        getTxsByBlockId,
+        getExistAccount
+    }
+}
 /**
  * get all blocks
  * @param { Number } page 
@@ -7,7 +24,7 @@ const httpEndPoint = require('./config').httpEndpoint_history;
  * @param { Object } queryParams 
  * @param { Object } sortParams 
  */
-exports.getAllBlocks = function (page, pageSize, queryParams, sortParams) {
+function getAllBlocks (page, pageSize, queryParams, sortParams) {
     let data = {
         "page": page || 1,
         "pageSize": pageSize || 10,
@@ -25,7 +42,7 @@ exports.getAllBlocks = function (page, pageSize, queryParams, sortParams) {
  * @param { Object } queryParams 
  * @param { Object } sortParams
  */
-exports.getContracts = function (page, pageSize, queryParams, sortParams) {
+function getContracts (page, pageSize, queryParams, sortParams) {
     let data = {
         "page": page || 1,
         "pageSize": pageSize || 10,
@@ -40,7 +57,7 @@ exports.getContracts = function (page, pageSize, queryParams, sortParams) {
  * get contract by name
  * @param {String} name 
  */
-exports.getContractByName = function (name) {
+function getContractByName (name) {
     return fetchUrl(`${httpEndPoint}/contracts/${name}`);
 }
 
@@ -51,7 +68,7 @@ exports.getContractByName = function (name) {
  * @param { Object } queryParams 
  * @param { Object } sortParams
  */
-exports.getAllAccounts = async function (page, pageSize, queryParams, sortParams) {
+async function getAllAccounts (page, pageSize, queryParams, sortParams) {
     let data = {
         "page": page || 1,
         "pageSize": pageSize || 10,
@@ -96,7 +113,7 @@ exports.getAllAccounts = async function (page, pageSize, queryParams, sortParams
  * @param { Object } queryParams 
  * @param { Object } sortParams
  */
-exports.getAllTxs = function (page, pageSize, queryParams, sortParams) {
+function getAllTxs (page, pageSize, queryParams, sortParams) {
     let data = {
         "page": page || 1,
         "pageSize": pageSize || 10,
@@ -111,7 +128,7 @@ exports.getAllTxs = function (page, pageSize, queryParams, sortParams) {
  * get tx by id
  * @param {String} id tx_id
  */
-exports.getTxByTxId = function (id) {
+function getTxByTxId (id) {
     return fetchUrl(`${httpEndPoint}/txs/${id}`);
 }
 
@@ -119,7 +136,7 @@ exports.getTxByTxId = function (id) {
  * get actions by tx_id
  * @param {String} id  tx_id
  */
-exports.getActionsByTxid = function(id){
+function getActionsByTxid (id){
     return fetchUrl(`${httpEndPoint}/actions/tx/${id}`);
 }
 
@@ -127,7 +144,7 @@ exports.getActionsByTxid = function(id){
  * get actions by account
  * @param {String} account accoun name
  */
-exports.getActionsByAccount = function(account){
+function getActionsByAccount (account){
     return fetchUrl(`${httpEndPoint}/actions/account/${account}`);
 }
 
@@ -135,7 +152,7 @@ exports.getActionsByAccount = function(account){
  * get txs by block_id
  * @param {String} block_id 
  */
-exports.getTxsByBlockId = function(block_id){
+function getTxsByBlockId (block_id){
     return fetchUrl(`${httpEndPoint}/txs/block/${block_id}`);
 }
 
@@ -143,7 +160,7 @@ exports.getTxsByBlockId = function(block_id){
  * getExistAccount
  * @returns {account|null}
  */
-exports.getExistAccount = async function(name) {
+function getExistAccount (name) {
   return fetchUrl(`${httpEndPoint}/accounts/${name}`);
 };
 
