@@ -4,8 +4,8 @@ const PublicKey = require("./key_public");
 const Signature = require("./signature");
 const hash = require("./hash");
 const assert = require("assert");
-const isEmpty = require("lodash.isEmpty");
-const isString = require("lodash.isString");
+const isEmpty = require("lodash.isempty");
+const isString = require("lodash.isstring");
 const BIP39 = require("bip39");
 
 /** @namespace */

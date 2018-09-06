@@ -366,8 +366,8 @@ var PublicKey = require("./key_public");
 var Signature = require("./signature");
 var hash = require("./hash");
 var assert = require("assert");
-var isEmpty = require("lodash.isEmpty");
-var isString = require("lodash.isString");
+var isEmpty = require("lodash.isempty");
+var isString = require("lodash.isstring");
 var BIP39 = require("bip39");
 
 /** @namespace */
@@ -526,7 +526,7 @@ var ecc = {
 };
 
 module.exports = ecc;
-},{"./aes":4,"./hash":10,"./key_private":12,"./key_public":13,"./signature":16,"assert":32,"bip39":79,"lodash.isEmpty":538,"lodash.isString":539}],6:[function(require,module,exports){
+},{"./aes":4,"./hash":10,"./key_private":12,"./key_public":13,"./signature":16,"assert":32,"bip39":79,"lodash.isempty":538,"lodash.isstring":539}],6:[function(require,module,exports){
 "use strict";
 
 var Aes = require("./aes");
