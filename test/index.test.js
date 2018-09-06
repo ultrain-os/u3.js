@@ -1,5 +1,6 @@
 /* eslint-env mocha */
 const assert = require('assert');
+const structs = require('../src/structs');
 const isEmpty = require('lodash.isempty');
 const isString = require('lodash.isstring');
 const mockUsers = require('../src/mock-users');
@@ -9,7 +10,7 @@ const { createU3, format, ecc, Fcbuffer, version } = require('../src');
 const wif = '5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79zkvFD3'; //ultrainio
 const pubkey = 'UTR6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV'; //ultrainio
 
-describe('u3.js test suites：', () => {
+describe('u3.js', () => {
 
   let mockedUsers = {};
 
@@ -65,17 +66,6 @@ describe('u3.js test suites：', () => {
     const transactionHeaders = (expireInSeconds, callback) => {
       callback(null, headers);
     };
-
-
-    it('offline sign', async function() {
-      const u3 = createU3({
-        keyProvider: wif,
-        transactionHeaders
-      });
-      const trx = await u3.nonce(1, { broadcast: false });
-      //console.log(trx);
-    });
-
 
     //TODO 离线模式下 3.1 trx.transaction.signatures.length=1?
     /*it("multi-signature", async function() {
@@ -205,13 +195,13 @@ describe('u3.js test suites：', () => {
       });
 
       // 5.2 keyProvider
-      it('keyProvider private key', () => {
+      it('keyProvider private key', async () => {
         const keyProvider = () => {
           return [wif];
         };
         const u3 = createU3({ keyProvider });
-
         return u3.transfer('ultrainio', 'ben', '1 SYS', '').then(tr => {
+          console.log(tr);
           assert.equal(tr.transaction.signatures.length, 1);
           assert.equal(typeof tr.transaction.signatures[0], 'string');
         });
@@ -232,6 +222,22 @@ describe('u3.js test suites：', () => {
         const u3 = createU3({ signProvider: customSignProvider });
         return u3.transfer('ultrainio', 'alice', '2 SYS', '');
       });
+
+      // 5.4 offline sign and push transaction later
+      it('offline sign', async () => {
+        //using { sign: false, broadcast: false } to create a U3 instance and call some function
+        const u3 = createU3({ sign: false, broadcast: false });
+        let unsigned_transaction = await u3.transfer('ultrainio', 'ben', '1 SYS', '');
+        console.log(unsigned_transaction);
+
+        let signature = await u3.sign(unsigned_transaction, wif);
+        if (signature) {
+          let signedTransaction = Object.assign({}, unsigned_transaction.transaction, { signatures: [signature] });
+          let processedTransaction = await u3.pushTx(signedTransaction);
+          assert.equal(processedTransaction.transaction_id, unsigned_transaction.transaction_id);
+        }
+      });
+
 
       // TODO issue token by contract with ts version
 
