@@ -35,7 +35,7 @@ NodeJS or ES6 for browser
 
 ## Usage
 
-if you use u3.js in browser environment, reference the below example.
+if you use u3.js in browser environment, reference the example below.
 
         <!DOCTYPE html>
         <html lang="en">
