@@ -226,14 +226,16 @@ describe('u3.js', () => {
       // 5.4 offline sign and push transaction later
       it('offline sign', async () => {
         //using { sign: false, broadcast: false } to create a U3 instance and call some function
-        const u3 = createU3({ sign: false, broadcast: false });
-        let unsigned_transaction = await u3.transfer('ultrainio', 'ben', '1 SYS', '');
+        const u3_offline = createU3({ sign: false, broadcast: false });
+        let unsigned_transaction = await u3_offline.transfer('ultrainio', 'ben', '1 SYS', 'uu');
         console.log(unsigned_transaction);
 
-        let signature = await u3.sign(unsigned_transaction, wif);
+        //online sign it in wallet
+        const u3_online = createU3();
+        let signature = await u3_online.sign(unsigned_transaction, wif);
         if (signature) {
           let signedTransaction = Object.assign({}, unsigned_transaction.transaction, { signatures: [signature] });
-          let processedTransaction = await u3.pushTx(signedTransaction);
+          let processedTransaction = await u3_online.pushTx(signedTransaction);
           assert.equal(processedTransaction.transaction_id, unsigned_transaction.transaction_id);
         }
       });

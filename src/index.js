@@ -250,22 +250,32 @@ async function createUser(params) {
 }
 
 /**
- *
+ * offline sign
  * @param unsigned_transaction
- * @param privateKey
+ * @param privateKeyOrMnemonic
+ * @param chainId
  * @returns {Promise<*>}
  */
-async function sign(unsigned_transaction, privateKey) {
+async function sign(unsigned_transaction, privateKeyOrMnemonic, chainId = 'cf057bbfb72640471fd910bcb67639c22df9f92470936cddc1ade0e2f2e7dc4f') {
+  assert(unsigned_transaction, 'unsigned transaction required');
+  assert(privateKeyOrMnemonic, 'privateKeyOrMnemonic required');
+
+  let privateKey = privateKeyOrMnemonic;
+  let isValidPrivateKey = ecc.isValidPrivate(privateKeyOrMnemonic);
+  if (!isValidPrivateKey) {
+    let result = ecc.generateKeyPairByMnemonic(privateKeyOrMnemonic);
+    privateKey = result.private_key;
+  }
+
   let txObject = unsigned_transaction.transaction.transaction;
   delete txObject.context_free_actions;
   delete txObject.transaction_extensions;
 
   const buf = Fcbuffer.toBuffer(this.fc.structs.transaction, txObject);
-  const chainIdBuf = new Buffer(unsigned_transaction.chainId || 'cf057bbfb72640471fd910bcb67639c22df9f92470936cddc1ade0e2f2e7dc4f', 'hex');
+  const chainIdBuf = new Buffer(chainId, 'hex');
   const signBuf = Buffer.concat([chainIdBuf, buf, new Buffer(new Uint8Array(32))]);
 
-  let sign = ecc.sign(signBuf, privateKey);
-  return sign
+  return ecc.sign(signBuf, privateKey);
 }
 
 /**
