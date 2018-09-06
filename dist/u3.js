@@ -2218,6 +2218,23 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var axios = require('axios');
 var httpEndPoint = require('./config').httpEndpoint_history;
+
+module.exports = function (config) {
+    httpEndPoint = config.httpEndpoint_history;
+    console.log(httpEndPoint);
+    return {
+        getAllBlocks: getAllBlocks,
+        getContracts: getContracts,
+        getContractByName: getContractByName,
+        getAllAccounts: getAllAccounts,
+        getAllTxs: getAllTxs,
+        getTxByTxId: getTxByTxId,
+        getActionsByTxid: getActionsByTxid,
+        getActionsByAccount: getActionsByAccount,
+        getTxsByBlockId: getTxsByBlockId,
+        getExistAccount: getExistAccount
+    };
+};
 /**
  * get all blocks
  * @param { Number } page 
@@ -2225,7 +2242,7 @@ var httpEndPoint = require('./config').httpEndpoint_history;
  * @param { Object } queryParams 
  * @param { Object } sortParams 
  */
-exports.getAllBlocks = function (page, pageSize, queryParams, sortParams) {
+function getAllBlocks(page, pageSize, queryParams, sortParams) {
     var data = {
         "page": page || 1,
         "pageSize": pageSize || 10,
@@ -2234,7 +2251,7 @@ exports.getAllBlocks = function (page, pageSize, queryParams, sortParams) {
     };
 
     return fetchUrl(httpEndPoint + '/blocks', data);
-};
+}
 
 /**
  * get all contracts
@@ -2243,7 +2260,7 @@ exports.getAllBlocks = function (page, pageSize, queryParams, sortParams) {
  * @param { Object } queryParams 
  * @param { Object } sortParams
  */
-exports.getContracts = function (page, pageSize, queryParams, sortParams) {
+function getContracts(page, pageSize, queryParams, sortParams) {
     var data = {
         "page": page || 1,
         "pageSize": pageSize || 10,
@@ -2252,15 +2269,15 @@ exports.getContracts = function (page, pageSize, queryParams, sortParams) {
     };
 
     return fetchUrl(httpEndPoint + '/contracts', data);
-};
+}
 
 /**
  * get contract by name
  * @param {String} name 
  */
-exports.getContractByName = function (name) {
+function getContractByName(name) {
     return fetchUrl(httpEndPoint + '/contracts/' + name);
-};
+}
 
 /**
  * get all accounts
@@ -2269,10 +2286,10 @@ exports.getContractByName = function (name) {
  * @param { Object } queryParams 
  * @param { Object } sortParams
  */
-exports.getAllAccounts = function _callee(page, pageSize, queryParams, sortParams) {
+function getAllAccounts(page, pageSize, queryParams, sortParams) {
     var data, response, pageInfo, accounts, _require, createU3, u3, i, balance, accountInfo;
 
-    return _regenerator2.default.async(function _callee$(_context) {
+    return _regenerator2.default.async(function getAllAccounts$(_context) {
         while (1) {
             switch (_context.prev = _context.next) {
                 case 0:
@@ -2340,7 +2357,7 @@ exports.getAllAccounts = function _callee(page, pageSize, queryParams, sortParam
             }
         }
     }, null, this);
-};
+}
 
 /**
  * get all txs
@@ -2349,7 +2366,7 @@ exports.getAllAccounts = function _callee(page, pageSize, queryParams, sortParam
  * @param { Object } queryParams 
  * @param { Object } sortParams
  */
-exports.getAllTxs = function (page, pageSize, queryParams, sortParams) {
+function getAllTxs(page, pageSize, queryParams, sortParams) {
     var data = {
         "page": page || 1,
         "pageSize": pageSize || 10,
@@ -2358,57 +2375,46 @@ exports.getAllTxs = function (page, pageSize, queryParams, sortParams) {
     };
 
     return fetchUrl(httpEndPoint + '/txs', data);
-};
+}
 
 /**
  * get tx by id
  * @param {String} id tx_id
  */
-exports.getTxByTxId = function (id) {
+function getTxByTxId(id) {
     return fetchUrl(httpEndPoint + '/txs/' + id);
-};
+}
 
 /**
  * get actions by tx_id
  * @param {String} id  tx_id
  */
-exports.getActionsByTxid = function (id) {
+function getActionsByTxid(id) {
     return fetchUrl(httpEndPoint + '/actions/tx/' + id);
-};
+}
 
 /**
  * get actions by account
  * @param {String} account accoun name
  */
-exports.getActionsByAccount = function (account) {
+function getActionsByAccount(account) {
     return fetchUrl(httpEndPoint + '/actions/account/' + account);
-};
+}
 
 /**
  * get txs by block_id
  * @param {String} block_id 
  */
-exports.getTxsByBlockId = function (block_id) {
+function getTxsByBlockId(block_id) {
     return fetchUrl(httpEndPoint + '/txs/block/' + block_id);
-};
+}
 
 /**
  * getExistAccount
  * @returns {account|null}
  */
-exports.getExistAccount = function _callee2(name) {
-    return _regenerator2.default.async(function _callee2$(_context2) {
-        while (1) {
-            switch (_context2.prev = _context2.next) {
-                case 0:
-                    return _context2.abrupt('return', fetchUrl(httpEndPoint + '/accounts/' + name));
-
-                case 1:
-                case 'end':
-                    return _context2.stop();
-            }
-        }
-    }, null, this);
+function getExistAccount(name) {
+    return fetchUrl(httpEndPoint + '/accounts/' + name);
 };
 
 function fetchUrl(url) {
@@ -2450,22 +2456,21 @@ try {
   }
 }
 
-var fs = require('fs');
-var path = require('path');
-var configDefaults = require('./config');
-var ecc = require('./ecc');
-var Fcbuffer = require('fcbuffer');
-var apiGen = require('./utils/apigen');
-var api = require('./v1/chain');
-var assert = require('assert');
-var Structs = require('./structs');
-var AbiCache = require('./abi-cache');
-var AssetCache = require('./asset-cache');
-var writeApiGen = require('./write-api');
-var format = require('./format');
-var schema = require('./v1/schema');
-var pkg = require('../package.json');
-var history = require('./history');
+var fs = require("fs");
+var path = require("path");
+var configDefaults = require("./config");
+var ecc = require("./ecc");
+var Fcbuffer = require("fcbuffer");
+var apiGen = require("./utils/apigen");
+var api = require("./v1/chain");
+var assert = require("assert");
+var Structs = require("./structs");
+var AbiCache = require("./abi-cache");
+var AssetCache = require("./asset-cache");
+var writeApiGen = require("./write-api");
+var format = require("./format");
+var schema = require("./v1/schema");
+var pkg = require("../package.json");
 
 var version = pkg.version;
 
@@ -2692,6 +2697,7 @@ var createU3 = function createU3() {
   var config = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
   config = Object.assign({}, configDefaults, config);
+  var history = require("./history")(config);
   var defaultLogger = {
     log: config.verbose ? console.log : null,
     error: console.error
