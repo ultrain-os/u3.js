@@ -37,4 +37,4 @@ $clultrain push action utrio.token issue '[ "ultrainio", "1000000000.0000 SYS"]'
 $clultrain set contract ultrainio $ContractPath/ultrainio.system/ -p ultrainio -x 3600
 
 sleep 2
-cd history && node bin/www &
+cd history && forever start bin/www

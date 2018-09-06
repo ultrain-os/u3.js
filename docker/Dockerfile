@@ -13,7 +13,8 @@ USER root
 #RUN apt-get install --yes \
 #   nodejs \
 #   build-essential
-#RUN cd /history; npm install
+#RUN cd /history; npm install \
+#   npm install forever -g
 
 EXPOSE 27017
 EXPOSE 8888
