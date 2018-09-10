@@ -14,7 +14,9 @@ module.exports = function(config){
         getActionsByTxid,
         getActionsByAccount,
         getTxsByBlockId,
-        getExistAccount
+        getExistAccount,
+        getBlocksByContract,
+        getTxTraceByTxid
     }
 }
 /**
@@ -162,7 +164,32 @@ function getTxsByBlockId (block_id){
  */
 function getExistAccount (name) {
   return fetchUrl(`${httpEndPoint}/accounts/${name}`);
-};
+}
+
+/**
+ * get blocks by block_num、account_name、contract_name、contract_method
+ * @param { Number } block_num lasted block_num
+ * @param { String } account account name 
+ * @param { String } contract contract name eg. utrio.token
+ * @param { String } contract_method contract method eg. transfer
+ */
+function getBlocksByContract (block_num,account,contract,contract_method) {
+    const data = {
+        block_num,
+        account,
+        contract,
+        contract_method
+    }
+    return fetchUrl(`${httpEndPoint}/blocks/contract`, data);
+}
+
+/**
+ * get txtrace by tx_id
+ * @param { String } id 
+ */
+function getTxTraceByTxid (id) {
+    return fetchUrl(`${httpEndPoint}/txtraces/${id}`);
+}
 
 function fetchUrl(url, data = {}) {
     return axios.post(url, data)
