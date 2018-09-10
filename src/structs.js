@@ -3,17 +3,19 @@ const Fcbuffer = require('fcbuffer')
 const ByteBuffer = require('bytebuffer')
 const assert = require('assert')
 
-const json = {schema: require('./v1/schema')}
+const schema = {schema: require('./v1/schema')}
 
 const {
   isName, encodeName, decodeName, encodeNameEx, decodeNameEx,
   UDecimalPad, UDecimalImply, UDecimalUnimply,
+  DecimalPad, DecimalImply, DecimalUnimply,
+  printAsset, parseAsset,
   parseExtendedAsset
 } = require('./format')
 
 module.exports = (config = {}, extendedSchema) => {
   const structLookup = (lookupName, account) => {
-    const cachedCode = new Set(['ultrainio', 'utrio.token'])
+    const cachedCode = new Set(['ultrainio', 'utrio.token', 'utrio.null'])
     if(cachedCode.has(account)) {
       return structs[lookupName]
     }
@@ -46,19 +48,18 @@ module.exports = (config = {}, extendedSchema) => {
     config.override
   )
 
-  const {assetCache} = config
-
   const ultrainTypes = {
     name: ()=> [Name],
     name_ex: ()=> [NameEx],
 
     public_key: () => [variant(PublicKeyEcc)],
 
-    symbol: () => [Symbol(assetCache)],
-    extended_symbol: () => [ExtendedSymbol(assetCache)],
+    symbol: () => [Symbol],
+    symbol_code: () => [SymbolCode],
+    extended_symbol: () => [ExtendedSymbol],
 
-    asset: () => [Asset(assetCache)], // After Symbol: amount, precision, symbol, contract
-    extended_asset: () => [ExtendedAsset(assetCache)], // After Asset: amount, precision, symbol, contract
+    asset: () => [Asset], // After Symbol: amount, precision, symbol, contract
+    extended_asset: () => [ExtendedAsset], // After Asset: amount, precision, symbol, contract
 
     signature: () => [variant(SignatureType)]
   }
@@ -73,13 +74,11 @@ module.exports = (config = {}, extendedSchema) => {
   config.sort['authority.accounts'] = true
   config.sort['authority.keys'] = true
 
-  const schema = Object.assign({}, json.schema, extendedSchema)
-
-  const {structs, types, errors, fromBuffer, toBuffer} = Fcbuffer(schema, config)
+  const fullSchema = Object.assign({}, schema.schema, extendedSchema)
+  const {structs, types, errors, fromBuffer, toBuffer} = Fcbuffer(fullSchema, config)
   if(errors.length !== 0) {
     throw new Error(JSON.stringify(errors, null, 4))
   }
-
   return {structs, types, fromBuffer, toBuffer}
 }
 
@@ -253,7 +252,7 @@ function precisionCache(assetCache, value) {
   return pc
 }
 
-const Symbol = assetCache => validation => {
+const Symbol = validation => {
   return {
     fromByteBuffer (b) {
       const bcopy = b.copy(b.offset, b.offset + 8)
@@ -269,20 +268,19 @@ const Symbol = assetCache => validation => {
         }
         symbol += code
       }
-      precisionCache(assetCache, `${precision},${symbol}`) // validate
       return `${precision},${symbol}`
     },
 
     appendByteBuffer (b, value) {
-      const {symbol, precision} = precisionCache(assetCache, value)
-      assert(precision != null, `Precision unknown for asset: ${value}`)
+      const {symbol, precision} = parseAsset(value)
+      assert(precision != null, `Precision unknown for symbol: ${value}`)
       const pad = '\0'.repeat(7 - symbol.length)
       b.append(String.fromCharCode(precision) + symbol + pad)
     },
 
     fromObject (value) {
       assert(value != null, `Symbol is required: ` + value)
-      const {symbol, precision} = precisionCache(assetCache, value)
+      const {symbol, precision} = parseAsset(value)
       if(precision == null) {
         return symbol
       } else {
@@ -296,12 +294,51 @@ const Symbol = assetCache => validation => {
         return 'SYS'
       }
       // symbol only (without precision prefix)
-      return precisionCache(assetCache, value).symbol
+      return parseAsset(value).symbol
     }
   }
 }
 
-const ExtendedSymbol = assetCache => (validation, baseTypes, customTypes) => {
+const SymbolCode = validation => {
+  return {
+    fromByteBuffer (b) {
+      const bcopy = b.copy(b.offset, b.offset + 8)
+      b.skip(8)
+
+      const bin = bcopy.toBinary()
+
+      let symbol = ''
+      for(const code of bin)  {
+        if(code == '\0') {
+          break
+        }
+        symbol += code
+      }
+      return `${symbol}`
+    },
+
+    appendByteBuffer (b, value) {
+      const {symbol} = parseAsset(value)
+      const pad = '\0'.repeat(8 - symbol.length)
+      b.append(symbol + pad)
+    },
+
+    fromObject (value) {
+      assert(value != null, `Symbol is required: ` + value)
+      const {symbol} = parseAsset(value)
+      return symbol
+    },
+
+    toObject (value) {
+      if (validation.defaults && value == null) {
+        return 'UTR'
+      }
+      return parseAsset(value).symbol
+    }
+  }
+}
+
+const ExtendedSymbol = (validation, baseTypes, customTypes) => {
   const symbolType = customTypes.symbol(validation)
   const contractName = customTypes.name(validation)
 
@@ -328,7 +365,7 @@ const ExtendedSymbol = assetCache => (validation, baseTypes, customTypes) => {
 
     toObject (value) {
       if (validation.defaults && value == null) {
-        return '4,SYS@contract'
+        return 'SYS@contract'
       }
       return value
     }
@@ -367,40 +404,58 @@ function toAssetString(value, assetCache, format = '') {
   assert(false, 'format should be: plain, extended, or full')
 }
 
-const Asset = assetCache => (validation, baseTypes, customTypes) => {
+const Asset = (validation, baseTypes, customTypes) => {
   const amountType = baseTypes.int64(validation)
   const symbolType = customTypes.symbol(validation)
 
   return {
     fromByteBuffer (b) {
       const amount = amountType.fromByteBuffer(b)
+      assert(amount != null, 'amount')
+
       const sym = symbolType.fromByteBuffer(b)
-      const {precision, symbol} = precisionCache(assetCache, sym)
-      return toAssetString(`${UDecimalUnimply(amount, precision)} ${precision},${symbol}`, assetCache, 'full_asset')
+      const {precision, symbol} = parseAsset(`${sym}`)
+      assert(precision != null, 'precision')
+      assert(symbol != null, 'symbol')
+
+      return `${DecimalUnimply(amount, precision)} ${symbol}`
     },
 
     appendByteBuffer (b, value) {
-      assert.equal(typeof value, 'string', `expecting asset string, got ` + (typeof value))
-      const {amount, precision, symbol} = precisionCache(assetCache, value)
-      assert(precision != null, `Precision unknown for asset: ${value}`)
-      amountType.appendByteBuffer(b, UDecimalImply(amount, precision))
-      symbolType.appendByteBuffer(b, value)
+      const {amount, precision, symbol} = parseAsset(value)
+      assert(amount != null, 'amount')
+      assert(precision != null, 'precision')
+      assert(symbol != null, 'symbol')
+
+      amountType.appendByteBuffer(b, DecimalImply(amount, precision))
+      symbolType.appendByteBuffer(b, `${precision},${symbol}`)
     },
 
     fromObject (value) {
-      return toAssetString(value, assetCache, 'full_asset')
+      const {amount, precision, symbol} = parseAsset(value)
+      assert(amount != null, 'amount')
+      assert(precision != null, 'precision')
+      assert(symbol != null, 'symbol')
+
+      return `${DecimalPad(amount, precision)} ${symbol}`
     },
 
     toObject (value) {
       if (validation.defaults && value == null) {
         return '0.0001 SYS'
       }
-      return toAssetString(value, assetCache, 'plain_asset')
+
+      const {amount, precision, symbol} = parseAsset(value)
+      assert(amount != null, 'amount')
+      assert(precision != null, 'precision')
+      assert(symbol != null, 'symbol')
+
+      return `${DecimalPad(amount, precision)} ${symbol}`
     }
   }
 }
 
-const ExtendedAsset = assetCache => (validation, baseTypes, customTypes) => {
+const ExtendedAsset = (validation, baseTypes, customTypes) => {
   const assetType = customTypes.asset(validation)
   const contractName = customTypes.name(validation)
 
@@ -408,31 +463,61 @@ const ExtendedAsset = assetCache => (validation, baseTypes, customTypes) => {
     fromByteBuffer (b) {
       const asset = assetType.fromByteBuffer(b)
       const contract = contractName.fromByteBuffer(b)
-      return `${asset}@${contract}`
+      return parseAsset(`${asset}@${contract}`)
     },
 
     appendByteBuffer (b, value) {
-      assert.equal(typeof value, 'string', 'Invalid extended asset: ' + value)
+      assert.equal(typeof value, 'object', 'expecting extended_asset object, got ' + typeof value)
 
-      const [asset, contract] = value.split('@')
+      const asset = printAsset(value)
+
+      const [, contract] = asset.split('@')
       assert.equal(typeof contract, 'string', 'Invalid extended asset: ' + value)
 
+      // asset includes contract (assetType needs this)
       assetType.appendByteBuffer(b, asset)
       contractName.appendByteBuffer(b, contract)
     },
 
     fromObject (value) {
       // like: 1.0000 SYS@contract or 1 SYS@contract
-      assert(/^\d+(\.\d+)* [A-Z]+@[a-z0-5]+(\.[a-z0-5]+)*$/.test(value),
-        'Invalid extended asset: ' + value)
-      return toAssetString(value, assetCache, 'full_extended_asset')
+      const asset = {}
+      if(typeof value === 'string') {
+        Object.assign(asset, parseAsset(value))
+      } else if (typeof value === 'object') {
+        Object.assign(asset, value)
+      } else {
+        assert(false, 'expecting extended_asset<object|string>, got: ' + typeof value)
+      }
+
+      const {amount, precision, symbol, contract} = asset
+      assert(amount != null, 'missing amount')
+      assert(precision != null, 'missing precision')
+      assert(symbol != null, 'missing symbol')
+      assert(contract != null, 'missing contract')
+
+      return {amount, precision, symbol, contract}
     },
 
     toObject (value) {
       if (validation.defaults && value == null) {
-        return '1.0000 SYS@utrio.token'
+        return {
+          amount: '1.0000',
+          precision: 4,
+          symbol: 'SYS',
+          contract: 'utrio.token'
+        }
       }
-      return toAssetString(value, assetCache, 'extended_asset')
+
+      assert.equal(typeof value, 'object', 'expecting extended_asset object')
+      const {amount, precision, symbol, contract} = value
+
+      return {
+        amount: DecimalPad(amount, precision),
+        precision,
+        symbol,
+        contract
+      }
     }
   }
 }
@@ -499,7 +584,9 @@ const abiOverride = structLookup => ({
     if(Buffer.isBuffer(value)) {
       return JSON.parse(value.toString())
     }
+    return null // let the default type take care of it
   },
+
   'setabi.abi.appendByteBuffer': ({fields, object, b}) => {
     const ser = structLookup('abi_def', 'ultrainio')
     const b2 = new ByteBuffer(ByteBuffer.DEFAULT_CAPACITY, ByteBuffer.LITTLE_ENDIAN)

@@ -111,7 +111,6 @@ function fetchMethod(methodName, url, definition, config) {
     }).catch(function (error) {
       var message = '';
       try {
-        // nodeos format (fail safe)
         message = JSON.parse(error.message).error.details[0];
       } catch (e2) {}
 

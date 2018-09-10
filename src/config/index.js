@@ -1,6 +1,6 @@
 let configDefaults = {
-  httpEndpoint: "http://127.0.0.1:8888",
-  httpEndpoint_history: "http://127.0.0.1:3000",
+  httpEndpoint: 'http://127.0.0.1:8888',
+  httpEndpoint_history: 'http://127.0.0.1:3000',
   broadcast: true,
   debug: false,
   verbose: false,
@@ -9,6 +9,7 @@ let configDefaults = {
     log: console.log,
     error: console.error,
     debug: console.log
-  }
+  },
+  binaryen: require('binaryen')
 };
-module.exports = configDefaults
+module.exports = configDefaults;

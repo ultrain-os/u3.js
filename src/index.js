@@ -157,6 +157,7 @@ const createU3 = (config = {}) => {
   const u3 = _mergeWriteFunctions(config, network, structs);
 
   Object.assign(u3, {
+      config: safeConfig(config),
       fc: {
         structs,
         types,
@@ -186,13 +187,14 @@ const createU3 = (config = {}) => {
  */
 async function deploy(contract, account) {
   try {
-    const wasm = fs.readFileSync(path.resolve(process.cwd(), `${contract}.wasm`));
+    const wast = fs.readFileSync(path.resolve(process.cwd(), `${contract}.wast`));
     const abi = fs.readFileSync(path.resolve(process.cwd(), `${contract}.abi`));
 
-    this.setcode(account, 0, 0, wasm);
+    this.setcode(account, 0, 0, wast);
     this.setabi(account, JSON.parse(abi));
 
-    return await this.getContract(account);
+    const code = await this.getAbi(account)
+    return code
   } catch (e) {
     console.log(e);
     return false;
@@ -276,6 +278,38 @@ async function sign(unsigned_transaction, privateKeyOrMnemonic, chainId = 'cf057
   const signBuf = Buffer.concat([chainIdBuf, buf, new Buffer(new Uint8Array(32))]);
 
   return ecc.sign(signBuf, privateKey);
+}
+
+/**
+ Set each property as read-only, read-write, no-access.  This is shallow
+ in that it applies only to the root object and does not limit access
+ to properties under a given object.
+ */
+function safeConfig(config) {
+  // access control is shallow references only
+  const readOnly = new Set(['httpEndpoint', 'abiCache'])
+  const readWrite = new Set(['verbose', 'debug', 'broadcast', 'logger', 'sign'])
+  const protectedConfig = {}
+
+  Object.keys(config).forEach(key => {
+    Object.defineProperty(protectedConfig, key, {
+      set: function(value) {
+        if(readWrite.has(key)) {
+          config[key] = value
+          return
+        }
+        throw new Error('Access denied')
+      },
+
+      get: function() {
+        if(readOnly.has(key) || readWrite.has(key)) {
+          return config[key]
+        }
+        throw new Error('Access denied')
+      }
+    })
+  })
+  return protectedConfig
 }
 
 /**

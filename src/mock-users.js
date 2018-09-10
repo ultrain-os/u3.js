@@ -14,8 +14,8 @@ const mockUsers = async (callback) => {
   let users = ['ben', 'john', 'tony', 'jack', 'bob', 'tom', 'jerry', 'alice'];
   let defaults = {
     creator: 'ultrainio',
-    updateable: 0,
-    ram_bytes: 8912,
+    updateable: 1,
+    ram_bytes: 500000,
     stake_net_quantity: '100.0000 SYS',
     stake_cpu_quantity: '100.0000 SYS',
     transfer: 0
@@ -38,7 +38,7 @@ const mockUsers = async (callback) => {
       localStorage.setItem(users[i], JSON.stringify(mockedUsers[users[i]]));
       let param = Object.assign({}, defaults, { name: users[i], owner: keys.public_key, active: keys.public_key });
       await u3.createUser(param).then(async tr => {
-        await u3.transfer('ultrainio', users[i], '1000 SYS', 'mock user');
+        await u3.transfer('ultrainio', users[i], '1000.0000 SYS', 'mock user');
       });
     }
   }

@@ -30,15 +30,14 @@ describe('u3.js', () => {
 
   // 1.print chain info
   describe('chainInfo', () => {
-    it('chainInfo', (done) => {
+    it('chainInfo', async () => {
 
       const u3 = createU3();
-      u3.getChainInfo((err, info) => {
+      await u3.getChainInfo((err, info) => {
         if (err) {
           throw err;
         }
-        //console.log(info);
-        done();
+        console.log(info);
       });
     });
   });
@@ -67,30 +66,14 @@ describe('u3.js', () => {
       callback(null, headers);
     };
 
-    //TODO 离线模式下 3.1 trx.transaction.signatures.length=1?
-    /*it("multi-signature", async function() {
-      const u3 = createU3({
-        keyProvider: [
-          wif,
-          ecc.seedPrivate("key2")
-        ],
-        //httpEndpoint: null,
-        transactionHeaders
-      });
-
-      const trx = await u3.nonce(1, { authorization: "ultrainio" });
-      assert.equal(trx.transaction.signatures.length, 2, "signature count");
-    });*/
-
-    // 3.2 离线模式transactionHeaders
-    /*it("transactionHeaders callback", async function() {
+    // 3.1 transactionHeaders
+    it('transactionHeaders callback', async function() {
       const u3 = createU3({
         keyProvider: wif,
-        //httpEndpoint: null,
         transactionHeaders
       });
 
-      return u3.transfer("ultrainio", "alice", "1 SYS", "", false).then(trx => {
+      return u3.transfer('ultrainio', 'alice', '1.0000 SYS', '', false).then(trx => {
         assert.deepEqual({
           expiration: trx.transaction.transaction.expiration,
           ref_block_num: trx.transaction.transaction.ref_block_num,
@@ -102,11 +85,11 @@ describe('u3.js', () => {
           transaction_extensions: []
         }, headers);
 
-        assert.equal(trx.transaction.signatures.length, 1, "signature count");
+        assert.equal(trx.transaction.signatures.length, 1, 'signature count');
       });
-    });*/
+    });
 
-    // generate key pair by seed
+    // 3.2 generate key pair by seed
     it('generateKeyPairBySeed', function() {
       let seed = randomName();
       let keys = ecc.generateKeyPairBySeed(seed);
@@ -114,7 +97,7 @@ describe('u3.js', () => {
       assert.equal(ecc.isValidPublic(keys.public_key), true);
     });
 
-    // re-generate key pair by the same seed
+    // 3.3 re-generate key pair by the same seed
     it('generateKeyPairBySeed(same keys with same seed)', function() {
       let seed = randomName();
       let keys1 = ecc.generateKeyPairBySeed(seed);
@@ -123,7 +106,7 @@ describe('u3.js', () => {
       assert.equal(keys1.private_key, keys2.private_key);
     });
 
-    // generate key pair with mnemonic
+    // 3.4 generate key pair with mnemonic
     it('generateKeyPairWithMnemonic', function() {
       let result = ecc.generateKeyPairWithMnemonic();
       //console.log(result);
@@ -132,7 +115,7 @@ describe('u3.js', () => {
       assert.equal(ecc.isValidPublic(result.public_key), true);
     });
 
-    // re-generate key pair by the same mnemonic
+    // 3.5 re-generate key pair by the same mnemonic
     it('generateKeyPairByMnemonic(same mnemonic same key pair)', function() {
       let result = ecc.generateKeyPairWithMnemonic();
       let result2 = ecc.generateKeyPairByMnemonic(result.mnemonic);
@@ -147,9 +130,9 @@ describe('u3.js', () => {
 
     // 4.1 deploy contract
     it('deploy contract', async function() {
-      const config = { keyProvider: mockedUsers['ben'].private_key };
+      const config = { keyProvider: mockedUsers['bob'].private_key };
       const u3 = createU3(config);
-      const code = await u3.deploy('build/MyContract', 'ben');
+      const code = await u3.deploy('contracts/token/token', 'bob');
       console.log(code);
       assert.ok(!isEmpty(code.abi));
 
@@ -157,22 +140,52 @@ describe('u3.js', () => {
 
     // 4.2 load contract with function
     it('contract(load)', async () => {
-      const config = { keyProvider: mockedUsers['ben'].private_key };
+      const config = { keyProvider: mockedUsers['bob'].private_key };
       const u3 = createU3(config);
-      let account = 'ben';
+      let account = 'bob';
       const contract = await u3.contract(account);
       console.log(contract);
-      assert(typeof contract.sum === 'function', 'unrecognized contract');
+      assert(typeof contract.transfer === 'function', 'unrecognized contract');
     });
 
     //4.3 get contract detail (wast,abi)
     it('getContract', async () => {
-      const config = { keyProvider: mockedUsers['ben'].private_key };
+      const config = { keyProvider: mockedUsers['bob'].private_key };
       const u3 = createU3(config);
-      let account = 'ben';
+      let account = 'bob';
       const contract = await u3.getContract(account);
       console.log(contract);
       assert.ok(!isEmpty(contract.abi));
+    });
+
+    it('create custom token', async () => {
+      const config = { keyProvider: mockedUsers['bob'].private_key };
+      const u3 = createU3(config);
+      let account = 'bob';
+
+      //const code = await u3.deploy('u3.js/contracts/token/token', 'test1');
+      //console.log('deploy---',code)
+
+      //const options = { authorization: [`ben@active`] };
+
+      let customCurrency = randomAsset();
+      await u3.transaction(account, token => {
+        token.create(account, '10000000.0000 ' + customCurrency);
+        token.issue(account, '10000000.0000 ' + customCurrency, 'issue');
+        token.transfer(account, 'ben', '10.0000 ' + customCurrency, '');
+      });
+
+      await u3.getCurrencyBalance({
+        code: 'bob',
+        symbol: customCurrency,
+        account: 'bob'
+      });
+
+      await u3.getCurrencyBalance({
+        code: 'bob',
+        symbol: customCurrency,
+        account: 'alice'
+      });
     });
 
   });
@@ -196,7 +209,7 @@ describe('u3.js', () => {
         return [wif];
       };
       const u3 = createU3({ keyProvider });
-      return u3.transfer('ultrainio', 'ben', '1 SYS', '').then(tr => {
+      return u3.transfer('ultrainio', 'ben', '1.0000 SYS', '').then(tr => {
         console.log(tr);
         assert.equal(tr.transaction.signatures.length, 1);
         assert.equal(typeof tr.transaction.signatures[0], 'string');
@@ -206,7 +219,6 @@ describe('u3.js', () => {
     // 5.3 signProvider
     it('signProvider', () => {
       const customSignProvider = ({ buf, sign, transaction }) => {
-        // All potential keys (UTR6MRy.. is the pubkey for 'wif')
         const pubkeys = [pubkey];
 
         return u3.getRequiredKeys(transaction, pubkeys).then(res => {
@@ -216,14 +228,14 @@ describe('u3.js', () => {
         });
       };
       const u3 = createU3({ signProvider: customSignProvider });
-      return u3.transfer('ultrainio', 'alice', '2 SYS', '');
+      return u3.transfer('ultrainio', 'alice', '2.0000 SYS', '');
     });
 
     // 5.4 offline sign and push transaction later
     it('offline sign', async () => {
       //using { sign: false, broadcast: false } to create a U3 instance and call some function
       const u3_offline = createU3({ sign: false, broadcast: false });
-      let unsigned_transaction = await u3_offline.transfer('ultrainio', 'ben', '1 SYS', 'uu');
+      let unsigned_transaction = await u3_offline.transfer('ultrainio', 'ben', '1.0000 SYS', 'uu');
       console.log(unsigned_transaction);
 
       //online sign it in wallet
@@ -236,9 +248,7 @@ describe('u3.js', () => {
       }
     });
 
-
-    // TODO issue token by contract with ts version
-
+    // 5.5 create user account
     it('createUser', async () => {
       const u3 = createU3({ signProvider });
       const pubkey = mockedUsers['john'].public_key;
@@ -263,6 +273,7 @@ describe('u3.js', () => {
       });
     });
 
+    // 5.6 buyram
     it('buyram', async () => {
       const u3 = createU3({ signProvider });
       await u3.getAccountInfo({
@@ -272,7 +283,7 @@ describe('u3.js', () => {
         return await u3.buyram({
           payer: 'ultrainio',
           receiver: 'ben',
-          quant: '1 SYS'
+          quant: '1.0000 SYS'
         }).then(async tr => {
           return await u3.getAccountInfo({
             account_name: 'ben'
@@ -285,6 +296,7 @@ describe('u3.js', () => {
     });
 
     //TODO not increase accurate,wby?
+    // 5.7 buyrambytes
     it('buyrambytes', async () => {
       const u3 = createU3({ signProvider });
       await u3.getAccountInfo({
@@ -306,6 +318,7 @@ describe('u3.js', () => {
       });
     });
 
+    // 5.8 sellram
     it('sellram', async () => {
       const signProvider = ({ sign, buf }) => sign(buf, mockedUsers['ben'].private_key);
       const u3 = createU3({ signProvider });
@@ -327,6 +340,7 @@ describe('u3.js', () => {
       });
     });
 
+    // 5.9 delegatebw
     it('delegatebw', async () => {
       const u3 = createU3({ signProvider });
       await u3.getAccountInfo({
@@ -336,8 +350,8 @@ describe('u3.js', () => {
         return await u3.delegatebw({
           from: 'ultrainio',
           receiver: 'ben',
-          stake_net_quantity: '1 SYS',
-          stake_cpu_quantity: '1 SYS',
+          stake_net_quantity: '1.0000 SYS',
+          stake_cpu_quantity: '1.0000 SYS',
           transfer: 0
         }).then(async tr => {
           return await u3.getAccountInfo({
@@ -351,6 +365,7 @@ describe('u3.js', () => {
       });
     });
 
+    // 5.10 undelegatebw
     //TODO cannot undelegate bandwidth until the chain is activated (at least 15% of all tokens participate in voting)
     /*it("undelegatebw", async () => {
       const u3 = createU3({ signProvider });
@@ -375,7 +390,6 @@ describe('u3.js', () => {
       });
     });*/
 
-
     // get accounts array by public key
     it('getKeyAccounts', async () => {
       const u3 = createU3({ signProvider });
@@ -386,7 +400,7 @@ describe('u3.js', () => {
 
     it('mockTransactions pass', () => {
       const u3 = createU3({ signProvider, mockTransactions: 'pass' });
-      return u3.transfer('ultrainio', 'alice', '1 SYS', '').then(transfer => {
+      return u3.transfer('ultrainio', 'alice', '1.0000 SYS', '').then(transfer => {
         assert(transfer.mockTransaction, 'transfer.mockTransaction');
       });
     });
@@ -394,29 +408,29 @@ describe('u3.js', () => {
     it('mockTransactions fail', () => {
       const logger = { error: null };
       const u3 = createU3({ signProvider, mockTransactions: 'fail', logger });
-      return u3.transfer('ultrainio', 'alice', '1 SYS', '').catch(error => {
+      return u3.transfer('ultrainio', 'alice', '1.0000 SYS', '').catch(error => {
         assert(error.indexOf('fake error') !== -1, 'expecting: fake error');
       });
     });
 
     it('transfer (broadcast)', async () => {
       const u3 = createU3({ signProvider });
-      return u3.transfer('ultrainio', 'tom', '1 SYS', '');
+      return u3.transfer('ultrainio', 'tom', '1.0000 SYS', '');
     });
 
     it('transfer custom token precision (broadcast)', () => {
       const u3 = createU3({ signProvider });
-      return u3.transfer('ultrainio', 'alice', '1.618 SYS', '');
+      return u3.transfer('ultrainio', 'alice', '1.6180 SYS', '');
     });
 
     it('transfer custom authorization (broadcast)', () => {
       const u3 = createU3({ signProvider });
-      return u3.transfer('ultrainio', 'alice', '1 SYS', '', { authorization: 'ultrainio@owner' });
+      return u3.transfer('ultrainio', 'alice', '1.0000 SYS', '', { authorization: 'ultrainio@owner' });
     });
 
     it('transfer custom authorization sorting (no broadcast)', () => {
       const u3 = createU3({ signProvider });
-      return u3.transfer('ultrainio', 'alice', '1 SYS', '',
+      return u3.transfer('ultrainio', 'alice', '1.0000 SYS', '',
         { authorization: ['alice@owner', 'ultrainio@owner'], broadcast: false }
       ).then(({ transaction }) => {
         const ans = [
@@ -429,20 +443,20 @@ describe('u3.js', () => {
 
     it('transfer (no broadcast)', () => {
       const u3 = createU3({ signProvider });
-      return u3.transfer('ultrainio', 'alice', '1 SYS', '', { broadcast: false });
+      return u3.transfer('ultrainio', 'alice', '1.0000 SYS', '', { broadcast: false });
     });
 
     it('transfer (no broadcast, no sign)', () => {
       const u3 = createU3({ signProvider });
       const opts = { broadcast: false, sign: false };
-      return u3.transfer('ultrainio', 'alice', '1 SYS', '', opts).then(tr =>
+      return u3.transfer('ultrainio', 'alice', '1.0000 SYS', '', opts).then(tr =>
         assert.deepEqual(tr.transaction.signatures, [])
       );
     });
 
     it('transfer sign promise (no broadcast)', () => {
       const u3 = createU3({ signProvider: promiseSigner });
-      return u3.transfer('ultrainio', 'alice', '1 SYS', '', false);
+      return u3.transfer('ultrainio', 'alice', '1.0000 SYS', '', false);
     });
 
     it('action to unknown contract', () => {
@@ -458,20 +472,18 @@ describe('u3.js', () => {
 
     it('action to contract', () => {
       const keyProvider = () => {
-        return [
-          wif
-        ];
+        return [wif];
       };
       const u3 = createU3({ keyProvider });
 
       return u3.contract('utrio.token').then(token => {
 
-        return token.transfer('ultrainio', 'jack', '1 SYS', '')
+        return token.transfer('ultrainio', 'jack', '1.0000 SYS', '')
         // transaction sent on each command
           .then(tr => {
             assert.equal(1, tr.transaction.transaction.actions.length);
 
-            return token.transfer('ultrainio', 'tony', '1 SYS', '')
+            return token.transfer('ultrainio', 'tony', '1.0000 SYS', '')
               .then(tr => {
                 assert.equal(1, tr.transaction.transaction.actions.length);
               });
@@ -494,12 +506,12 @@ describe('u3.js', () => {
       let amt = 1; // for unique transactions
       const trTest = (ultrainio_token) => {
         if (ultrainio_token.transfer) {
-          assert(ultrainio_token.transfer('ultrainio', 'ben', amt + ' SYS', '') == null);
-          assert(ultrainio_token.transfer('ben', 'ultrainio', (amt++) + ' SYS', '') == null);
+          assert(ultrainio_token.transfer('ultrainio', 'ben', amt + '.0000 SYS', '') == null);
+          assert(ultrainio_token.transfer('ben', 'ultrainio', (amt++) + '.0000 SYS', '') == null);
         } else {
           let token = ultrainio_token['utrio_token'];
-          assert(token.transfer('ultrainio', 'ben', amt + ' SYS', '') == null);
-          assert(token.transfer('ben', 'ultrainio', (amt++) + ' SYS', '') == null);
+          assert(token.transfer('ultrainio', 'ben', amt + '.0000 SYS', '') == null);
+          assert(token.transfer('ben', 'ultrainio', (amt++) + '.0000 SYS', '') == null);
         }
       };
 
@@ -519,9 +531,8 @@ describe('u3.js', () => {
       );
     });
 
-    // 查询帐户余额
-    it('get currenc balance', async () => {
-      // const signProvider2 = ({ sign, buf }) => sign(buf, "5Jp11wdvQFc89B73NGRu3vJi6rgm4wjQ6BywFgaKMyH94ZRko3r");
+    // query account's current balance
+    it('get currency balance', async () => {
       const u3 = createU3({ signProvider });
       await u3.getCurrencyBalance({
         code: 'utrio.token',
@@ -532,11 +543,11 @@ describe('u3.js', () => {
       });
     });
 
-    // 查询货币状态
+    // query currency's status
     it('get currency stats', async function() {
       const u3 = createU3({ signProvider });
       await u3.getCurrencyStats('utrio.token', 'SYS', (error, result) => {
-        //console.log(error, result)
+        console.log(error, result);
       });
     });
 
@@ -545,10 +556,10 @@ describe('u3.js', () => {
       const tn = createU3({ signProvider });
       return tn.contract('utrio.token').then(ultrainio_token => {
         return ultrainio_token.transaction(tr => {
-          tr.transfer('ultrainio', 'jack', '1 SYS', '');
-          tr.transfer('ultrainio', 'bob', '2 SYS', '');
+          tr.transfer('ultrainio', 'jack', '1.0000 SYS', '');
+          tr.transfer('ultrainio', 'bob', '2.0000 SYS', '');
         }).then(() => {
-          return ultrainio_token.transfer('ultrainio', 'alice', '3 SYS', '');
+          return ultrainio_token.transfer('ultrainio', 'alice', '3.0000 SYS', '');
         });
       });
     });
@@ -557,8 +568,8 @@ describe('u3.js', () => {
       const u3 = createU3({ signProvider });
 
       return u3.transaction(tr => {
-        assert(tr.transfer('ultrainio', 'jack', '1 SYS', '') == null);
-        assert(tr.transfer('ultrainio', 'bob', '1 SYS', '') == null);
+        assert(tr.transfer('ultrainio', 'jack', '1.0000 SYS', '') == null);
+        assert(tr.transfer('ultrainio', 'bob', '1.0000 SYS', '') == null);
         // TODO the follow way throw exception
         //assert(tr.transfer({from: 'ultrainio', to: 'user', quantity: '1 SYS', memo: ''}) == null)
       }).then(tr => {
@@ -572,7 +583,7 @@ describe('u3.js', () => {
 
       const u3 = createU3({ signProvider2 });
       return u3.transaction(tr => {
-        tr.transfer('ultrainio', 'ultrainio', '1 SYS', '', cb => {
+        tr.transfer('ultrainio', 'ultrainio', '1.0000 SYS', '', cb => {
 
         });
       })
@@ -619,7 +630,7 @@ describe('u3.js', () => {
               data: {
                 from: 'ultrainio',
                 to: 'alice',
-                quantity: '13 SYS',
+                quantity: '13.0000 SYS',
                 memo: ''
               },
               authorization: [{
@@ -635,7 +646,7 @@ describe('u3.js', () => {
 
   });
 
-  // ./ultrainioc set contract currency build/contracts/currency/currency.wasm build/contracts/currency/currency.abi
+  // ./ultrainioc set contract currency token/contracts/currency/currency.wasm token/contracts/currency/currency.abi
   /*it("Transaction ABI lookup", async function() {
     const u3 = createU3();
     const tx = await u3.transaction(
@@ -647,7 +658,7 @@ describe('u3.js', () => {
             data: {
               from: "ultrainio",
               to: "alice",
-              quantity: "13 SYS",
+              quantity: "13.0000 SYS",
               memo: ""
             },
             authorization: [{

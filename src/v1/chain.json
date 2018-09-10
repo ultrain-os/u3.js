@@ -18,25 +18,27 @@
       "issuer": "account_name"
     }
   },
-  "get_producers": {
-    "brief": "Fetch smart contract data from producer.",
+  "get_producer_schedule": {
+    "brief": "",
+    "params": {},
+    "results": {
+      "vector": "active",
+      "vector": "pending",
+      "vector": "proposed"
+    }
+  },
+  "get_scheduled_transactions": {
+    "brief": "",
     "params": {
       "json": { "type": "bool", "default": false},
-      "lower_bound": "string",
-      "limit": {"type": "uint32", "default": "10"}
+      "lower_bound": {"type": "string", "doc": "timestamp OR transaction ID"},
+      "limit": {"type": "uint32", "default": "50"}
     },
     "results": {
-      "rows": {
-        "type": "vector",
-        "doc": "one row per item, either encoded as hex String or JSON object"
-      },
-      "total_producer_vote_weight": {
-        "type": "float64",
-        "doc": "total vote"
-      },
+      "vector": "transactions",
       "more": {
         "type": "string",
-        "doc": "fill lower_bound with this value to fetch more rows"
+        "doc": "fill lower_bound with this to fetch next set of transactions"
       }
     }
   },
@@ -68,6 +70,17 @@
       "unknown block": null
     }
   },
+  "get_block_header_state": {
+    "brief": "Fetch the minimum state necessary to validate transaction headers.",
+    "params": {
+      "block_num_or_id": "string"
+    },
+    "results": "string",
+    "errors": {
+      "block_id_type_exception": "Invalid block ID",
+      "unknown_block_exception": "Could not find reversible block"
+    }
+  },
 
   "get_account_info": {
     "brief": "Fetch a blockchain account",
@@ -95,13 +108,36 @@
   "get_contract": {
     "brief": "Fetch smart contract code",
     "params": {
-      "account_name": "name"
+      "account_name": "name",
+      "code_as_wasm": {"type": "bool", "default": false}
     },
     "results": {
       "account_name": "name",
       "wast": "string",
+      "wasm": "string",
       "code_hash": "sha256",
       "abi": "optional<abi_def>"
+    }
+  },
+
+  "get_abi": {
+    "params": {
+      "account_name": "name"
+    },
+    "results": {
+      "account_name": "name",
+      "abi": "abi_def?"
+    }
+  },
+
+  "get_raw_code_and_abi": {
+    "params": {
+      "account_name": "name"
+    },
+    "results": {
+      "account_name": "name",
+      "wasm": "bytes",
+      "abi": "abi_def?"
     }
   },
 
@@ -110,21 +146,29 @@
     "params": {
       "json": { "type": "bool", "default": false},
       "code": "name",
-      "scope": "name",
+      "scope": "string",
       "table": "name",
       "table_key": "string",
       "lower_bound": {"type": "string", "default": "0"},
       "upper_bound": {"type": "string", "default": "-1"},
-      "limit": {"type": "uint32", "default": "10"}
+      "limit": {"type": "uint32", "default": "10"},
+      "key_type": {
+        "type": "string",
+        "doc": "The key type of --index, primary only supports (i64), all others support (i64, i128, i256, float64, float128). Special type 'name' indicates an account name."
+      },
+      "index_position": {
+        "type": "string",
+        "doc": "1 - primary (first), 2 - secondary index (in order defined by multi_index), 3 - third index, etc"
+      }
     },
     "results": {
       "rows": {
         "type": "vector",
-        "doc": "one row per item, either encoded as hex String or JSON object"
+        "doc": "One row per item, either encoded as hex String or JSON object"
       },
       "more": {
         "type": "bool",
-        "doc": "true if last element"
+        "doc": "True if last element in data is not the end and sizeof data() < limit"
       }
     }
   },
