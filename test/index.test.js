@@ -158,6 +158,17 @@ describe('u3.js', () => {
       assert.ok(!isEmpty(contract.abi));
     });
 
+    //4.4 get abi
+    it('getAbi', async () => {
+      const config = { keyProvider: mockedUsers['bob'].private_key };
+      const u3 = createU3(config);
+      let account = 'bob';
+      const abi = await u3.getAbi(account);
+      console.log(abi);
+      assert.ok(!isEmpty(abi));
+    });
+
+    // 4.5 create custom token(This example is uip06)
     it('create custom token', async () => {
       const config = { keyProvider: mockedUsers['bob'].private_key };
       const u3 = createU3(config);
