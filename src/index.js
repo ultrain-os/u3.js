@@ -167,6 +167,7 @@ const createU3 = (config = {}) => {
       , deploy
       , createUser
       , sign
+      , getRamrate
     },
     history
   );
@@ -198,6 +199,33 @@ async function deploy(contract, account) {
   } catch (e) {
     console.log(e);
     return false;
+  }
+}
+
+/**
+ * get ram rate
+ * 计算出需要nKB的RAM的价格：
+ * 如果是1KB，下面的n=1,得到的价格为uGas/KB
+ * 如果需要换成uGas/byte，结果在除以1024即可
+ * RAM价格 = (n * quote.balance) / (n + base.balance / 1024)
+ * @returns {Promise<*>}
+ */
+async function getRamrate(){
+  const rs = await this.getTableRecords({
+    code : "ultrainio",
+    scope : "ultrainio",
+    table : "rammarket",
+    json : true
+  });
+
+  if(rs.rows){
+    let quote_balance = rs.rows[0].quote.balance.split(' ')[0];
+    let base_balance = rs.rows[0].base.balance.split(' ')[0];
+    
+    let ramrate = (1 * quote_balance) / (1 + base_balance / 1024);
+    return `${ramrate} uGas/KB`;
+  }else{
+    return rs;
   }
 }
 

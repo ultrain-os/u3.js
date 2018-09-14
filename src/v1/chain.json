@@ -1,4 +1,14 @@
 {
+  "get_sourcerate": {
+    "brief": "Return net rate and cpu rate",
+    "params":{
+      "account_name": "name"
+    },
+    "results": {
+      "net_rate": "uint64",
+      "cpu_rate": "uint64"
+    }
+  },
   "get_currency_balance": {
     "params": {
       "code": "name",

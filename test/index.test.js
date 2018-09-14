@@ -208,6 +208,20 @@ describe('u3.js', () => {
 
     const promiseSigner = (args) => Promise.resolve(signProvider(args));
 
+    it('cpu net rate', async () =>{
+      const u3 = createU3({ signProvider });
+      let rate = await u3.getSourcerate({
+        account_name : 'ultrainio'
+      });
+      console.log(rate);
+    })
+
+    it('ram rate', async () =>{
+      const u3 = createU3({ signProvider,logger:{log:false} });
+      let rate = await u3.getRamrate();
+      console.log(rate);
+    })
+
     // 5.1 usage
     it('usage', () => {
       const u3 = createU3({ signProvider });
@@ -220,7 +234,7 @@ describe('u3.js', () => {
         return [wif];
       };
       const u3 = createU3({ keyProvider });
-      return u3.transfer('ultrainio', 'ben', '1.0000 SYS', '').then(tr => {
+      return u3.transfer('ultrainio', 'utrio.token', '1.0000 SYS', '').then(tr => {
         console.log(tr);
         assert.equal(tr.transaction.signatures.length, 1);
         assert.equal(typeof tr.transaction.signatures[0], 'string');
