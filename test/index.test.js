@@ -19,15 +19,6 @@ describe('u3.js', () => {
     mockedUsers = await mockUsers();
   });
 
-  beforeEach(() => {
-    //console.log('test case before:\n')
-  });
-
-  afterEach(() => {
-    //console.log('test case after:\n')
-  });
-
-
   // 1.print chain info
   describe('chainInfo', () => {
     it('chainInfo', async () => {
@@ -234,7 +225,7 @@ describe('u3.js', () => {
         return [wif];
       };
       const u3 = createU3({ keyProvider });
-      return u3.transfer('ultrainio', 'utrio.token', '1.0000 SYS', '').then(tr => {
+      return u3.transfer('ultrainio', 'ben', '1.0000 SYS', '').then(tr => {
         console.log(tr);
         assert.equal(tr.transaction.signatures.length, 1);
         assert.equal(typeof tr.transaction.signatures[0], 'string');
