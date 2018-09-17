@@ -74,4 +74,27 @@ describe('history', async () => {
         console.log(rs);
         assert.ok(rs);
     });
+
+    it("search by block_num", async () => {
+        const blocks = await u3Instance.getAllBlocks(1,1,{},{_id:-1});
+        let block_num = blocks.results[0].block_num;
+        let rs = await u3Instance.search(block_num);
+        console.log(rs);
+        assert.ok(rs);
+    })
+
+    it("search by trx_id", async () => {
+        let txs = await u3Instance.getAllTxs(1,1,{},{_id:-1});
+        let trx_id = txs.results[0].trx_id;
+        let rs = await u3Instance.search(trx_id);
+        console.log(rs);
+        assert.ok(rs);
+    })
+
+    it("search by account", async () => {
+        let account = "jack";
+        let rs = await u3Instance.search(account);
+        console.log(rs);
+        assert.ok(rs);
+    })
 })

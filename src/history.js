@@ -16,7 +16,8 @@ module.exports = function(config){
         getTxsByBlockId,
         getExistAccount,
         getBlocksByContract,
-        getTxTraceByTxid
+        getTxTraceByTxid,
+        search
     }
 }
 /**
@@ -189,6 +190,35 @@ function getBlocksByContract (block_num,account,contract,contract_method) {
  */
 function getTxTraceByTxid (id) {
     return fetchUrl(`${httpEndPoint}/txtraces/${id}`);
+}
+
+/**
+ * search block/trx/account by param
+ * @param { String } param 
+ */
+async function search(param){
+    let rs = await fetchUrl(`${httpEndPoint}/search/${param}`);
+    console.log(rs);
+    if(rs.type == 'account' && rs.data.name){
+        const { createU3 } = require('./index');
+        const u3 = createU3();
+
+        let balance = await u3.getCurrencyBalance({
+            code: "utrio.token",
+            account: param,
+            symbol: "SYS"
+        })
+
+        // get net_weight cpu_weight ram_bytes
+        let accountInfo = await u3.getAccountInfo({
+            account_name: param
+        });
+
+        rs.data.balance = balance;
+        rs.data.total_resources = accountInfo.total_resources;
+    }
+
+    return rs;
 }
 
 function fetchUrl(url, data = {}) {
