@@ -194,11 +194,14 @@ async function deploy(contract, account) {
     this.setcode(account, 0, 0, wast);
     this.setabi(account, JSON.parse(abi));
 
-    const code = await this.getAbi(account)
+    const code = await this.getAbi(account);
+
     return code
   } catch (e) {
     console.log(e);
-    return false;
+    return {
+      "error_msg" : e
+    }
   }
 }
 
