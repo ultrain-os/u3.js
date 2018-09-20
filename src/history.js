@@ -1,7 +1,9 @@
 const axios = require('axios');
 let httpEndPoint = require('./config').httpEndpoint_history;
+let U3Config = {};
 
 module.exports = function(config){
+    U3Config = config;
     httpEndPoint = config.httpEndpoint_history;
     console.log(httpEndPoint);
     return {
@@ -86,7 +88,7 @@ async function getAllAccounts (page, pageSize, queryParams, sortParams) {
     let pageInfo = Object.assign({},response);
     let accounts = pageInfo.results;
     const { createU3 } = require('./index');
-    const u3 = createU3();
+    const u3 = createU3(U3Config);
 
     for (let i in accounts) {
         // find tx count by name
@@ -102,10 +104,11 @@ async function getAllAccounts (page, pageSize, queryParams, sortParams) {
         let accountInfo = await u3.getAccountInfo({
             account_name: accounts[i].name
         });
+
         accounts[i].balance = balance[0];
         accounts[i].total_resources = accountInfo.total_resources;
     }
-    
+
     return pageInfo;
 }
 
@@ -201,7 +204,7 @@ async function search(param){
     console.log(rs);
     if(rs.type == 'account' && rs.data.name){
         const { createU3 } = require('./index');
-        const u3 = createU3();
+        const u3 = createU3(U3Config);
 
         let balance = await u3.getCurrencyBalance({
             code: "utrio.token",
