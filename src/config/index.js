@@ -10,6 +10,7 @@ let configDefaults = {
     error: console.error,
     debug: console.log
   },
+  chainId:'a74e19f12db3a7d13a1a0fdeb536266ff2ff78aeb6188946cc686caa2727b16a',
   binaryen: require('binaryen')
 };
 module.exports = configDefaults;

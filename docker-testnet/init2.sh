@@ -32,6 +32,6 @@ done
 
 # Deploy the system contract
 $clultrain set contract utrio.token $ContractPath/ultrainio.token/ -p utrio.token
-$clultrain push action utrio.token create '[ "ultrainio", "8000000000.0000 SYS"]' -p utrio.token
-$clultrain push action utrio.token issue '[ "ultrainio", "1000000000.0000 SYS"]' -p ultrainio
+$clultrain push action utrio.token create '[ "ultrainio", "8000000000.0000 UGAS"]' -p utrio.token
+$clultrain push action utrio.token issue '[ "ultrainio", "1000000000.0000 UGAS"]' -p ultrainio
 $clultrain set contract ultrainio $ContractPath/ultrainio.system/ -p ultrainio -x 3600
