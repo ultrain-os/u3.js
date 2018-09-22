@@ -17,7 +17,7 @@ describe('u3.js', () => {
 
   before(async () => {
     console.log('initialize 8 test users...\n');
-    //mockedUsers = await mockUsers();
+    mockedUsers = await mockUsers();
   });
 
   // 1.print chain info
@@ -121,11 +121,10 @@ describe('u3.js', () => {
 
     // 4.1 deploy contract
     it('deploy contract', async function() {
-      const config = { keyProvider: wif };
+      const config = { keyProvider: mockedUsers['bob'].private_key };
       const u3 = createU3(config);
-      const code = await u3.deploy(path.resolve(__dirname,'../contracts/token/token'), 'b15111122233');
-      console.log(code);
-      assert.ok(!isEmpty(code.abi));
+      const trs = await u3.deploy(path.resolve(__dirname, '../contracts/token/token'), 'bob');
+      assert.equal(trs.length, 2);
     });
 
     // 4.2 load contract with function
@@ -134,10 +133,10 @@ describe('u3.js', () => {
       const u3 = createU3(config);
       let account = 'bob';
       const tr = await u3.contract(account);
-      const result = await tr.hi(format.encodeName('bob'), 30, 'greet',{authorization: "bob"});
+      const result = await tr.transfer('bob','alice','1.0000 EDFEFCE','memo');
       //console.log(result);
-      const tx_trace = await u3.getTxTraceByTxid(result.transaction_id)
-      console.log(tx_trace)
+      const tx_trace = await u3.getTxTraceByTxid(result.transaction_id);
+      console.log(tx_trace);
     });
 
     //4.3 get contract detail (wast,abi)

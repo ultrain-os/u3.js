@@ -6,21 +6,21 @@ try {
   }
 }
 
-const fs = require("fs");
-const path = require("path");
-const configDefaults = require("./config");
-const ecc = require("./ecc");
-const Fcbuffer = require("fcbuffer");
-const apiGen = require("./utils/apigen");
-const api = require("./v1/chain");
-const assert = require("assert");
-const Structs = require("./structs");
-const AbiCache = require("./abi-cache");
-const AssetCache = require("./asset-cache");
-const writeApiGen = require("./write-api");
-const format = require("./format");
-const schema = require("./v1/schema");
-const pkg = require("../package.json");
+const fs = require('fs');
+const path = require('path');
+const configDefaults = require('./config');
+const ecc = require('./ecc');
+const Fcbuffer = require('fcbuffer');
+const apiGen = require('./utils/apigen');
+const api = require('./v1/chain');
+const assert = require('assert');
+const Structs = require('./structs');
+const AbiCache = require('./abi-cache');
+const AssetCache = require('./asset-cache');
+const writeApiGen = require('./write-api');
+const format = require('./format');
+const schema = require('./v1/schema');
+const pkg = require('../package.json');
 
 const version = pkg.version;
 
@@ -126,7 +126,7 @@ const defaultSignProvider = (u3, config) => async function({ sign, buf, transact
  */
 const createU3 = (config = {}) => {
   config = Object.assign({}, configDefaults, config);
-  const history = require("./history")(config);
+  const history = require('./history')(config);
   const defaultLogger = {
     log: config.verbose ? console.log : null,
     error: console.error
@@ -194,12 +194,12 @@ async function deploy(contract, account) {
     const code_tr = await this.setcode(account, 0, 0, wasm);
     const abi_tr = await this.setabi(account, JSON.parse(abi));
     //const code = await this.getAbi(account);
-    return code_tr
+    return [code_tr, abi_tr];
   } catch (e) {
     console.log(e);
     return {
-      "error_msg" : e
-    }
+      'error_msg': e
+    };
   }
 }
 
@@ -211,21 +211,21 @@ async function deploy(contract, account) {
  * RAM价格 = (n * quote.balance) / (n + base.balance / 1024)
  * @returns {Promise<*>}
  */
-async function getRamrate(){
+async function getRamrate() {
   const rs = await this.getTableRecords({
-    code : "ultrainio",
-    scope : "ultrainio",
-    table : "rammarket",
-    json : true
+    code: 'ultrainio',
+    scope: 'ultrainio',
+    table: 'rammarket',
+    json: true
   });
 
-  if(rs.rows){
+  if (rs.rows) {
     let quote_balance = rs.rows[0].quote.balance.split(' ')[0];
     let base_balance = rs.rows[0].base.balance.split(' ')[0];
-    
+
     let ramrate = (1 * quote_balance) / (1 + base_balance / 1024);
     return `${ramrate} uGas/KB`;
-  }else{
+  } else {
     return rs;
   }
 }
@@ -316,29 +316,29 @@ async function sign(unsigned_transaction, privateKeyOrMnemonic, chainId = 'cf057
  */
 function safeConfig(config) {
   // access control is shallow references only
-  const readOnly = new Set(['httpEndpoint', 'abiCache'])
-  const readWrite = new Set(['verbose', 'debug', 'broadcast', 'logger', 'sign'])
-  const protectedConfig = {}
+  const readOnly = new Set(['httpEndpoint', 'abiCache']);
+  const readWrite = new Set(['verbose', 'debug', 'broadcast', 'logger', 'sign']);
+  const protectedConfig = {};
 
   Object.keys(config).forEach(key => {
     Object.defineProperty(protectedConfig, key, {
       set: function(value) {
-        if(readWrite.has(key)) {
-          config[key] = value
-          return
+        if (readWrite.has(key)) {
+          config[key] = value;
+          return;
         }
-        throw new Error('Access denied')
+        throw new Error('Access denied');
       },
 
       get: function() {
-        if(readOnly.has(key) || readWrite.has(key)) {
-          return config[key]
+        if (readOnly.has(key) || readWrite.has(key)) {
+          return config[key];
         }
-        throw new Error('Access denied')
+        throw new Error('Access denied');
       }
-    })
-  })
-  return protectedConfig
+    });
+  });
+  return protectedConfig;
 }
 
 /**
