@@ -11,6 +11,7 @@ let configDefaults = {
     debug: console.log
   },
   chainId:'2616bfbc21e11d60d10cb798f00893c2befba10e2338b7277bb3865d2e658f58',
-  binaryen: require('binaryen')
+  binaryen: require('binaryen'),
+  symbol: 'UGAS'
 };
 module.exports = configDefaults;

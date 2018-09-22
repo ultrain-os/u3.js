@@ -5,6 +5,7 @@ const isEmpty = require('lodash.isempty');
 const isString = require('lodash.isstring');
 const path = require('path');
 const mockUsers = require('../src/mock-users');
+const defaultConfig = require("../src/config");
 
 const { createU3, format, ecc, Fcbuffer, version } = require('../src');
 
@@ -64,7 +65,7 @@ describe('u3.js', () => {
         transactionHeaders
       });
 
-      return u3.transfer('ultrainio', 'alice', '1.0000 UGAS', '', false).then(trx => {
+      return u3.transfer('ultrainio', 'alice', '1.0000 ' + defaultConfig.symbol, '', false).then(trx => {
         assert.deepEqual({
           expiration: trx.transaction.transaction.expiration,
           ref_block_num: trx.transaction.transaction.ref_block_num,
@@ -134,7 +135,7 @@ describe('u3.js', () => {
       let account = 'bob';
       const tr = await u3.contract(account);
       const result = await tr.transfer('bob','alice','1.0000 EDFEFCE','memo');
-      //console.log(result);
+      console.log(result);
       const tx_trace = await u3.getTxTraceByTxid(result.transaction_id);
       console.log(tx_trace);
     });
@@ -225,7 +226,7 @@ describe('u3.js', () => {
         return [wif];
       };
       const u3 = createU3({ keyProvider });
-      return u3.transfer('ultrainio', 'utrio.token', '1.0000 UGAS', '').then(tr => {
+      return u3.transfer('ultrainio', 'utrio.token', '1.0000 ' + defaultConfig.symbol, '').then(tr => {
         console.log(tr);
         assert.equal(tr.transaction.signatures.length, 1);
         assert.equal(typeof tr.transaction.signatures[0], 'string');
@@ -244,14 +245,14 @@ describe('u3.js', () => {
         });
       };
       const u3 = createU3({ signProvider: customSignProvider });
-      return u3.transfer('ultrainio', 'alice', '2.0000 UGAS', 'remark');
+      return u3.transfer('ultrainio', 'alice', '2.0000 ' + defaultConfig.symbol, 'remark');
     });
 
     // 5.4 offline sign and push transaction later
     it('offline sign', async () => {
       //using { sign: false, broadcast: false } to create a U3 instance and call some function
       const u3_offline = createU3({ sign: false, broadcast: false });
-      let unsigned_transaction = await u3_offline.transfer('ultrainio', 'utrio.token', '1.0000 UGAS', 'uu');
+      let unsigned_transaction = await u3_offline.transfer('ultrainio', 'utrio.token', '1.0000 ' + defaultConfig.symbol, 'uu');
       console.log(unsigned_transaction);
 
       //online sign it in wallet
@@ -276,8 +277,8 @@ describe('u3.js', () => {
         active: pubkey,
         updateable: 0,
         ram_bytes: 888912,
-        stake_net_quantity: '1.0000 UGAS',
-        stake_cpu_quantity: '1.0000 UGAS',
+        stake_net_quantity: '1.0000 ' + defaultConfig.symbol,
+        stake_cpu_quantity: '1.0000 ' + defaultConfig.symbol,
         transfer: 0
       };
       await u3.createUser(params).then(tr => {
@@ -299,7 +300,7 @@ describe('u3.js', () => {
         return await u3.buyram({
           payer: 'ultrainio',
           receiver: 'ben',
-          quant: '1.0000 UGAS'
+          quant: '1.0000 ' + defaultConfig.symbol
         }).then(async tr => {
           return await u3.getAccountInfo({
             account_name: 'ben'
@@ -366,8 +367,8 @@ describe('u3.js', () => {
         return await u3.delegatebw({
           from: 'ultrainio',
           receiver: 'ben',
-          stake_net_quantity: '1.0000 UGAS',
-          stake_cpu_quantity: '1.0000 UGAS',
+          stake_net_quantity: '1.0000 ' + defaultConfig.symbol,
+          stake_cpu_quantity: '1.0000 ' + defaultConfig.symbol,
           transfer: 0
         }).then(async tr => {
           return await u3.getAccountInfo({
@@ -392,8 +393,8 @@ describe('u3.js', () => {
         return await u3.undelegatebw({
           from: "ultrainio",
           receiver: "ben",
-          unstake_net_quantity: '0.0010 UGAS',
-          unstake_cpu_quantity: '0.0010 UGAS',
+          unstake_net_quantity: '0.0010 ' + defaultConfig.symbol,
+          unstake_cpu_quantity: '0.0010 ' + defaultConfig.symbol,
         }).then(async tr => {
           return await u3.getAccountInfo({
             account_name: "ben"
@@ -416,7 +417,7 @@ describe('u3.js', () => {
 
     it('mockTransactions pass', () => {
       const u3 = createU3({ signProvider, mockTransactions: 'pass' });
-      return u3.transfer('ultrainio', 'alice', '1.0000 UGAS', '').then(transfer => {
+      return u3.transfer('ultrainio', 'alice', '1.0000 ' + defaultConfig.symbol, '').then(transfer => {
         assert(transfer.mockTransaction, 'transfer.mockTransaction');
       });
     });
@@ -424,29 +425,29 @@ describe('u3.js', () => {
     it('mockTransactions fail', () => {
       const logger = { error: null };
       const u3 = createU3({ signProvider, mockTransactions: 'fail', logger });
-      return u3.transfer('ultrainio', 'alice', '1.0000 UGAS', '').catch(error => {
+      return u3.transfer('ultrainio', 'alice', '1.0000 ' + defaultConfig.symbol, '').catch(error => {
         assert(error.indexOf('fake error') !== -1, 'expecting: fake error');
       });
     });
 
     it('transfer (broadcast)', async () => {
       const u3 = createU3({ signProvider });
-      return u3.transfer('ultrainio', 'tom', '1.0000 UGAS', '');
+      return u3.transfer('ultrainio', 'tom', '1.0000 ' + defaultConfig.symbol, '');
     });
 
     it('transfer custom token precision (broadcast)', () => {
       const u3 = createU3({ signProvider });
-      return u3.transfer('ultrainio', 'alice', '1.6180 UGAS', '');
+      return u3.transfer('ultrainio', 'alice', '1.6180 ' + defaultConfig.symbol, '');
     });
 
     it('transfer custom authorization (broadcast)', () => {
       const u3 = createU3({ signProvider });
-      return u3.transfer('ultrainio', 'alice', '1.0000 UGAS', '', { authorization: 'ultrainio@owner' });
+      return u3.transfer('ultrainio', 'alice', '1.0000 ' + defaultConfig.symbol, '', { authorization: 'ultrainio@owner' });
     });
 
     it('transfer custom authorization sorting (no broadcast)', () => {
       const u3 = createU3({ signProvider });
-      return u3.transfer('ultrainio', 'alice', '1.0000 UGAS', '',
+      return u3.transfer('ultrainio', 'alice', '1.0000 ' + defaultConfig.symbol, '',
         { authorization: ['alice@owner', 'ultrainio@owner'], broadcast: false }
       ).then(({ transaction }) => {
         const ans = [
@@ -459,20 +460,20 @@ describe('u3.js', () => {
 
     it('transfer (no broadcast)', () => {
       const u3 = createU3({ signProvider });
-      return u3.transfer('ultrainio', 'alice', '1.0000 UGAS', '', { broadcast: false });
+      return u3.transfer('ultrainio', 'alice', '1.0000 ' + defaultConfig.symbol, '', { broadcast: false });
     });
 
     it('transfer (no broadcast, no sign)', () => {
       const u3 = createU3({ signProvider });
       const opts = { broadcast: false, sign: false };
-      return u3.transfer('ultrainio', 'alice', '1.0000 UGAS', '', opts).then(tr =>
+      return u3.transfer('ultrainio', 'alice', '1.0000 ' + defaultConfig.symbol, '', opts).then(tr =>
         assert.deepEqual(tr.transaction.signatures, [])
       );
     });
 
     it('transfer sign promise (no broadcast)', () => {
       const u3 = createU3({ signProvider: promiseSigner });
-      return u3.transfer('ultrainio', 'alice', '1.0000 UGAS', '', false);
+      return u3.transfer('ultrainio', 'alice', '1.0000 ' + defaultConfig.symbol, '', false);
     });
 
     it('action to unknown contract', () => {
@@ -494,12 +495,12 @@ describe('u3.js', () => {
 
       return u3.contract('utrio.token').then(token => {
 
-        return token.transfer('ultrainio', 'jack', '1.0000 UGAS', '')
+        return token.transfer('ultrainio', 'jack', '1.0000 ' + defaultConfig.symbol, '')
         // transaction sent on each command
           .then(tr => {
             assert.equal(1, tr.transaction.transaction.actions.length);
 
-            return token.transfer('ultrainio', 'tony', '1.0000 UGAS', '')
+            return token.transfer('ultrainio', 'tony', '1.0000 ' + defaultConfig.symbol, '')
               .then(tr => {
                 assert.equal(1, tr.transaction.transaction.actions.length);
               });
@@ -522,12 +523,12 @@ describe('u3.js', () => {
       let amt = 1; // for unique transactions
       const trTest = (ultrainio_token) => {
         if (ultrainio_token.transfer) {
-          assert(ultrainio_token.transfer('ultrainio', 'ben', amt + '.0000 UGAS', '') == null);
-          assert(ultrainio_token.transfer('ben', 'ultrainio', (amt++) + '.0000 UGAS', '') == null);
+          assert(ultrainio_token.transfer('ultrainio', 'ben', amt + '.0000 ' + defaultConfig.symbol, '') == null);
+          assert(ultrainio_token.transfer('ben', 'ultrainio', (amt++) + '.0000 ' + defaultConfig.symbol, '') == null);
         } else {
           let token = ultrainio_token['utrio_token'];
-          assert(token.transfer('ultrainio', 'ben', amt + '.0000 UGAS', '') == null);
-          assert(token.transfer('ben', 'ultrainio', (amt++) + '.0000 UGAS', '') == null);
+          assert(token.transfer('ultrainio', 'ben', amt + '.0000 ' + defaultConfig.symbol, '') == null);
+          assert(token.transfer('ben', 'ultrainio', (amt++) + '.0000 ' + defaultConfig.symbol, '') == null);
         }
       };
 
@@ -553,7 +554,7 @@ describe('u3.js', () => {
       await u3.getCurrencyBalance({
         code: 'utrio.token',
         account: 'ultrainio',
-        symbol: 'UGAS'
+        symbol: defaultConfig.symbol
       }).then(result => {
         console.log(result);
       });
@@ -562,7 +563,7 @@ describe('u3.js', () => {
     // query currency's status
     it('get currency stats', async function() {
       const u3 = createU3({ signProvider });
-      await u3.getCurrencyStats('utrio.token', 'UGAS', (error, result) => {
+      await u3.getCurrencyStats('utrio.token', defaultConfig.symbol, (error, result) => {
         console.log(error, result);
       });
     });
@@ -572,10 +573,10 @@ describe('u3.js', () => {
       const tn = createU3({ signProvider });
       return tn.contract('utrio.token').then(ultrainio_token => {
         return ultrainio_token.transaction(tr => {
-          tr.transfer('ultrainio', 'jack', '1.0000 UGAS', '');
-          tr.transfer('ultrainio', 'bob', '2.0000 UGAS', '');
+          tr.transfer('ultrainio', 'jack', '1.0000 ' + defaultConfig.symbol, '');
+          tr.transfer('ultrainio', 'bob', '2.0000 ' + defaultConfig.symbol, '');
         }).then(() => {
-          return ultrainio_token.transfer('ultrainio', 'alice', '3.0000 UGAS', '');
+          return ultrainio_token.transfer('ultrainio', 'alice', '3.0000 ' + defaultConfig.symbol, '');
         });
       });
     });
@@ -584,10 +585,10 @@ describe('u3.js', () => {
       const u3 = createU3({ signProvider });
 
       return u3.transaction(tr => {
-        assert(tr.transfer('ultrainio', 'jack', '1.0000 UGAS', '') == null);
-        assert(tr.transfer('ultrainio', 'bob', '1.0000 UGAS', '') == null);
+        assert(tr.transfer('ultrainio', 'jack', '1.0000 ' + defaultConfig.symbol, '') == null);
+        assert(tr.transfer('ultrainio', 'bob', '1.0000 ' + defaultConfig.symbol, '') == null);
         // TODO the follow way throw exception
-        //assert(tr.transfer({from: 'ultrainio', to: 'user', quantity: '1 UGAS', memo: ''}) == null)
+        //assert(tr.transfer({from: 'ultrainio', to: 'user', quantity: '1 ' + defaultConfig.symbol, memo: ''}) == null)
       }).then(tr => {
         assert.equal(2, tr.transaction.transaction.actions.length);
       });
@@ -599,7 +600,7 @@ describe('u3.js', () => {
 
       const u3 = createU3({ signProvider2 });
       return u3.transaction(tr => {
-        tr.transfer('ultrainio', 'ultrainio', '1.0000 UGAS', '', cb => {
+        tr.transfer('ultrainio', 'ultrainio', '1.0000 ' + defaultConfig.symbol, '', cb => {
 
         });
       })
@@ -646,7 +647,7 @@ describe('u3.js', () => {
               data: {
                 from: 'ultrainio',
                 to: 'alice',
-                quantity: '13.0000 UGAS',
+                quantity: '13.0000 ' + defaultConfig.symbol,
                 memo: ''
               },
               authorization: [{
@@ -674,7 +675,7 @@ describe('u3.js', () => {
             data: {
               from: "ultrainio",
               to: "alice",
-              quantity: "13.0000 UGAS",
+              quantity: "13.0000 " + defaultConfig.symbol,
               memo: ""
             },
             authorization: [{

@@ -1,6 +1,8 @@
 const { createU3, ecc } = require('../src');
 const Storage = require('node-localstorage');
 const isEmpty = require('lodash.isempty');
+const defaultConfig = require("../src/config");
+
 const wif = '5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79zkvFD3'; //ultrainio
 
 //console.log(__dirname)
@@ -17,8 +19,8 @@ const mockUsers = async (callback) => {
     creator: 'ultrainio',
     updateable: 1,
     ram_bytes: 500000,
-    stake_net_quantity: '100.0000 UGAS',
-    stake_cpu_quantity: '100.0000 UGAS',
+    stake_net_quantity: '100.0000 ' + defaultConfig.symbol,
+    stake_cpu_quantity: '100.0000 ' + defaultConfig.symbol,
     transfer: 0
   };
   const u3 = createU3({ keyProvider: wif });
@@ -39,7 +41,7 @@ const mockUsers = async (callback) => {
       localStorage.setItem(users[i], JSON.stringify(mockedUsers[users[i]]));
       let param = Object.assign({}, defaults, { name: users[i], owner: keys.public_key, active: keys.public_key });
       await u3.createUser(param).then(async tr => {
-        await u3.transfer('ultrainio', users[i], '1000.0000 UGAS', 'mock user');
+        await u3.transfer('ultrainio', users[i], '1000.0000 ' + defaultConfig.symbol, 'mock user');
       });
     }
   }

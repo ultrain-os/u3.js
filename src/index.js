@@ -21,6 +21,7 @@ const writeApiGen = require('./write-api');
 const format = require('./format');
 const schema = require('./v1/schema');
 const pkg = require('../package.json');
+const defaultConfig = require("../src/config");
 
 const version = pkg.version;
 
@@ -241,8 +242,8 @@ async function getRamrate() {
     active: "UTR6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV",
     updateable: 0,
     ram_bytes: 8912,
-    stake_net_quantity: "1.0000 UGAS",
-    stake_cpu_quantity: "1.0000 UGAS",
+    stake_net_quantity: "1.0000 " + defaultConfig.symbol,
+    stake_cpu_quantity: "1.0000 " + defaultConfig.symbol,
     transfer: 0
   }
  * @returns {Promise<*>}
@@ -251,8 +252,8 @@ async function createUser(params) {
   let defaults = {
     updateable: 0,
     ram_bytes: 8912,
-    stake_net_quantity: '1.0000 UGAS',
-    stake_cpu_quantity: '1.0000 UGAS',
+    stake_net_quantity: '1.0000 ' + defaultConfig.symbol,
+    stake_cpu_quantity: '1.0000 ' + defaultConfig.symbol,
     transfer: 0
   };
   let data = Object.assign({}, defaults, params);
