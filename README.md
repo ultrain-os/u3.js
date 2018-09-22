@@ -73,7 +73,7 @@ And Then send the unsigned_transaction object to the ultrain-chain wallet.
       
     const u3_offline = createU3({ sign: false, broadcast: false });
     
-    let unsigned_transaction = await u3_offline.transfer('ultrainio', 'ben', '1 SYS', 'uu');
+    let unsigned_transaction = await u3_offline.transfer('ultrainio', 'ben', '1 UGAS', 'uu');
               
 #### sign and push signed_transaction
 

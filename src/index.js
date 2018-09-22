@@ -182,16 +182,16 @@ const createU3 = (config = {}) => {
 
 /**
  * deploy contract
- * @param contract name of contract，eg. utrio.system
+ * @param contract name of contract，eg. utrio.UGAStem
  * @param account name of owner account，eg. ultrainio
  * @returns {Promise<*>}
  */
 async function deploy(contract, account) {
   try {
-    const wast = fs.readFileSync(path.resolve(process.cwd(), `${contract}.wast`));
+    const wasm = fs.readFileSync(path.resolve(process.cwd(), `${contract}.wasm`));
     const abi = fs.readFileSync(path.resolve(process.cwd(), `${contract}.abi`));
 
-    this.setcode(account, 0, 0, wast);
+    this.setcode(account, 0, 0, wasm);
     this.setabi(account, JSON.parse(abi));
 
     const code = await this.getAbi(account);
@@ -243,8 +243,8 @@ async function getRamrate(){
     active: "UTR6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV",
     updateable: 0,
     ram_bytes: 8912,
-    stake_net_quantity: "1.0000 SYS",
-    stake_cpu_quantity: "1.0000 SYS",
+    stake_net_quantity: "1.0000 UGAS",
+    stake_cpu_quantity: "1.0000 UGAS",
     transfer: 0
   }
  * @returns {Promise<*>}
@@ -253,8 +253,8 @@ async function createUser(params) {
   let defaults = {
     updateable: 0,
     ram_bytes: 8912,
-    stake_net_quantity: '1.0000 SYS',
-    stake_cpu_quantity: '1.0000 SYS',
+    stake_net_quantity: '1.0000 UGAS',
+    stake_cpu_quantity: '1.0000 UGAS',
     transfer: 0
   };
   let data = Object.assign({}, defaults, params);

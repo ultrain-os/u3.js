@@ -3,6 +3,7 @@ const assert = require('assert');
 const structs = require('../src/structs');
 const isEmpty = require('lodash.isempty');
 const isString = require('lodash.isstring');
+const path = require('path');
 const mockUsers = require('../src/mock-users');
 
 const { createU3, format, ecc, Fcbuffer, version } = require('../src');
@@ -16,13 +17,12 @@ describe('u3.js', () => {
 
   before(async () => {
     console.log('initialize 8 test users...\n');
-    mockedUsers = await mockUsers();
+    //mockedUsers = await mockUsers();
   });
 
   // 1.print chain info
   describe('chainInfo', () => {
     it('chainInfo', async () => {
-
       const u3 = createU3();
       await u3.getChainInfo((err, info) => {
         if (err) {
@@ -121,40 +121,23 @@ describe('u3.js', () => {
 
     // 4.1 deploy contract
     it('deploy contract', async function() {
-      const config = { keyProvider: mockedUsers['bob'].private_key };
+      const config = { keyProvider: wif };
       const u3 = createU3(config);
-      const code = await u3.deploy('contracts/token/token', 'bob');
+      const code = await u3.deploy(path.resolve(__dirname,'../contracts/token/token'), 'ultrainio');
       console.log(code);
       assert.ok(!isEmpty(code.abi));
-
     });
 
     // 4.2 load contract with function
     it('contract(load)', async () => {
-      const keyProvider = () => {
-        return [];
-      };
-      //const config = { keyProvider: mockedUsers['bob'].private_key };
-      //const u3 = createU3(config);
-      const signProvider = ({ sign, buf }) => sign(buf, wif);
-      const u3 = createU3({signProvider});
+      const config = { keyProvider: mockedUsers['bob'].private_key };
+      const u3 = createU3(config);
       let account = 'bob';
       const tr = await u3.contract(account);
-      const result = await tr.hi(format.encodeName('bob'), 30, 'greet',{authorization: "ultrainio"});
+      const result = await tr.hi(format.encodeName('bob'), 30, 'greet',{authorization: "bob"});
       //console.log(result);
       const tx_trace = await u3.getTxTraceByTxid(result.transaction_id)
       console.log(tx_trace)
-
-      //const tr_trace = await u3.getTxTraceByTxid(tr.transaction_id);
-      //console.log(tr_trace)
-
-      /*await u3.getCurrencyBalance({
-        code: 'utrio.token',
-        symbol: 'UGAS',
-        account: 'ben'
-      });*/
-
-
     });
 
     //4.3 get contract detail (wast,abi)
@@ -243,7 +226,7 @@ describe('u3.js', () => {
         return [wif];
       };
       const u3 = createU3({ keyProvider });
-      return u3.transfer('ultrainio', 'ben', '1.0000 UGAS', '').then(tr => {
+      return u3.transfer('ultrainio', 'utrio.token', '1.0000 UGAS', '').then(tr => {
         console.log(tr);
         assert.equal(tr.transaction.signatures.length, 1);
         assert.equal(typeof tr.transaction.signatures[0], 'string');
@@ -269,7 +252,7 @@ describe('u3.js', () => {
     it('offline sign', async () => {
       //using { sign: false, broadcast: false } to create a U3 instance and call some function
       const u3_offline = createU3({ sign: false, broadcast: false });
-      let unsigned_transaction = await u3_offline.transfer('ultrainio', 'ben', '1.0000 UGAS', 'uu');
+      let unsigned_transaction = await u3_offline.transfer('ultrainio', 'utrio.token', '1.0000 UGAS', 'uu');
       console.log(unsigned_transaction);
 
       //online sign it in wallet

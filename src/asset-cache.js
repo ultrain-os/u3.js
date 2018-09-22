@@ -6,7 +6,7 @@ module.exports = AssetCache
 function AssetCache(network) {
 
   const cache = {
-    'SYS@utrio.token': {precision: 4},
+    'UGAS@utrio.token': {precision: 4},
     'UTR@utrio.token': {precision: 4}
   }
 
@@ -38,7 +38,7 @@ function AssetCache(network) {
         `Expecting max_supply string in currency stats: ${result}`)
 
       assert(new RegExp(`^[0-9]+(\.[0-9]+)? ${symbol}$`).test(max_supply),
-        `Expecting max_supply string like 10000.0000 SYS, instead got: ${max_supply}`)
+        `Expecting max_supply string like 10000.0000 UGAS, instead got: ${max_supply}`)
 
       const [supply] = max_supply.split(' ')
       const [, decimalstr = ''] = supply.split('.')

@@ -291,7 +291,7 @@ const Symbol = validation => {
 
     toObject (value) {
       if (validation.defaults && value == null) {
-        return 'SYS'
+        return 'UGAS'
       }
       // symbol only (without precision prefix)
       return parseAsset(value).symbol
@@ -365,7 +365,7 @@ const ExtendedSymbol = (validation, baseTypes, customTypes) => {
 
     toObject (value) {
       if (validation.defaults && value == null) {
-        return 'SYS@contract'
+        return 'UGAS@contract'
       }
       return value
     }
@@ -442,7 +442,7 @@ const Asset = (validation, baseTypes, customTypes) => {
 
     toObject (value) {
       if (validation.defaults && value == null) {
-        return '0.0001 SYS'
+        return '0.0001 UGAS'
       }
 
       const {amount, precision, symbol} = parseAsset(value)
@@ -480,7 +480,7 @@ const ExtendedAsset = (validation, baseTypes, customTypes) => {
     },
 
     fromObject (value) {
-      // like: 1.0000 SYS@contract or 1 SYS@contract
+      // like: 1.0000 UGAS@contract or 1 UGAS@contract
       const asset = {}
       if(typeof value === 'string') {
         Object.assign(asset, parseAsset(value))
@@ -504,7 +504,7 @@ const ExtendedAsset = (validation, baseTypes, customTypes) => {
         return {
           amount: '1.0000',
           precision: 4,
-          symbol: 'SYS',
+          symbol: 'UGAS',
           contract: 'utrio.token'
         }
       }

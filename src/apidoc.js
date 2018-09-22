@@ -4,6 +4,13 @@
 
 
 /**
+* Return net rate and cpu rate
+* @param {name} account_name - 
+* @memberOf chain
+*/
+function getSourcerate(){}
+
+/**
 * @param {name} code - 
 * @param {name} account - 
 * @param {optional<string>} symbol - 
@@ -19,54 +26,80 @@ function getCurrencyBalance(){}
 function getCurrencyStats(){}
 
 /**
-* Fetch smart contract data from producer.
+* @memberOf chain
+*/
+function getProducerSchedule(){}
+
+/**
 * @param {bool} json - 
 * @param {string} lower_bound - 
 * @param {uint32} limit - 
 * @memberOf chain
 */
-function getProducers(){}
+function getScheduledTransactions(){}
 
 /**
 * Return general network information.
 * @memberOf chain
 */
-function getInfo(){}
+function getChainInfo(){}
 
 /**
 * Fetch a block from the blockchain.
 * @param {string} block_num_or_id - 
 * @memberOf chain
 */
-function getBlock(){}
+function getBlockInfo(){}
+
+/**
+* Fetch the minimum state necessary to validate transaction headers.
+* @param {string} block_num_or_id - 
+* @memberOf chain
+*/
+function getBlockHeaderState(){}
 
 /**
 * Fetch a blockchain account
 * @param {name} account_name - 
 * @memberOf chain
 */
-function getAccount(){}
+function getAccountInfo(){}
 
 /**
 * Fetch smart contract code
 * @param {name} account_name - 
+* @param {bool} code_as_wasm - 
 * @memberOf chain
 */
-function getCode(){}
+function getContract(){}
+
+/**
+* @param {name} account_name - 
+* @memberOf chain
+*/
+function getAbi(){}
+
+/**
+* @param {name} account_name - 
+* @memberOf chain
+*/
+function getRawCodeAndAbi(){}
 
 /**
 * Fetch smart contract data from an account.
 * @param {bool} json - 
 * @param {name} code - 
-* @param {name} scope - 
+* @param {string} scope - 
 * @param {name} table - 
 * @param {string} table_key - 
 * @param {string} lower_bound - 
 * @param {string} upper_bound - 
 * @param {uint32} limit - 
+* @param {string} key_type - 
+* @param {string} index_position - 
 * @memberOf chain
 */
-function getTableRows(){}
+function getTableRecords(){}
 
 /**
 * Manually serialize json into binary hex.  The binayargs is usually stored in Action.data.
@@ -75,7 +108,7 @@ function getTableRows(){}
 * @param {bytes} args - 
 * @memberOf chain
 */
-function abiJsonToBin(){}
+function abiJson2bin(){}
 
 /**
 * Convert bin hex back into Abi json definition.
@@ -84,7 +117,7 @@ function abiJsonToBin(){}
 * @param {bytes} binargs - 
 * @memberOf chain
 */
-function abiBinToJson(){}
+function abiBin2json(){}
 
 /**
 * @param {transaction} transaction - 
@@ -105,14 +138,14 @@ function pushBlock(){}
 * @param {signed_transaction} signed_transaction - 
 * @memberOf chain
 */
-function pushTransaction(){}
+function pushTx(){}
 
 /**
 * Attempts to push transactions into the pending queue.
 * @param {signed_transaction} signed_transaction[] - 
 * @memberOf chain
 */
-function pushTransactions(){}
+function pushTxs(){}
 
 /**
 * @param {account_name} account_name - 
@@ -123,10 +156,12 @@ function pushTransactions(){}
 function getActions(){}
 
 /**
-* @param {account_name} controlling_account - 
+* Retrieve a transaction from the blockchain.
+* @param {transaction_id_type} id - 
+* @param {uint32?} block_num_hint - 
 * @memberOf history
 */
-function getControlledAccounts(){}
+function getTransaction(){}
 
 /**
 * @param {public_key_type} public_key - 
@@ -135,11 +170,10 @@ function getControlledAccounts(){}
 function getKeyAccounts(){}
 
 /**
-* Retrieve a transaction from the blockchain.
-* @param {transaction_id_type} id - 
+* @param {account_name} controlling_account - 
 * @memberOf history
 */
-function getTransaction(){}
+function getControlledAccounts(){}
 
 /**
 * @param {asset} balance - 

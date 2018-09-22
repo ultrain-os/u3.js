@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    
     <meta charset="utf-8">
     <title>chain - Documentation</title>
-
+    
+    
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
     <!--[if lt IE 9]>
@@ -11,6 +13,7 @@
     <![endif]-->
     <link type="text/css" rel="stylesheet" href="styles/prettify.css">
     <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
 
@@ -22,7 +25,8 @@
 <label for="nav-trigger" class="overlay"></label>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="chain.html">chain</a><ul class='methods'><li data-type='method'><a href="chain.html#.abiBin2json">abiBin2json</a></li><li data-type='method'><a href="chain.html#.abiJson2bin">abiJson2bin</a></li><li data-type='method'><a href="chain.html#.getAccountInfo">getAccountInfo</a></li><li data-type='method'><a href="chain.html#.getBlockInfo">getBlockInfo</a></li><li data-type='method'><a href="chain.html#.getChainInfo">getChainInfo</a></li><li data-type='method'><a href="chain.html#.getContract">getContract</a></li><li data-type='method'><a href="chain.html#.getCurrencyBalance">getCurrencyBalance</a></li><li data-type='method'><a href="chain.html#.getCurrencyStats">getCurrencyStats</a></li><li data-type='method'><a href="chain.html#.getProducers">getProducers</a></li><li data-type='method'><a href="chain.html#.getRequiredKeys">getRequiredKeys</a></li><li data-type='method'><a href="chain.html#.getTableRecords">getTableRecords</a></li><li data-type='method'><a href="chain.html#.pushBlock">pushBlock</a></li><li data-type='method'><a href="chain.html#.pushTx">pushTx</a></li><li data-type='method'><a href="chain.html#.pushTxs">pushTxs</a></li></ul></li><li><a href="ecc.html">ecc</a><ul class='methods'><li data-type='method'><a href="ecc.html#.privateToPublic">privateToPublic</a></li></ul></li><li><a href="history.html">history</a><ul class='methods'><li data-type='method'><a href="history.html#.getActions">getActions</a></li><li data-type='method'><a href="history.html#.getControlledAccounts">getControlledAccounts</a></li><li data-type='method'><a href="history.html#.getKeyAccounts">getKeyAccounts</a></li><li data-type='method'><a href="history.html#.getTransaction">getTransaction</a></li></ul></li><li><a href="token.html">token</a><ul class='methods'><li data-type='method'><a href="token.html#.account">account</a></li><li data-type='method'><a href="token.html#.accountName">accountName</a></li><li data-type='method'><a href="token.html#.create">create</a></li><li data-type='method'><a href="token.html#.currencyStats">currencyStats</a></li><li data-type='method'><a href="token.html#.issue">issue</a></li><li data-type='method'><a href="token.html#.transfer">transfer</a></li></ul></li></ul>
+    
+    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="chain.html">chain</a><ul class='methods'><li data-type='method'><a href="chain.html#.abiBin2json">abiBin2json</a></li><li data-type='method'><a href="chain.html#.abiJson2bin">abiJson2bin</a></li><li data-type='method'><a href="chain.html#.getAbi">getAbi</a></li><li data-type='method'><a href="chain.html#.getAccountInfo">getAccountInfo</a></li><li data-type='method'><a href="chain.html#.getBlockHeaderState">getBlockHeaderState</a></li><li data-type='method'><a href="chain.html#.getBlockInfo">getBlockInfo</a></li><li data-type='method'><a href="chain.html#.getChainInfo">getChainInfo</a></li><li data-type='method'><a href="chain.html#.getContract">getContract</a></li><li data-type='method'><a href="chain.html#.getCurrencyBalance">getCurrencyBalance</a></li><li data-type='method'><a href="chain.html#.getCurrencyStats">getCurrencyStats</a></li><li data-type='method'><a href="chain.html#.getProducerSchedule">getProducerSchedule</a></li><li data-type='method'><a href="chain.html#.getRawCodeAndAbi">getRawCodeAndAbi</a></li><li data-type='method'><a href="chain.html#.getRequiredKeys">getRequiredKeys</a></li><li data-type='method'><a href="chain.html#.getScheduledTransactions">getScheduledTransactions</a></li><li data-type='method'><a href="chain.html#.getSourcerate">getSourcerate</a></li><li data-type='method'><a href="chain.html#.getTableRecords">getTableRecords</a></li><li data-type='method'><a href="chain.html#.pushBlock">pushBlock</a></li><li data-type='method'><a href="chain.html#.pushTx">pushTx</a></li><li data-type='method'><a href="chain.html#.pushTxs">pushTxs</a></li></ul></li><li><a href="ecc.html">ecc</a><ul class='methods'><li data-type='method'><a href="ecc.html#.generateKeyPairByMnemonic">generateKeyPairByMnemonic</a></li><li data-type='method'><a href="ecc.html#.generateKeyPairBySeed">generateKeyPairBySeed</a></li><li data-type='method'><a href="ecc.html#.generateKeyPairWithMnemonic">generateKeyPairWithMnemonic</a></li><li data-type='method'><a href="ecc.html#.privateToPublic">privateToPublic</a></li></ul></li><li><a href="history.html">history</a><ul class='methods'><li data-type='method'><a href="history.html#.getActions">getActions</a></li><li data-type='method'><a href="history.html#.getControlledAccounts">getControlledAccounts</a></li><li data-type='method'><a href="history.html#.getKeyAccounts">getKeyAccounts</a></li><li data-type='method'><a href="history.html#.getTransaction">getTransaction</a></li></ul></li><li><a href="token.html">token</a><ul class='methods'><li data-type='method'><a href="token.html#.account">account</a></li><li data-type='method'><a href="token.html#.accountName">accountName</a></li><li data-type='method'><a href="token.html#.create">create</a></li><li data-type='method'><a href="token.html#.currencyStats">currencyStats</a></li><li data-type='method'><a href="token.html#.issue">issue</a></li><li data-type='method'><a href="token.html#.transfer">transfer</a></li></ul></li></ul>
 </nav>
 
 <div id="main">
@@ -47,9 +51,10 @@
 </header>
 
 <article>
-    <div class="container-overview">
     
+        <div class="container-overview">
         
+            
 
 <dl class="details">
 
@@ -89,11 +94,12 @@
 
 
 
-        
+            
 
+            
         
+        </div>
     
-    </div>
 
     
 
@@ -463,6 +469,130 @@
 
     
 
+    <h4 class="name" id=".getAbi"><span class="type-signature">(static) </span>getAbi<span class="signature">(account_name)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>account_name</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">name</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>-</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
     <h4 class="name" id=".getAccountInfo"><span class="type-signature">(static) </span>getAccountInfo<span class="signature">(account_name)</span><span class="type-signature"></span></h4>
 
     
@@ -555,6 +685,134 @@
             
                 
 <span class="param-type">name</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>-</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".getBlockHeaderState"><span class="type-signature">(static) </span>getBlockHeaderState<span class="signature">(block_num_or_id)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description">
+    <p>Fetch the minimum state necessary to validate transaction headers.</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>block_num_or_id</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
 
 
             
@@ -798,7 +1056,7 @@
 
     
 
-    <h4 class="name" id=".getContract"><span class="type-signature">(static) </span>getContract<span class="signature">(account_name)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id=".getContract"><span class="type-signature">(static) </span>getContract<span class="signature">(account_name, code_as_wasm)</span><span class="type-signature"></span></h4>
 
     
 
@@ -890,6 +1148,29 @@
             
                 
 <span class="param-type">name</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>-</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>code_as_wasm</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">bool</span>
 
 
             
@@ -1243,7 +1524,7 @@
 
     
 
-    <h4 class="name" id=".getProducers"><span class="type-signature">(static) </span>getProducers<span class="signature">(json, lower_bound, limit)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id=".getProducerSchedule"><span class="type-signature">(static) </span>getProducerSchedule<span class="signature">()</span><span class="type-signature"></span></h4>
 
     
 
@@ -1289,9 +1570,80 @@
 
 
 
-<div class="description">
-    <p>Fetch smart contract data from producer.</p>
-</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".getRawCodeAndAbi"><span class="type-signature">(static) </span>getRawCodeAndAbi<span class="signature">(account_name)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
 
 
 
@@ -1328,59 +1680,13 @@
 
         <tr>
             
-                <td class="name"><code>json</code></td>
+                <td class="name"><code>account_name</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">bool</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>-</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>lower_bound</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>-</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>limit</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">uint32</span>
+<span class="param-type">name</span>
 
 
             
@@ -1564,7 +1870,305 @@
 
     
 
-    <h4 class="name" id=".getTableRecords"><span class="type-signature">(static) </span>getTableRecords<span class="signature">(json, code, scope, table, table_key, lower_bound, upper_bound, limit)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id=".getScheduledTransactions"><span class="type-signature">(static) </span>getScheduledTransactions<span class="signature">(json, lower_bound, limit)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>json</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">bool</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>-</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>lower_bound</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>-</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>limit</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">uint32</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>-</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".getSourcerate"><span class="type-signature">(static) </span>getSourcerate<span class="signature">(account_name)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description">
+    <p>Return net rate and cpu rate</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>account_name</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">name</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>-</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".getTableRecords"><span class="type-signature">(static) </span>getTableRecords<span class="signature">(json, code, scope, table, table_key, lower_bound, upper_bound, limit, key_type, index_position)</span><span class="type-signature"></span></h4>
 
     
 
@@ -1701,7 +2305,7 @@
             <td class="type">
             
                 
-<span class="param-type">name</span>
+<span class="param-type">string</span>
 
 
             
@@ -1817,6 +2421,52 @@
             
                 
 <span class="param-type">uint32</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>-</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>key_type</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>-</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>index_position</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
 
 
             
@@ -2245,15 +2895,19 @@
 
 
 
+    
+    
 </div>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Tue Jul 31 2018 14:43:28 GMT+0800 (CST) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Sat Sep 22 2018 02:04:06 GMT+0800 (CST) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
 </footer>
 
 <script>prettyPrint();</script>
 <script src="scripts/linenumber.js"></script>
+
+
 </body>
 </html>

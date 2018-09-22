@@ -59,7 +59,7 @@ describe('shorthand', () => {
     const {types} = ultrain.fc
     const Symbol = types.symbol()
 
-    assertSerializer(Symbol, '4,SYS', '4,SYS', 'SYS')
+    assertSerializer(Symbol, '4,UGAS', '4,UGAS', 'UGAS')
   })
 
   it('extended_symbol', () => {
@@ -73,7 +73,7 @@ describe('shorthand', () => {
     const ultrain = Ultrain()
     const {types} = ultrain.fc
     const AssetType = types.asset()
-    assertSerializer(AssetType, '1.1 4,SYS@utrio.token', '1.1000 SYS@utrio.token', '1.1000 SYS')
+    assertSerializer(AssetType, '1.1 4,UGAS@utrio.token', '1.1000 UGAS@utrio.token', '1.1000 UGAS')
   })
 
   it('extended_asset', () => {
@@ -122,7 +122,7 @@ describe('Action.data', () => {
       data: {
         from: 'inita',
         to: 'initb',
-        quantity: '1.0000 SYS',
+        quantity: '1.0000 UGAS',
         memo: ''
       },
       authorization: []
@@ -139,7 +139,7 @@ describe('Action.data', () => {
       data: {
         from: 'inita',
         to: 'initb',
-        quantity: '1.0000 SYS',
+        quantity: '1.0000 UGAS',
         memo: ''
       },
       authorization: []

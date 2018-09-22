@@ -97,7 +97,7 @@ async function getAllAccounts (page, pageSize, queryParams, sortParams) {
         let balance = await u3.getCurrencyBalance({
             code: "utrio.token",
             account: accounts[i].name,
-            symbol: "SYS"
+            symbol: "UGAS"
         })
 
         // get net_weight cpu_weight ram_bytes
@@ -209,7 +209,7 @@ async function search(param){
         let balance = await u3.getCurrencyBalance({
             code: "utrio.token",
             account: param,
-            symbol: "SYS"
+            symbol: "UGAS"
         })
 
         // get net_weight cpu_weight ram_bytes
