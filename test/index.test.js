@@ -5,12 +5,26 @@ const isEmpty = require('lodash.isempty');
 const isString = require('lodash.isstring');
 const path = require('path');
 const mockUsers = require('../src/mock-users');
-const defaultConfig = require("../src/config");
+const defaultConfig = require('../src/config');
 
 const { createU3, format, ecc, Fcbuffer, version } = require('../src');
 
 const wif = '5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79zkvFD3'; //ultrainio
 const pubkey = 'UTR6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV'; //ultrainio
+
+var sleep = timeout => {
+  return new Promise(resolve => {
+    setTimeout(() => {
+      console.log(`I was sleeping ${timeout} ms`);
+      resolve();
+    }, timeout);
+  });
+};
+var error = timeout => {
+  setTimeout(() => {
+    throw new Error('BOOM!!!');
+  }, timeout);
+};
 
 describe('u3.js', () => {
 
@@ -134,10 +148,17 @@ describe('u3.js', () => {
       const u3 = createU3(config);
       let account = 'bob';
       const tr = await u3.contract(account);
-      const result = await tr.transfer('bob','alice','1.0000 EDFEFCE','memo');
-      console.log(result);
-      const tx_trace = await u3.getTxTraceByTxid(result.transaction_id);
-      console.log(tx_trace);
+      const result = await tr.transfer('bob', 'alice', '1.0000 EBFCBFC', 'memo');
+
+      let tx = await u3.getTxByTxId(result.transaction_id);
+      while (!tx.irreversible) {
+        await sleep(1000);
+        tx = await u3.getTxByTxId(result.transaction_id);
+        if (tx.irreversible) {
+          console.log(tx);
+          break;
+        }
+      }
     });
 
     //4.3 get contract detail (wast,abi)
@@ -165,17 +186,12 @@ describe('u3.js', () => {
       const config = { keyProvider: mockedUsers['bob'].private_key };
       const u3 = createU3(config);
       let account = 'bob';
-
-      //const code = await u3.deploy('u3.js/contracts/token/token', 'test1');
-      //console.log('deploy---',code)
-
       //const options = { authorization: [`ben@active`] };
-
       let customCurrency = randomAsset();
       await u3.transaction(account, token => {
         token.create(account, '10000000.0000 ' + customCurrency);
         token.issue(account, '10000000.0000 ' + customCurrency, 'issue');
-        token.transfer(account, 'ben', '10.0000 ' + customCurrency, '');
+        token.transfer(account, 'ben', '1000.0000 ' + customCurrency, '');
       });
 
       await u3.getCurrencyBalance({
@@ -187,7 +203,7 @@ describe('u3.js', () => {
       await u3.getCurrencyBalance({
         code: 'bob',
         symbol: customCurrency,
-        account: 'alice'
+        account: 'ben'
       });
     });
 
@@ -199,20 +215,6 @@ describe('u3.js', () => {
     const signProvider = ({ sign, buf }) => sign(buf, wif);
 
     const promiseSigner = (args) => Promise.resolve(signProvider(args));
-
-    it('cpu net rate', async () => {
-      const u3 = createU3({ signProvider });
-      let rate = await u3.getSourcerate({
-        account_name: 'ultrainio'
-      });
-      console.log(rate);
-    });
-
-    it('ram rate', async () => {
-      const u3 = createU3({ signProvider, logger: { log: false } });
-      let rate = await u3.getRamrate();
-      console.log(rate);
-    });
 
     // 5.1 usage
     it('usage', () => {
@@ -252,14 +254,15 @@ describe('u3.js', () => {
     it('offline sign', async () => {
       //using { sign: false, broadcast: false } to create a U3 instance and call some function
       const u3_offline = createU3({ sign: false, broadcast: false });
-      let unsigned_transaction = await u3_offline.transfer('ultrainio', 'utrio.token', '1.0000 ' + defaultConfig.symbol, 'uu');
-      console.log(unsigned_transaction);
+      let unsigned_transaction = await u3_offline.transfer('ultrainio', 'ben', '1.0000 ' + defaultConfig.symbol, '');
+      //console.log(unsigned_transaction);
 
       //online sign it in wallet
       const u3_online = createU3();
-      let signature = await u3_online.sign(unsigned_transaction, wif);
+      let signature = await u3_online.sign(unsigned_transaction, wif, defaultConfig.chainId);
       if (signature) {
         let signedTransaction = Object.assign({}, unsigned_transaction.transaction, { signatures: [signature] });
+        console.log(signedTransaction);
         let processedTransaction = await u3_online.pushTx(signedTransaction);
         assert.equal(processedTransaction.transaction_id, unsigned_transaction.transaction_id);
       }
@@ -268,7 +271,6 @@ describe('u3.js', () => {
     // 5.5 create user account
     it('createUser', async () => {
       const u3 = createU3({ signProvider });
-      //const pubkey = mockedUsers['john'].public_key;
       const name = randomName();
       let params = {
         creator: 'ultrainio',
@@ -312,7 +314,6 @@ describe('u3.js', () => {
       });
     });
 
-    //TODO not increase accurate,wby?
     // 5.7 buyrambytes
     it('buyrambytes', async () => {
       const u3 = createU3({ signProvider });
@@ -383,29 +384,48 @@ describe('u3.js', () => {
     });
 
     // 5.10 undelegatebw
-    //TODO cannot undelegate bandwidth until the chain is activated (at least 15% of all tokens participate in voting)
-    /*it("undelegatebw", async () => {
+    //cannot undelegate bandwidth until the chain is activated (at least 15% of all tokens participate in voting)
+    //need to be under a real consensus network
+    it('undelegatebw', async () => {
       const u3 = createU3({ signProvider });
       await u3.getAccountInfo({
-        account_name: "ben"
+        account_name: 'ben'
       }).then(async before => {
-        console.log("\n-----before:", before.net_weight, before.cpu_weight);
+        console.log('\n-----before:', before.net_weight, before.cpu_weight);
         return await u3.undelegatebw({
-          from: "ultrainio",
-          receiver: "ben",
+          from: 'ultrainio',
+          receiver: 'ben',
           unstake_net_quantity: '0.0010 ' + defaultConfig.symbol,
-          unstake_cpu_quantity: '0.0010 ' + defaultConfig.symbol,
+          unstake_cpu_quantity: '0.0010 ' + defaultConfig.symbol
         }).then(async tr => {
           return await u3.getAccountInfo({
-            account_name: "ben"
+            account_name: 'ben'
           }).then(after => {
-            console.log("\n-----after:", after.net_weight, after.cpu_weight);
+            console.log('\n-----after:', after.net_weight, after.cpu_weight);
             assert.ok(after.net_weight - before.net_weight < 0);
             assert.ok(after.cpu_weight - before.cpu_weight < 0);
           });
         });
       });
-    });*/
+    });
+
+    // 5.11 get cpu_net/token exchange rate
+    it('cpu net rate', async () => {
+      const u3 = createU3({ signProvider });
+      let rate = await u3.getSourcerate({
+        account_name: 'ultrainio'
+      });
+      console.log(rate);
+      assert.ok(rate !== '');
+    });
+
+    // 5.12 get ram/token exchange rate
+    it('ram rate', async () => {
+      const u3 = createU3({ signProvider, logger: { log: false } });
+      let rate = await u3.getRamrate();
+      console.log(rate);
+      assert.ok(rate !== '');
+    });
 
     // get accounts array by public key
     it('getKeyAccounts', async () => {
@@ -418,6 +438,7 @@ describe('u3.js', () => {
     it('mockTransactions pass', () => {
       const u3 = createU3({ signProvider, mockTransactions: 'pass' });
       return u3.transfer('ultrainio', 'alice', '1.0000 ' + defaultConfig.symbol, '').then(transfer => {
+        console.log(transfer)
         assert(transfer.mockTransaction, 'transfer.mockTransaction');
       });
     });
@@ -426,18 +447,9 @@ describe('u3.js', () => {
       const logger = { error: null };
       const u3 = createU3({ signProvider, mockTransactions: 'fail', logger });
       return u3.transfer('ultrainio', 'alice', '1.0000 ' + defaultConfig.symbol, '').catch(error => {
+        console.log(error)
         assert(error.indexOf('fake error') !== -1, 'expecting: fake error');
       });
-    });
-
-    it('transfer (broadcast)', async () => {
-      const u3 = createU3({ signProvider });
-      return u3.transfer('ultrainio', 'tom', '1.0000 ' + defaultConfig.symbol, '');
-    });
-
-    it('transfer custom token precision (broadcast)', () => {
-      const u3 = createU3({ signProvider });
-      return u3.transfer('ultrainio', 'alice', '1.6180 ' + defaultConfig.symbol, '');
     });
 
     it('transfer custom authorization (broadcast)', () => {
@@ -506,7 +518,7 @@ describe('u3.js', () => {
               });
           });
       }).then(r => {
-        assert(r == undefined);
+        assert(r === undefined);
       });
     });
 
@@ -587,53 +599,9 @@ describe('u3.js', () => {
       return u3.transaction(tr => {
         assert(tr.transfer('ultrainio', 'jack', '1.0000 ' + defaultConfig.symbol, '') == null);
         assert(tr.transfer('ultrainio', 'bob', '1.0000 ' + defaultConfig.symbol, '') == null);
-        // TODO the follow way throw exception
-        //assert(tr.transfer({from: 'ultrainio', to: 'user', quantity: '1 ' + defaultConfig.symbol, memo: ''}) == null)
       }).then(tr => {
         assert.equal(2, tr.transaction.transaction.actions.length);
       });
-
-    });
-
-    it('multi-action transaction no inner callback', () => {
-      const signProvider2 = ({ sign, buf }) => sign(buf, '5KYKw6jYLKR16ZZGEmZGJ12WUNyVEAaZHWS31ijgWEdv1timojk');
-
-      const u3 = createU3({ signProvider2 });
-      return u3.transaction(tr => {
-        tr.transfer('ultrainio', 'ultrainio', '1.0000 ' + defaultConfig.symbol, '', cb => {
-
-        });
-      })
-        .then(() => {
-          throw 'expecting rollback';
-        })
-        .catch(error => {
-          assert(/Callback during a transaction/.test(error), error);
-        });
-    });
-
-    it('multi-action transaction error rollback', () => {
-      const u3 = createU3({ signProvider });
-      return u3.transaction(tr => {
-        throw 'rollback';
-      })
-        .then(() => {
-          throw 'expecting rollback';
-        })
-        .catch(error => {
-          assert(/rollback/.test(error), error);
-        });
-    });
-
-    it('multi-action transaction Promise.reject rollback', () => {
-      const u3 = createU3({ signProvider });
-      return u3.transaction(tr => Promise.reject('rollback'))
-        .then(() => {
-          throw 'expecting rollback';
-        })
-        .catch(error => {
-          assert(/rollback/.test(error), error);
-        });
     });
 
     it('custom transfer', () => {
@@ -660,35 +628,8 @@ describe('u3.js', () => {
         { broadcast: false }
       );
     });
-
   });
 
-  // ./ultrainioc set contract currency token/contracts/currency/currency.wasm token/contracts/currency/currency.abi
-  /*it("Transaction ABI lookup", async function() {
-    const u3 = createU3();
-    const tx = await u3.transaction(
-      {
-        actions: [
-          {
-            account: "ultrainio",
-            name: "transfer",
-            data: {
-              from: "ultrainio",
-              to: "alice",
-              quantity: "13.0000 " + defaultConfig.symbol,
-              memo: ""
-            },
-            authorization: [{
-              actor: "ultrainio",
-              permission: "active"
-            }]
-          }
-        ]
-      },
-      { sign: false, broadcast: false }
-    );
-    assert.equal(tx.transaction.transaction.actions[0].account, "ultrainio");
-  });*/
 
 
   const randomName = () => {
