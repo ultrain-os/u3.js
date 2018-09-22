@@ -123,7 +123,7 @@ describe('u3.js', () => {
     it('deploy contract', async function() {
       const config = { keyProvider: wif };
       const u3 = createU3(config);
-      const code = await u3.deploy(path.resolve(__dirname,'../contracts/token/token'), 'ultrainio');
+      const code = await u3.deploy(path.resolve(__dirname,'../contracts/token/token'), 'b15111122233');
       console.log(code);
       assert.ok(!isEmpty(code.abi));
     });
@@ -276,7 +276,7 @@ describe('u3.js', () => {
         owner: pubkey,
         active: pubkey,
         updateable: 0,
-        ram_bytes: 8912,
+        ram_bytes: 888912,
         stake_net_quantity: '1.0000 UGAS',
         stake_cpu_quantity: '1.0000 UGAS',
         transfer: 0

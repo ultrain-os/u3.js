@@ -191,12 +191,10 @@ async function deploy(contract, account) {
     const wasm = fs.readFileSync(path.resolve(process.cwd(), `${contract}.wasm`));
     const abi = fs.readFileSync(path.resolve(process.cwd(), `${contract}.abi`));
 
-    this.setcode(account, 0, 0, wasm);
-    this.setabi(account, JSON.parse(abi));
-
-    const code = await this.getAbi(account);
-
-    return code
+    const code_tr = await this.setcode(account, 0, 0, wasm);
+    const abi_tr = await this.setabi(account, JSON.parse(abi));
+    //const code = await this.getAbi(account);
+    return code_tr
   } catch (e) {
     console.log(e);
     return {
