@@ -1,3 +1,3 @@
-const ecc = require("u3.js/src/ecc");
+const ecc = require("./src/ecc");
 
 module.exports = ecc;
