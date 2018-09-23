@@ -1,4 +1,6 @@
 const axios = require('axios');
+const defaultConfig = require("../src/config");
+
 let httpEndPoint = require('./config').httpEndpoint_history;
 let U3Config = {};
 
