@@ -51,7 +51,6 @@
   },
   "devDependencies": {
     "@types/node": "^8.0.3",
-    "async-test-util": "https://github.com/ultrain-os/u3-utils.git",
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.0",
     "babel-plugin-syntax-async-functions": "^6.13.0",
