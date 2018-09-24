@@ -17,7 +17,7 @@ module.exports = function(config){
         getTxByTxId,
         getActionsByTxid,
         getActionsByAccount,
-        getTxsByBlockId,
+        getTxsByBlockNum,
         getExistAccount,
         getBlocksByContract,
         getTxTraceByTxid,
@@ -149,19 +149,37 @@ function getActionsByTxid (id){
 }
 
 /**
- * get actions by account
- * @param {String} account accoun name
+ * getActionsByAccount
+ * @param {*} page 
+ * @param {*} pageSize 
+ * @param {*} queryParams e.g. {"account_name":"test1"}
+ * @param {*} sortParams 
  */
-function getActionsByAccount (account){
-    return fetchUrl(`${httpEndPoint}/actions/account/${account}`);
+function getActionsByAccount (page, pageSize, queryParams, sortParams){
+    let data = {
+        "page": page || 1,
+        "pageSize": pageSize || 10,
+        "queryParams": queryParams || {},
+        "sortParams": sortParams || { _id: -1 }
+    }
+    return fetchUrl(`${httpEndPoint}/actions/by/account`);
 }
 
 /**
- * get txs by block_id
- * @param {String} block_id 
+ * getTxsByBlockNum
+ * @param {*} page 
+ * @param {*} pageSize 
+ * @param {*} queryParams e.g. {block_num: 1}
+ * @param {*} sortParams 
  */
-function getTxsByBlockId (block_id){
-    return fetchUrl(`${httpEndPoint}/txs/block/${block_id}`);
+function getTxsByBlockNum (page, pageSize, queryParams, sortParams){
+    let data = {
+        "page": page || 1,
+        "pageSize": pageSize || 10,
+        "queryParams": queryParams || {},
+        "sortParams": sortParams || { _id: -1 }
+    }
+    return fetchUrl(`${httpEndPoint}/txs/by/blocknum`);
 }
 
 /**
