@@ -3,6 +3,9 @@ COPY init.sh /
 COPY init2.sh /
 COPY node1 /node1/
 COPY node2 /node2/
+COPY history /history/
+
+RUN ls -la /history/*
 
 EXPOSE 27017
 EXPOSE 8888
