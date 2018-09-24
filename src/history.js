@@ -162,7 +162,7 @@ function getActionsByAccount (page, pageSize, queryParams, sortParams){
         "queryParams": queryParams || {},
         "sortParams": sortParams || { _id: -1 }
     }
-    return fetchUrl(`${httpEndPoint}/actions/by/account`);
+    return fetchUrl(`${httpEndPoint}/actions/by/account`,data);
 }
 
 /**
@@ -179,7 +179,7 @@ function getTxsByBlockNum (page, pageSize, queryParams, sortParams){
         "queryParams": queryParams || {},
         "sortParams": sortParams || { _id: -1 }
     }
-    return fetchUrl(`${httpEndPoint}/txs/by/blocknum`);
+    return fetchUrl(`${httpEndPoint}/txs/by/blocknum`,data);
 }
 
 /**

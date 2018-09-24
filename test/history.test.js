@@ -1,7 +1,9 @@
 
 const assert = require('assert');
 const { U3 } = require('../index');
-const u3Instance = U3.createU3();
+const u3Instance = U3.createU3({
+    httpEndpoint_history: 'http://127.0.0.1:3001'
+});
 
 describe('history', async () => {
 
@@ -50,14 +52,26 @@ describe('history', async () => {
     });
 
     it("getActionsByAccount", async () => {
-        const rs = await u3Instance.getActionsByAccount("ultrainio");
+        var requestData = {
+            "page": 1,
+            "pageSize": 10,
+            "queryParams": {account_name: "ultrainio"},
+            "sortParams": { _id: -1 }
+        }
+        const rs = await u3Instance.getActionsByAccount(requestData.page, requestData.pageSize, requestData.queryParams, requestData.sortParams);
         console.log(rs);
         assert.ok(rs);
     });
 
-    it("getTxsByBlockId", async () => {
+    it("getTxsByBlockNum", async () => {
         const blocks = await u3Instance.getAllBlocks(1,1,{},{_id:-1});
-        const rs = await u3Instance.getTxsByBlockId(blocks.results[0].block_num);
+        var requestData = {
+            "page": 1,
+            "pageSize": 10,
+            "queryParams": {block_num: blocks.results[0].block_num},
+            "sortParams": { _id: -1 }
+        }
+        const rs = await u3Instance.getTxsByBlockNum(requestData.page, requestData.pageSize, requestData.queryParams, requestData.sortParams);
         console.log(rs);
         assert.ok(rs);
     });
