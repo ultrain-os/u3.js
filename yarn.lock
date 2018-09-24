@@ -235,6 +235,15 @@ async-each@^1.0.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/async-each/-/async-each-1.0.1.tgz#19d386a1d9edc6e7c1c85d388aedbcc56d33602d"
 
+"async-test-util@https://github.com/ultrain-os/u3-utils.git":
+  version "1.6.1"
+  resolved "https://github.com/ultrain-os/u3-utils.git#558129fd10449eec084159078bfd31c49af54b57"
+  dependencies:
+    babel-runtime "6.26.0"
+    clone "^2.1.1"
+    deep-equal "^1.0.1"
+    is-node "1.0.2"
+
 async@1.x:
   version "1.5.2"
   resolved "https://registry.yarnpkg.com/async/-/async-1.5.2.tgz#ec6a61ae56480c0c3cb241c95618e20892f9672a"
@@ -979,7 +988,7 @@ babel-register@^6.26.0:
     mkdirp "^0.5.1"
     source-map-support "^0.4.15"
 
-babel-runtime@^6.18.0, babel-runtime@^6.2.0, babel-runtime@^6.22.0, babel-runtime@^6.26.0:
+babel-runtime@6.26.0, babel-runtime@^6.18.0, babel-runtime@^6.2.0, babel-runtime@^6.22.0, babel-runtime@^6.26.0:
   version "6.26.0"
   resolved "https://registry.yarnpkg.com/babel-runtime/-/babel-runtime-6.26.0.tgz#965c7058668e82b55d7bfe04ff2337bc8b5647fe"
   dependencies:
@@ -1849,6 +1858,10 @@ deep-eql@^3.0.0:
   resolved "https://registry.yarnpkg.com/deep-eql/-/deep-eql-3.0.1.tgz#dfc9404400ad1c8fe023e7da1df1c147c4b444df"
   dependencies:
     type-detect "^4.0.0"
+
+deep-equal@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/deep-equal/-/deep-equal-1.0.1.tgz#f5d260292b660e084eff4cdbc9f08ad3247448b5"
 
 deep-extend@^0.6.0:
   version "0.6.0"
@@ -3258,6 +3271,10 @@ is-hexadecimal@^1.0.0:
 is-negated-glob@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/is-negated-glob/-/is-negated-glob-1.0.0.tgz#6910bca5da8c95e784b5751b976cf5a10fee36d2"
+
+is-node@1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/is-node/-/is-node-1.0.2.tgz#d7d002745ef7debbb7477e988956ab0a4fccb653"
 
 is-number@^2.1.0:
   version "2.1.0"
@@ -5791,6 +5808,15 @@ type-detect@^4.0.0:
 typedarray@^0.0.6, typedarray@~0.0.5:
   version "0.0.6"
   resolved "https://registry.yarnpkg.com/typedarray/-/typedarray-0.0.6.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
+
+"u3-utils@https://github.com/ultrain-os/u3-utils.git":
+  version "0.0.1"
+  resolved "https://github.com/ultrain-os/u3-utils.git#47af1f1e7f8fad32680c26f6021f2a2649f7756a"
+  dependencies:
+    babel-runtime "6.26.0"
+    clone "^2.1.1"
+    deep-equal "^1.0.1"
+    is-node "1.0.2"
 
 uglify-js@3.4.1:
   version "3.4.1"

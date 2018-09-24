@@ -1,30 +1,16 @@
 /* eslint-env mocha */
 const assert = require('assert');
-const structs = require('../src/structs');
 const isEmpty = require('lodash.isempty');
 const isString = require('lodash.isstring');
 const path = require('path');
 const mockUsers = require('../src/mock-users');
 const defaultConfig = require('../src/config');
+const U3Utils = require('u3-utils/dist/es5');
 
 const { createU3, format, ecc, Fcbuffer, version } = require('../src');
 
 const wif = '5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79zkvFD3'; //ultrainio
 const pubkey = 'UTR6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV'; //ultrainio
-
-var sleep = timeout => {
-  return new Promise(resolve => {
-    setTimeout(() => {
-      console.log(`I was sleeping ${timeout} ms`);
-      resolve();
-    }, timeout);
-  });
-};
-var error = timeout => {
-  setTimeout(() => {
-    throw new Error('BOOM!!!');
-  }, timeout);
-};
 
 describe('u3.js', () => {
 
@@ -32,7 +18,7 @@ describe('u3.js', () => {
 
   before(async () => {
     console.log('initialize 8 test users...\n');
-    mockedUsers = await mockUsers();
+    //mockedUsers = await mockUsers();
   });
 
   // 1.print chain info
@@ -152,7 +138,7 @@ describe('u3.js', () => {
 
       let tx = await u3.getTxByTxId(result.transaction_id);
       while (!tx.irreversible) {
-        await sleep(1000);
+        await U3Utils.wait(1000);
         tx = await u3.getTxByTxId(result.transaction_id);
         if (tx.irreversible) {
           console.log(tx);
@@ -438,7 +424,7 @@ describe('u3.js', () => {
     it('mockTransactions pass', () => {
       const u3 = createU3({ signProvider, mockTransactions: 'pass' });
       return u3.transfer('ultrainio', 'alice', '1.0000 ' + defaultConfig.symbol, '').then(transfer => {
-        console.log(transfer)
+        console.log(transfer);
         assert(transfer.mockTransaction, 'transfer.mockTransaction');
       });
     });
@@ -447,7 +433,7 @@ describe('u3.js', () => {
       const logger = { error: null };
       const u3 = createU3({ signProvider, mockTransactions: 'fail', logger });
       return u3.transfer('ultrainio', 'alice', '1.0000 ' + defaultConfig.symbol, '').catch(error => {
-        console.log(error)
+        console.log(error);
         assert(error.indexOf('fake error') !== -1, 'expecting: fake error');
       });
     });
@@ -628,16 +614,16 @@ describe('u3.js', () => {
         { broadcast: false }
       );
     });
+
   });
 
 
-
   const randomName = () => {
-    const name = String(Math.round(Math.random() * 1000000000)).replace(/[0,6-9]/g, '');
-    return 'b' + name + '111222333444'.substring(0, 11 - name.length); // always 12 in length
+    return U3Utils.randomString().substring(0, 4) + U3Utils.randomNumber(10000000, 90000000);
   };
 
-  const randomAsset = () =>
-    ecc.sha256(String(Math.random())).toUpperCase().replace(/[^A-Z]/g, '').substring(0, 7);
+  const randomAsset = () => {
+    U3Utils.randomString().toUpperCase().substring(0, 4);
+  };
 
 });
