@@ -47,7 +47,17 @@ if you use u3.js in browser environment, reference the example below.
         
               let u3 = U3.createU3({
                 httpEndpoint: 'http://127.0.0.1:8888',
-                httpEndpoint_history: 'http://127.0.0.1:3000'
+                httpEndpoint_history: 'http://127.0.0.1:3000',
+                broadcast: true,
+                debug: false,
+                sign: true,
+                logger: {
+                  log: console.log,
+                  error: console.error,
+                  debug: console.log
+                },
+                chainId:'2616bfbc21e11d60d10cb798f00893c2befba10e2338b7277bb3865d2e658f58',
+                symbol: 'UGAS'
               });
         
               u3.getChainInfo((err, info) => {
