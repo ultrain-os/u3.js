@@ -11,14 +11,13 @@ const { createU3, format, ecc, Fcbuffer, version } = require('../src');
 
 const wif = '5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79zkvFD3'; //ultrainio
 const pubkey = 'UTR6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV'; //ultrainio
-
 describe('u3.js', () => {
 
   let mockedUsers = {};
 
   before(async () => {
     console.log('initialize 8 test users...\n');
-    //mockedUsers = await mockUsers();
+    mockedUsers = await mockUsers();
   });
 
   // 1.print chain info
@@ -130,11 +129,11 @@ describe('u3.js', () => {
 
     // 4.2 load contract with function
     it('contract(load)', async () => {
-      const config = { keyProvider: mockedUsers['bob'].private_key };
+      const config = { keyProvider: mockedUsers['ben'].private_key };
       const u3 = createU3(config);
-      let account = 'bob';
+      let account = 'ben';
       const tr = await u3.contract(account);
-      const result = await tr.transfer('bob', 'alice', '1.0000 EBFCBFC', 'memo');
+      const result = await tr.hi(format.encodeName('ben'), 32, 'hello',{authorization:[`ben@active`]});
 
       let tx = await u3.getTxByTxId(result.transaction_id);
       while (!tx.irreversible) {
@@ -177,7 +176,12 @@ describe('u3.js', () => {
       await u3.transaction(account, token => {
         token.create(account, '10000000.0000 ' + customCurrency);
         token.issue(account, '10000000.0000 ' + customCurrency, 'issue');
-        token.transfer(account, 'ben', '1000.0000 ' + customCurrency, '');
+        //token.transfer(account, 'ben', '1000.0000 ' + customCurrency, '');
+      });
+
+      await u3.getCurrencyStats({
+        'code': 'bob',
+        'symbol': customCurrency
       });
 
       await u3.getCurrencyBalance({
@@ -618,12 +622,34 @@ describe('u3.js', () => {
   });
 
 
+  // 6 event
+  describe('subscribe', () => {
+
+    // 6.1 subscribe event
+    it('subscribe', async () => {
+      const config = { keyProvider: mockedUsers['ben'].private_key };
+      const u3 = createU3(config);
+      const sub = await u3.registerEvent('ben', 'http://127.0.0.1:4444');
+      console.log(sub)
+    });
+
+    // 6.2 unsubscribe event
+    it('unsubscribe', async () => {
+      const config = { keyProvider: mockedUsers['ben'].private_key };
+      const u3 = createU3(config);
+      const unSub = await u3.unregisterEvent('ultrainio', 'http://127.0.0.1:4444');
+      console.log(unSub)
+    });
+
+
+  });
+
   const randomName = () => {
-    return U3Utils.randomString().substring(0, 4) + U3Utils.randomNumber(10000000, 90000000);
+    return U3Utils.randomString(12,'.012345abcdefghijklmnopqrstuvwxyz');
   };
 
   const randomAsset = () => {
-    U3Utils.randomString().toUpperCase().substring(0, 4);
+    return U3Utils.randomString().toUpperCase().substring(0, 4);
   };
 
 });
