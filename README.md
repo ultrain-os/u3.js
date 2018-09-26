@@ -20,7 +20,8 @@ Note:
 
 >  u3.js will interactive with api service using the default configuration on the below and you can custom them. 
 
->  httpEndpoint is the realtime data rest service serving by the ultrain-chain node. httpEndpoint_history is express api service just for history data query which you can launch it by yourself. the source code is here: `https://github.com/ultrain-os/ultrain-rest-api.git`
+>  httpEndpoint is the realtime data rest service serving by the ultrain-chain node. 
+httpEndpoint_history is express api service just for history data query which you can launch it by yourself. the source code is here: `https://github.com/ultrain-os/ultrain-rest-api.git`
 
 > * httpEndpoint: "http://127.0.0.1:8888",
 > * httpEndpoint_history: "http://127.0.0.1:3000"

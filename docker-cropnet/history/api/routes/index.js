@@ -48,7 +48,12 @@ router.post('/accounts', async function (req, res, next) {
   let queryParams = req.body.queryParams || {};
   let sortParams = req.body.sortParams || { _id: -1 };
 
-  let result = await History.getAllAccounts(page, pageSize, queryParams, sortParams);
+  let result;
+  if(req.query.type && req.query.type == 'clow'){
+    result = await History.getAllAccountsForClow(page, pageSize, queryParams, sortParams);
+  }else{
+    result = await History.getAllAccounts(page, pageSize, queryParams, sortParams);
+  }
   res.json(result);
   next();
 });

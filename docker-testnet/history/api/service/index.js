@@ -70,7 +70,21 @@ exports.getAllBlocks = async function (page, pageSize, queryParams, sortParams) 
  */
 exports.getAllAccounts = async function (page, pageSize, queryParams, sortParams) {
     const rs = await dbHelper.pageQuery(page, pageSize, Accounts, queryParams, sortParams);
-    return JSON.parse(JSON.stringify(rs));;
+    return JSON.parse(JSON.stringify(rs));
+}
+
+/**
+ * getAllAccountsForClow
+ * @param {*} page 
+ * @param {*} pageSize 
+ * @param {*} queryParams 
+ * @param {*} sortParams 
+ */
+exports.getAllAccountsForClow = async function(page, pageSize, queryParams, sortParams){
+    const excludeUser = ['ultrainio','utrio.code','ultrio.bpay','utrio.msig','utrio.names','utrio.ram','utrio.ramfee','utrio.saving','utrio.stake','utrio.token','utrio.vpay','exchange'];
+    queryParams = { name: {$nin: excludeUser }};
+    const rs = await dbHelper.pageQuery(page, pageSize, Accounts, queryParams, sortParams);
+    return JSON.parse(JSON.stringify(rs));
 }
 
 /**
@@ -135,9 +149,11 @@ exports.getActionsByTxid = async function (trx_id) {
  * @param {String} account name of account eg. test1
  */
 exports.getActionsByAccount = async function (page, pageSize, queryParams, sortParams) {
-    queryParams = {
-        "authorization.actor":queryParams.account_name
-    }
+    // const typeList = ['']
+    queryParams = { $or: [ 
+        { "data.to": queryParams.account_name }, 
+        { "data.receiver": queryParams.account_name }, 
+        { "authorization.actor": queryParams.account_name } ] };
     const rs = await dbHelper.pageQuery(page, pageSize, Actions, queryParams, sortParams);
     return JSON.parse(JSON.stringify(rs));
 }

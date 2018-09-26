@@ -129,13 +129,16 @@ describe('u3.js', () => {
 
     // 4.2 load contract with function
     it('contract(load)', async () => {
-      const config = { keyProvider: mockedUsers['ben'].private_key };
+      const config = { keyProvider: mockedUsers['bob'].private_key };
       const u3 = createU3(config);
-      let account = 'ben';
-      const tr = await u3.contract(account);
-      const result = await tr.hi(format.encodeName('ben'), 32, 'hello',{authorization:[`ben@active`]});
+      let account = 'bob';
+      const tr = await u3.contract(account)
+        /*.then(sm=>{
+        sm.transfer('bob', 'ben', '1.0000 UGAS','', {authorization:[`bob@active`]});
+      })*/
+      const result = await tr.transfer('bob', 'ben', '1.0000 UGAS','', {authorization:[`bob@active`]});
 
-      let tx = await u3.getTxByTxId(result.transaction_id);
+      /*let tx = await u3.getTxByTxId(result.transaction_id);
       while (!tx.irreversible) {
         await U3Utils.wait(1000);
         tx = await u3.getTxByTxId(result.transaction_id);
@@ -143,7 +146,7 @@ describe('u3.js', () => {
           console.log(tx);
           break;
         }
-      }
+      }*/
     });
 
     //4.3 get contract detail (wast,abi)
@@ -245,7 +248,7 @@ describe('u3.js', () => {
       //using { sign: false, broadcast: false } to create a U3 instance and call some function
       const u3_offline = createU3({ sign: false, broadcast: false });
       let unsigned_transaction = await u3_offline.transfer('ultrainio', 'ben', '1.0000 ' + defaultConfig.symbol, '');
-      //console.log(unsigned_transaction);
+      console.log(unsigned_transaction);
 
       //online sign it in wallet
       const u3_online = createU3();
