@@ -160,7 +160,23 @@ await u3.transaction(tr => { tr.anyAction() }, {keyProvider})
   await u3.createUser(params);
    
   ```
-   
+ 
+ 
+## Transfer
+
+transfer functions are used more frequently. 
+
+* transfer(from,to,content,memo)  the content param should be using strict format with right decimal and symbol, eg '1.0000 UGAS'
+
+```
+const u3 = createU3(config);
+
+// with positional parameters
+await u3.transfer('ben', 'bob', '1.2000 UGAS', '')
+// or with named parameters
+await u3.transfer({from: 'bob', to: 'ben', quantity: '1.3000 UGAS', memo: ''})
+```
+  
 ## Sign
 
 #### send unsigned_transaction
