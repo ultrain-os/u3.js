@@ -139,34 +139,99 @@ await u3.anyAction('args', {keyProvider})
 await u3.transaction(tr => { tr.anyAction() }, {keyProvider})
 ```
 
+## create Account
 
+   create accounts will need some staked tokens for RAM and bandwidth.
+   
+  ```
+ const u3 = createU3(config);
+ const name = 'abc';
+ let params = {
+     creator: 'ultrainio',
+     name: name,
+     owner: pubkey,
+     active: pubkey,
+     updateable: 0,
+     ram_bytes: 6666,
+     stake_net_quantity: '1.0000 UGAS',
+     stake_cpu_quantity: '1.0000 UGAS',
+     transfer: 0
+  };
+  await u3.createUser(params);
+   
+  ```
+   
 ## Sign
 
 #### send unsigned_transaction
 
 Using `{ sign: false, broadcast: false }` to create a U3 instance and do some action.
 And Then send the unsigned_transaction object to the ultrain-chain wallet.
-      
-    const u3_offline = createU3({ sign: false, broadcast: false });
-    
-    let unsigned_transaction = await u3_offline.transfer('ultrainio', 'ben', '1 UGAS', 'uu');
+ ```
+ 
+  const u3_offline = createU3({ sign: false, broadcast: false });
+     
+  let unsigned_transaction = await u3_offline.transfer('ultrainio', 'ben', '1 UGAS', 'uu');
+
+```     
               
 #### sign and push signed_transaction
 
 In the wallet you can provide your privateKey or mnemonic to make a signature. 
 And then push the signedTransaction to the ultrain-chain.
-
-    const u3_online = createU3();
-    let signature = await u3_online.sign(unsigned_transaction, privateKeyOrMnemonic);
-    if (signature) {
+```
+  const u3_online = createU3();
+  let signature = await u3_online.sign(unsigned_transaction, privateKeyOrMnemonic, chainId);
+  if (signature) {
      let signedTransaction = Object.assign({}, unsigned_transaction.transaction, { signatures: [signature] });
      let processedTransaction = await u3_online.pushTx(signedTransaction);
-    }
+  }
+
+```
+    
 
 ## Contracts
 
 #### deploy
 
-#### call
+Deploy and call smart contracts. Before you deploy the smart contract, you need to compile the typescript source files
+to webassembly targets, which are *.abi,*.wast,*.wasm.
+* deploy(contracts_files_path, deploy_account)  the contracts_files_path param is the absolute path of *.abi,*.wast,*.wasm.
+and the deploy_account is the one who will deploy the smart contract.
 
-## Call Actions
+```
+  const u3 = createU3(config);
+  await u3.deploy(path.resolve(__dirname, '../contracts/token/token'), 'bob');
+
+```
+
+
+#### call actions
+
+```
+const u3 = createU3(config);
+const tr = await u3.contract('ben');
+await tr.transfer('bob', 'ben', '1.0000 UGAS','');
+
+//or maybe like this
+await u3.contract('ben').then(sm => sm.transfer('bob', 'ben', '1.0000 UGAS',''))
+
+// Transaction with multiple contracts
+await u3.transaction(['ben', 'bob'], ({sm1, sm2}) => {
+   sm1.myaction(..)
+   sm2.myaction(..)
+})
+```
+
+#### custom Token
+
+
+```
+const u3 = createU3(config);
+const account = 'bob';
+await u3.transaction(account, token => {
+    token.create(account, '10000000.0000 DDD');
+    token.issue(account, '10000000.0000 DDD', 'issue');
+});
+```
+
