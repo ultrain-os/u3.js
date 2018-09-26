@@ -225,7 +225,7 @@ async function getRamrate() {
     let base_balance = rs.rows[0].base.balance.split(' ')[0];
 
     let ramrate = (1 * quote_balance) / (1 + base_balance / 1024);
-    return `${ramrate} UGAS/KB`;
+    return `${ramrate} ${defaultConfig.symbol}/KB`;
   }else{
     return rs;
   }
