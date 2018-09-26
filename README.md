@@ -233,5 +233,10 @@ await u3.transaction(account, token => {
     token.create(account, '10000000.0000 DDD');
     token.issue(account, '10000000.0000 DDD', 'issue');
 });
+
+const balance = await u3.getCurrencyBalance(account, account, 'DDD')
+console.log('currency balance', balance)
 ```
+
+
 
