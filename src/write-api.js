@@ -1,5 +1,5 @@
 const assert = require("assert");
-const ecc = require("./ecc");
+const ecc = require("./utils/index");
 const Fcbuffer = require("fcbuffer");
 const createHash = require("create-hash");
 const processArgs = require("./utils/process-args");

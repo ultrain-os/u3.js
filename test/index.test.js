@@ -645,7 +645,7 @@ describe('u3.js', () => {
   });
 
   const randomName = () => {
-    return U3Utils.randomString(12,'.012345abcdefghijklmnopqrstuvwxyz');
+    return U3Utils.randomString(12,'12345abcdefghijklmnopqrstuvwxyz');
   };
 
   const randomAsset = () => {

@@ -1,7 +1,7 @@
 {
   "get_sourcerate": {
     "brief": "Return net rate and cpu rate",
-    "params":{
+    "params": {
       "account_name": "name"
     },
     "results": {
@@ -40,9 +40,18 @@
   "get_scheduled_transactions": {
     "brief": "",
     "params": {
-      "json": { "type": "bool", "default": false},
-      "lower_bound": {"type": "string", "doc": "timestamp OR transaction ID"},
-      "limit": {"type": "uint32", "default": "50"}
+      "json": {
+        "type": "bool",
+        "default": false
+      },
+      "lower_bound": {
+        "type": "string",
+        "doc": "timestamp OR transaction ID"
+      },
+      "limit": {
+        "type": "uint32",
+        "default": "50"
+      }
     },
     "results": {
       "vector": "transactions",
@@ -56,20 +65,19 @@
     "brief": "Return general network information.",
     "params": null,
     "results": {
-      "server_version" : "string",
-      "head_block_num" : "uint32",
-      "last_irreversible_block_num" : "uint32",
-      "last_irreversible_block_id" : "block_id",
-      "head_block_id" : "block_id",
-      "head_block_time" : "time_point_sec",
-      "head_block_producer" : "account_name",
-      "virtual_block_cpu_limit" : "uint64",
-      "virtual_block_net_limit" : "uint64",
-      "block_cpu_limit" : "uint64",
-      "block_net_limit" : "uint64"
+      "server_version": "string",
+      "head_block_num": "uint32",
+      "last_irreversible_block_num": "uint32",
+      "last_irreversible_block_id": "block_id",
+      "head_block_id": "block_id",
+      "head_block_time": "time_point_sec",
+      "head_block_producer": "account_name",
+      "virtual_block_cpu_limit": "uint64",
+      "virtual_block_net_limit": "uint64",
+      "block_cpu_limit": "uint64",
+      "block_net_limit": "uint64"
     }
   },
-
   "get_block_info": {
     "brief": "Fetch a block from the blockchain.",
     "params": {
@@ -91,7 +99,6 @@
       "unknown_block_exception": "Could not find reversible block"
     }
   },
-
   "get_account_info": {
     "brief": "Fetch a blockchain account",
     "params": {
@@ -114,12 +121,14 @@
       "voter_info": "variant"
     }
   },
-
   "get_contract": {
     "brief": "Fetch smart contract code",
     "params": {
       "account_name": "name",
-      "code_as_wasm": {"type": "bool", "default": false}
+      "code_as_wasm": {
+        "type": "bool",
+        "default": false
+      }
     },
     "results": {
       "account_name": "name",
@@ -129,7 +138,6 @@
       "abi": "optional<abi_def>"
     }
   },
-
   "get_abi": {
     "params": {
       "account_name": "name"
@@ -139,7 +147,6 @@
       "abi": "abi_def?"
     }
   },
-
   "get_raw_code_and_abi": {
     "params": {
       "account_name": "name"
@@ -150,18 +157,29 @@
       "abi": "abi_def?"
     }
   },
-
   "get_table_records": {
     "brief": "Fetch smart contract data from an account.",
     "params": {
-      "json": { "type": "bool", "default": false},
+      "json": {
+        "type": "bool",
+        "default": false
+      },
       "code": "name",
       "scope": "string",
       "table": "name",
       "table_key": "string",
-      "lower_bound": {"type": "string", "default": "0"},
-      "upper_bound": {"type": "string", "default": "-1"},
-      "limit": {"type": "uint32", "default": "10"},
+      "lower_bound": {
+        "type": "string",
+        "default": "0"
+      },
+      "upper_bound": {
+        "type": "string",
+        "default": "-1"
+      },
+      "limit": {
+        "type": "uint32",
+        "default": "10"
+      },
       "key_type": {
         "type": "string",
         "doc": "The key type of --index, primary only supports (i64), all others support (i64, i128, i256, float64, float128). Special type 'name' indicates an account name."
@@ -182,7 +200,6 @@
       }
     }
   },
-
   "abi_json2bin": {
     "brief": "Manually serialize json into binary hex.  The binayargs is usually stored in Action.data.",
     "params": {
@@ -194,7 +211,6 @@
       "binargs": "bytes"
     }
   },
-
   "abi_bin2json": {
     "brief": "Convert bin hex back into Abi json definition.",
     "params": {
@@ -208,7 +224,6 @@
       "required_auth": "name[]"
     }
   },
-
   "get_required_keys": {
     "params": {
       "transaction": "transaction",
@@ -216,7 +231,6 @@
     },
     "results": "Set[public_key]"
   },
-
   "push_block": {
     "brief": "Append a block to the chain database.",
     "params": {
@@ -224,7 +238,6 @@
     },
     "results": null
   },
-
   "push_tx": {
     "brief": "Attempts to push the transaction into the pending queue.",
     "params": {
@@ -235,13 +248,27 @@
       "processed": "bytes"
     }
   },
-
   "push_txs": {
     "brief": "Attempts to push transactions into the pending queue.",
     "params": {
       "signed_transaction[]": "signed_transaction"
     },
     "results": "vector[push_transaction.results]"
+  },
+  "register_event": {
+    "brief": "subscribe to ultrain chain event.",
+    "params": {
+      "account": "name",
+      "post_url": "string"
+    },
+    "results": ""
+  },
+  "unregister_event": {
+    "brief": "unsubscribe to ultrain chain event.",
+    "params": {
+      "account": "name",
+      "post_url": "string"
+    },
+    "results": ""
   }
-
 }
