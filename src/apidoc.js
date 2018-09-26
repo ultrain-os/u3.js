@@ -1,5 +1,4 @@
 /** @namespace chain*/
-/** @namespace history*/
 /** @namespace token*/
 
 
@@ -148,32 +147,20 @@ function pushTx(){}
 function pushTxs(){}
 
 /**
-* @param {account_name} account_name - 
-* @param {int32?} pos - 
-* @param {int32?} offset - 
-* @memberOf history
+* subscribe to ultrain chain event.
+* @param {name} account - 
+* @param {string} post_url - 
+* @memberOf chain
 */
-function getActions(){}
+function registerEvent(){}
 
 /**
-* Retrieve a transaction from the blockchain.
-* @param {transaction_id_type} id - 
-* @param {uint32?} block_num_hint - 
-* @memberOf history
+* unsubscribe to ultrain chain event.
+* @param {name} account - 
+* @param {string} post_url - 
+* @memberOf chain
 */
-function getTransaction(){}
-
-/**
-* @param {public_key_type} public_key - 
-* @memberOf history
-*/
-function getKeyAccounts(){}
-
-/**
-* @param {account_name} controlling_account - 
-* @memberOf history
-*/
-function getControlledAccounts(){}
+function unregisterEvent(){}
 
 /**
 * @param {asset} balance - 

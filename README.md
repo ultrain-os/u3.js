@@ -1,6 +1,6 @@
 ## Introduction
 
-U3.js is a set of sdk for javascript.
+sets of sdk wrapped in javascript for common purpose.
 
 ## Precondition
 
@@ -12,9 +12,9 @@ U3.js is a set of sdk for javascript.
     
         > killall Docker && open /Applications/Docker.app
     
-* Start a ultrain-chain node
+* Start building a local ultrain-chain consensus net
 
-        > cd u3.js/docker && ./start.sh
+        > cd u3.js/docker-testnet && ./start.sh
         
 Note: 
 
@@ -73,6 +73,8 @@ if you use u3.js in browser environment, reference the example below.
         </html>
 
 ## Configuration
+
+
 
 ## Sign
 

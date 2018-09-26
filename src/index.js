@@ -9,7 +9,7 @@ try {
 const fs = require('fs');
 const path = require('path');
 const configDefaults = require('./config');
-const ecc = require('./ecc');
+const ecc = require('./utils/index');
 const Fcbuffer = require('fcbuffer');
 const apiGen = require('./utils/apigen');
 const api = require('./v1/chain');

@@ -1,4 +1,4 @@
-const {Signature, PublicKey} = require('./ecc')
+const {Signature, PublicKey} = require('./utils/index')
 const Fcbuffer = require('fcbuffer')
 const ByteBuffer = require('bytebuffer')
 const assert = require('assert')
