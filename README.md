@@ -13,6 +13,10 @@ sets of sdk wrapped in javascript for common purpose.
         > docker --registry-mirror=https://registry.docker-cn.com daemon
     
         > killall Docker && open /Applications/Docker.app
+        
+  or you maybe config it like this:
+  
+  <img src="https://user-images.githubusercontent.com/1866848/46121838-3d7f8000-c248-11e8-933a-fbcf30cfc443.png" width="500" hegiht="700" align=center />
     
 * Start building a local ultrain-chain consensus net
 
