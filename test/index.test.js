@@ -132,13 +132,10 @@ describe('u3.js', () => {
       const config = { keyProvider: mockedUsers['bob'].private_key };
       const u3 = createU3(config);
       let account = 'bob';
-      const tr = await u3.contract(account)
-        /*.then(sm=>{
-        sm.transfer('bob', 'ben', '1.0000 UGAS','', {authorization:[`bob@active`]});
-      })*/
-      const result = await tr.transfer('bob', 'ben', '1.0000 UGAS','', {authorization:[`bob@active`]});
+      const tr = await u3.contract(account);
+      const result = await tr.transfer('bob', 'ben', '1.0000 UGAS', '', { authorization: [`bob@active`] });
 
-      /*let tx = await u3.getTxByTxId(result.transaction_id);
+      let tx = await u3.getTxByTxId(result.transaction_id);
       while (!tx.irreversible) {
         await U3Utils.wait(1000);
         tx = await u3.getTxByTxId(result.transaction_id);
@@ -146,7 +143,7 @@ describe('u3.js', () => {
           console.log(tx);
           break;
         }
-      }*/
+      }
     });
 
     //4.3 get contract detail (wast,abi)
@@ -420,6 +417,23 @@ describe('u3.js', () => {
       assert.ok(rate !== '');
     });
 
+
+    // 5.13 Returns an object containing rows from the specified table.
+    it('get table records', async () => {
+      const keyProvider = () => {
+        return [wif];
+      };
+      const u3 = createU3({ keyProvider });
+      const balance = await u3.getTableRecords({
+        code: 'utrio.token',//smart contract name
+        scope: 'bob',//account name
+        table: 'accounts',//table name
+        json: true
+      });
+      assert.ok(balance !== '');
+    });
+
+
     // get accounts array by public key
     it('getKeyAccounts', async () => {
       const u3 = createU3({ signProvider });
@@ -633,7 +647,7 @@ describe('u3.js', () => {
       const config = { keyProvider: mockedUsers['ben'].private_key };
       const u3 = createU3(config);
       const sub = await u3.registerEvent('ben', 'http://127.0.0.1:4444');
-      console.log(sub)
+      console.log(sub);
     });
 
     // 6.2 unsubscribe event
@@ -641,14 +655,14 @@ describe('u3.js', () => {
       const config = { keyProvider: mockedUsers['ben'].private_key };
       const u3 = createU3(config);
       const unSub = await u3.unregisterEvent('ultrainio', 'http://127.0.0.1:4444');
-      console.log(unSub)
+      console.log(unSub);
     });
 
 
   });
 
   const randomName = () => {
-    return U3Utils.randomString(12,'12345abcdefghijklmnopqrstuvwxyz');
+    return U3Utils.randomString(12, '12345abcdefghijklmnopqrstuvwxyz');
   };
 
   const randomAsset = () => {
