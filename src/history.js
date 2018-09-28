@@ -259,3 +259,12 @@ async function search(param) {
 
   return rs;
 }
+
+/**
+ * get createaccountbyname 
+ * @param {String} name 
+ * @memberOf history
+ */
+exports.getCreateAccountByName = function async (name){
+  return fetchUrl(`${httpEndPoint}/getcreateaccount`,{ name });
+}
