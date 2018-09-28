@@ -22,7 +22,8 @@ module.exports = function(config) {
     getExistAccount,
     getBlocksByContract,
     getTxTraceByTxid,
-    search
+    search,
+    getCreateAccountByName
   };
 };
 
@@ -265,6 +266,6 @@ async function search(param) {
  * @param {String} name 
  * @memberOf history
  */
-exports.getCreateAccountByName = function async (name){
+function getCreateAccountByName(name){
   return fetchUrl(`${httpEndPoint}/getcreateaccount`,{ name });
 }

@@ -2,7 +2,7 @@
 const assert = require('assert');
 const { U3 } = require('../index');
 const u3Instance = U3.createU3({
-    httpEndpoint_history: 'http://127.0.0.1:3001'
+    httpEndpoint_history: 'http://127.0.0.1:3000'
 });
 
 describe('history', async () => {
@@ -108,6 +108,13 @@ describe('history', async () => {
     it("search by account", async () => {
         let account = "jack";
         let rs = await u3Instance.search(account);
+        console.log(rs);
+        assert.ok(rs);
+    })
+
+    it("getCreateAccountByName", async () => {
+        let account = "ot112";
+        let rs = await u3Instance.getCreateAccountByName(account);
         console.log(rs);
         assert.ok(rs);
     })
