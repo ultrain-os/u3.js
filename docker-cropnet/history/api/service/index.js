@@ -82,7 +82,13 @@ exports.getAllAccounts = async function (page, pageSize, queryParams, sortParams
  */
 exports.getAllAccountsForClow = async function(page, pageSize, queryParams, sortParams){
     const excludeUser = ['ultrainio','utrio.code','ultrio.bpay','utrio.msig','utrio.names','utrio.ram','utrio.ramfee','utrio.saving','utrio.stake','utrio.token','utrio.vpay','exchange'];
-    queryParams = { name: {$nin: excludeUser }};
+    
+    if(queryParams.name){
+        queryParams = { name: queryParams.name };
+    }else{
+        queryParams = { name: {$nin: excludeUser }};
+    }
+    
     const rs = await dbHelper.pageQuery(page, pageSize, Accounts, queryParams, sortParams);
     return JSON.parse(JSON.stringify(rs));
 }
@@ -155,7 +161,17 @@ exports.getActionsByAccount = async function (page, pageSize, queryParams, sortP
         { "data.receiver": queryParams.account_name }, 
         { "authorization.actor": queryParams.account_name } ] };
     const rs = await dbHelper.pageQuery(page, pageSize, Actions, queryParams, sortParams);
-    return JSON.parse(JSON.stringify(rs));
+    let pageInfo = JSON.parse(JSON.stringify(rs));
+    let actions = pageInfo.results;
+    // get trx createdtime / updatedtime
+    for(let i in actions){
+        let txInfo = await Txs.findOne({ trx_id: actions[i].trx_id},{updatedAt:1,createdAt:1});
+        txInfo = JSON.parse(JSON.stringify(txInfo));
+        actions[i].updatedAt = txInfo.updatedAt;
+        actions[i].createdAt = txInfo.createdAt;
+    }
+
+    return pageInfo;
 }
 
 /**
@@ -213,4 +229,27 @@ exports.search = async function(query){
         "data": rs,
         "type": type
     };
+}
+
+/**
+ * 根据用户名查询用户创建者
+ * @param {String} name 
+ */
+exports.getCreateAccountByName = async function(name){
+    let rs = await Actions.findOne({"data.name":name,"name":"newaccount"});
+    if(!rs){
+        return {};
+    }
+
+    let infoObj = JSON.parse(JSON.stringify(rs));
+
+    // 根据trx_id 获取创建日期
+    let txInfo = await Txs.findOne({ trx_id: infoObj.trx_id},{updatedAt:1});
+
+    txInfo = JSON.parse(JSON.stringify(txInfo));
+    
+    return {
+        "account": infoObj.data.creator,
+        "updatedAt": txInfo.updatedAt
+    }
 }

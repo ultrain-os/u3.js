@@ -144,14 +144,28 @@ describe('actions', () =>{
     })
 
     it("actions by account", ()=>{
-        requestData.queryParams = {account_name:"ultrainio"}
+        requestData.queryParams = {account_name:"ot112"}
         request({
-            url: "http://127.0.0.1:3001/actions/by/account",
+            url: "http://127.0.0.1:3000/actions/by/account",
             method: "POST",
             headers: {
                 "content-type": "application/json",
             },
             body: JSON.stringify(requestData)
+        }, function(error, response, body) {
+            console.log(body);
+            assert.ok(response.statusCode == 200);
+        });
+    })
+
+    it("getCreateAccountByName", async ()=>{
+        request({
+            url: "http://127.0.0.1:3000/getcreateaccount",
+            method: "POST",
+            headers: {
+                "content-type": "application/json",
+            },
+            body: JSON.stringify({name:"ot112"})
         }, function(error, response, body) {
             console.log(body);
             assert.ok(response.statusCode == 200);

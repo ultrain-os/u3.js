@@ -178,6 +178,16 @@ router.post('/search/:query', async function (req, res, next) {
   next();
 });
 
+router.post('/getcreateaccount', async function (req, res, next) {
+  if(!req.params || !req.body.name){
+    return res.json({error_msg:'invaild params.'});
+  }
+
+  let result = await History.getCreateAccountByName(req.body.name);
+  res.json(result);
+  next();
+});
+
 router.get('/', function (req, res, next) {
   res.send("test");
 });
