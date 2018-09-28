@@ -1,33 +1,28 @@
-<img src="https://user-images.githubusercontent.com/1866848/46092827-535d5880-c1e8-11e8-8a65-f5d9d74df96e.png" width="150" hegiht="300" align=center />
-
-## Introduction
+<img src="https://user-images.githubusercontent.com/1866848/46092827-535d5880-c1e8-11e8-8a65-f5d9d74df96e.png" width="250" align=center />
 
 sets of sdk wrapped in javascript for common purpose.
 
 ## Precondition
 
-* Install docker on your machine
+* Install docker first on your machine. Download docker from [docker center](https://docs.docker.com/docker-for-mac/install/): 
 
-* Config `--registry-mirror` as docker daemon process
-    
-        > docker --registry-mirror=https://registry.docker-cn.com daemon
-    
-        > killall Docker && open /Applications/Docker.app
-        
-  or you maybe config it like this:
-  
-  <img src="https://user-images.githubusercontent.com/1866848/46121838-3d7f8000-c248-11e8-933a-fbcf30cfc443.png" width="500" hegiht="700" align=center />
+* Click the Docker for mac app icon in the taskbar -> Perferences... -> Daemon -> Registry mirrors. Fill in the accelerator address https://registry.docker-cn.com in the list. Once the modification is complete, click the Apply & Restart button and Docker will restart and apply the configured mirror address.
+
+<img src="https://user-images.githubusercontent.com/1866848/46121838-3d7f8000-c248-11e8-933a-fbcf30cfc443.png" width="500" hegiht="700" align=center />
+              
     
 * Start building a local ultrain-chain consensus net
 
         > cd u3.js/docker-testnet && ./start.sh
-        
+ 
+
+
+
 Note: 
 
 >  u3.js will interactive with api service using the default configuration on the below and you can custom them. 
 
->  httpEndpoint is the realtime data rest service serving by the ultrain-chain node. 
-httpEndpoint_history is express api service just for history data query which you can launch it by yourself. the source code is here: `https://github.com/ultrain-os/ultrain-rest-api.git`
+>  httpEndpoint is the realtime data rest service serving by the ultrain-chain node. httpEndpoint_history is express api service just for history data query which you can launch it by yourself. the source code is here: `https://github.com/ultrain-os/ultrain-rest-api.git`
 
 > * httpEndpoint: "http://127.0.0.1:8888",
 > * httpEndpoint_history: "http://127.0.0.1:3000"
@@ -110,8 +105,8 @@ logger: {
   log: config.verbose ? console.log : null,  // null to disable
   error: config.verbose ? console.error : null,
 }
-
 ```
+
 
 For example, redirect error logs: config.logger = {error: (...args) => ..}
 * <b>authorization</b> - replace the default u3.js authorization on actions. An authorization provided here may still be over-written by specifying an authorization for each individual action.
@@ -119,6 +114,7 @@ For example, redirect error logs: config.logger = {error: (...args) => ..}
 For example, if most actions in an dapp are based on the posting key, this would replace the default active authorization with a posting authorization:
 
 {authorization: 'xxx@active'}
+
 
 #### Options
 
@@ -190,14 +186,14 @@ await u3.transfer({from: 'bob', to: 'ben', quantity: '1.3000 UGAS', memo: ''})
 
 Using `{ sign: false, broadcast: false }` to create a U3 instance and do some action.
 And Then send the unsigned_transaction object to the ultrain-chain wallet.
- ```
- 
+
+  
+```
   const u3_offline = createU3({ sign: false, broadcast: false });
      
   let unsigned_transaction = await u3_offline.transfer('ultrainio', 'ben', '1 UGAS', 'uu');
-
-```     
-              
+```
+           
 #### sign and push signed_transaction
 
 In the wallet you can provide your privateKey or mnemonic to make a signature. 
@@ -212,7 +208,6 @@ And then push the signedTransaction to the ultrain-chain.
 
 ```
     
-
 ## Contracts
 
 #### deploy
