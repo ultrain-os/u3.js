@@ -2,23 +2,30 @@
 const assert = require('assert');
 const isEmpty = require('lodash.isempty');
 const isString = require('lodash.isstring');
+const fs = require('fs');
 const path = require('path');
-const mockUsers = require('../src/mock-users');
 const defaultConfig = require('../src/config');
 const U3Utils = require('u3-utils/dist/es5');
+
 
 const { createU3, format, ecc, Fcbuffer, version } = require('../src');
 
 const wif = '5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79zkvFD3'; //ultrainio
 const pubkey = 'UTR6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV'; //ultrainio
+
+const readKeysFromFiles = () => {
+  let accounts = ['ben', 'john', 'tony', 'jack', 'bob', 'tom', 'jerry', 'alice'];
+  let keys = [];
+  for (let a in accounts) {
+    const data = fs.readFileSync(path.resolve(__dirname, '../src/scratch/' + accounts[a]));
+    keys[accounts[a]] = JSON.parse(data.toString());
+  }
+  return keys;
+};
+
+const mockedUsers = readKeysFromFiles();
+
 describe('u3.js', () => {
-
-  let mockedUsers = {};
-
-  before(async () => {
-    console.log('initialize 8 test users...\n');
-    mockedUsers = await mockUsers();
-  });
 
   // 1.print chain info
   describe('chainInfo', () => {
@@ -638,7 +645,6 @@ describe('u3.js', () => {
 
   });
 
-
   // 6 event
   describe('subscribe', () => {
 
@@ -668,5 +674,6 @@ describe('u3.js', () => {
   const randomAsset = () => {
     return U3Utils.randomString().toUpperCase().substring(0, 4);
   };
+
 
 });

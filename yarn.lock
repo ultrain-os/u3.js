@@ -3906,10 +3906,6 @@ load-json-file@^4.0.0:
     pify "^3.0.0"
     strip-bom "^3.0.0"
 
-localStorage@^1.0.3:
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/localStorage/-/localStorage-1.0.3.tgz#e6b89a57bb760a156a38cc87e0f2550f6ed413d8"
-
 locate-path@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/locate-path/-/locate-path-2.0.0.tgz#2b568b265eec944c6d9c0de9c3dbbbca0354cd8e"
@@ -4389,12 +4385,6 @@ node-fetch@^1.0.1:
   dependencies:
     encoding "^0.1.11"
     is-stream "^1.0.1"
-
-node-localstorage@^1.3.1:
-  version "1.3.1"
-  resolved "http://registry.npmjs.org/node-localstorage/-/node-localstorage-1.3.1.tgz#3177ef42837f398aee5dd75e319b281e40704243"
-  dependencies:
-    write-file-atomic "^1.1.4"
 
 node-pre-gyp@^0.10.0:
   version "0.10.3"
