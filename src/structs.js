@@ -14,7 +14,14 @@ const {
 } = require('./format')
 
 module.exports = (config = {}, extendedSchema) => {
+
   const structLookup = (lookupName, account) => {
+
+    const cachedCode = new Set(['ultrainio', 'utrio.token', 'utrio.null'])
+    if(cachedCode.has(account)) {
+      return structs[lookupName]
+    }
+
     const cache = config.abiCache.abi(account)
 
     // Lookup by ABI action "name"
