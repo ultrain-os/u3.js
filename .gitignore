@@ -8,5 +8,4 @@ package-lock.json
 
 .nyc_output
 coverage
-scratch
 .vscode/*
