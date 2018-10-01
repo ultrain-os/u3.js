@@ -140,7 +140,7 @@ describe('u3.js', () => {
       const u3 = createU3(config);
       let account = 'bob';
       const tr = await u3.contract(account);
-      const result = await tr.transfer('bob', 'ben', '1.0000 UGAS', '', { authorization: [`bob@active`] });
+      const result = await tr.transfer('bob', 'ben', '1.0000 VHOZ', '', { authorization: [`bob@active`] });
 
       let tx = await u3.getTxByTxId(result.transaction_id);
       while (!tx.irreversible) {
@@ -248,21 +248,21 @@ describe('u3.js', () => {
     });
 
     // 5.4 offline sign and push transaction later
-    it('offline sign', async () => {
+    it('offline sign for custom contract', async () => {
+      //----------------client---------------------//
       //using { sign: false, broadcast: false } to create a U3 instance and call some function
       const u3_offline = createU3({ sign: false, broadcast: false });
-      let unsigned_transaction = await u3_offline.transfer('ultrainio', 'ben', '1.0000 ' + defaultConfig.symbol, '');
-      console.log(unsigned_transaction);
+      let account = 'bob';
+      const tr = await u3_offline.contract(account);
+      const unsigned_transaction = await tr.transfer('bob', 'alice', '1.0000 VHOZ', '', { authorization: [`bob@active`] });
+      let signature = await u3_offline.sign(unsigned_transaction, mockedUsers['bob'].private_key, defaultConfig.chainId);
+      let signedTransaction = Object.assign({}, unsigned_transaction.transaction, { signatures: [signature] });
+      //console.log(signedTransaction);
 
-      //online sign it in wallet
+      //---------------chain-----------------------//
       const u3_online = createU3();
-      let signature = await u3_online.sign(unsigned_transaction, wif, defaultConfig.chainId);
-      if (signature) {
-        let signedTransaction = Object.assign({}, unsigned_transaction.transaction, { signatures: [signature] });
-        console.log(signedTransaction);
-        let processedTransaction = await u3_online.pushTx(signedTransaction);
-        assert.equal(processedTransaction.transaction_id, unsigned_transaction.transaction_id);
-      }
+      let processedTransaction = await u3_online.pushTx(signedTransaction);
+      assert.equal(processedTransaction.transaction_id, unsigned_transaction.transaction_id);
     });
 
     // 5.5 create user account

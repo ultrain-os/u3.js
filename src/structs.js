@@ -15,26 +15,25 @@ const {
 
 module.exports = (config = {}, extendedSchema) => {
   const structLookup = (lookupName, account) => {
-    const cachedCode = new Set(['ultrainio', 'utrio.token', 'utrio.null'])
-    if(cachedCode.has(account)) {
-      return structs[lookupName]
-    }
-    const abi = config.abiCache.abi(account)
-    const struct = abi.structs[lookupName]
-    if(struct != null) {
-      return struct
-    }
-    // TODO: move up (before `const struct = abi.structs[lookupName]`)
-    for(const action of abi.abi.actions) {
-      const {name, type} = action
-      if(name === lookupName) {
-        const struct = abi.structs[type]
+    const cache = config.abiCache.abi(account)
+
+    // Lookup by ABI action "name"
+    for(const action of cache.abi.actions) {
+      if(action.name === lookupName) {
+        const struct = cache.structs[action.type]
         if(struct != null) {
           return struct
         }
       }
     }
-    throw new Error(`Missing ABI struct or action: ${lookupName}`)
+
+    // Lookup struct by "type"
+    const struct = cache.structs[lookupName]
+    if(struct != null) {
+      return struct
+    }
+
+    throw new Error(`Missing ABI action: ${lookupName}`)
   }
 
   const forceActionDataHex = config.forceActionDataHex != null ?
