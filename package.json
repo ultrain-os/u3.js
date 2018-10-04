@@ -1,6 +1,6 @@
 {
   "name": "u3.js",
-  "version": "0.0.9",
+  "version": "0.1.0",
   "description": "Node wrapper for Ultrain API",
   "main": "index.js",
   "directories": {

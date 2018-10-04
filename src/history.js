@@ -127,6 +127,13 @@ async function getAllAccounts(page, pageSize, queryParams, sortParams) {
  * @param { Number } pageSize
  * @param { Object } queryParams
  * @param { Object } sortParams
+ * @example
+ *
+ * u3.getAllTxs(1,10,{
+ *   "actions.name":"transfer",
+ *   "actions.authorization.actor":"ben"
+ * },{_id:-1})
+ *
  * @memberOf history
  */
 function getAllTxs(page, pageSize, queryParams, sortParams) {
@@ -210,6 +217,10 @@ function getExistAccount(name) {
  * @param { String } account account name
  * @param { String } contract contract name eg. utrio.token
  * @param { String } contract_method contract method eg. transfer
+ * @example
+ *
+ * u3.getBlocksByContract(1,"ben","utrio.token","transfer");
+ *
  * @memberOf history
  */
 function getBlocksByContract(block_num, account, contract, contract_method) {

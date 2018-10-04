@@ -1,15 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    
+
     <meta charset="utf-8">
     <title>Home - Documentation</title>
-    
-    
+
+
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
     <!--[if lt IE 9]>
-      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
     <link type="text/css" rel="stylesheet" href="styles/prettify.css">
     <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
@@ -17,251 +17,143 @@
 </head>
 <body>
 
-<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<input type="checkbox" id="nav-trigger" class="nav-trigger"/>
 <label for="nav-trigger" class="navicon-button x">
-  <div class="navicon"></div>
+    <div class="navicon"></div>
 </label>
 
 <label for="nav-trigger" class="overlay"></label>
 
 <nav>
-    
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Account.html">Account</a><ul class='methods'><li data-type='method'><a href="Account.html#.ACCOUNT">ACCOUNT</a></li><li data-type='method'><a href="Account.html#.exports.NAME">exports.NAME</a></li><li data-type='method'><a href="Account.html#.isValid">isValid</a></li><li data-type='method'><a href="Account.html#.RNAME">RNAME</a></li><li data-type='method'><a href="Account.html#transfer">transfer</a></li></ul></li><li><a href="Action.html">Action</a><ul class='methods'><li data-type='method'><a href="Action.html#.ACTION">ACTION</a></li><li data-type='method'><a href="Action.html#.dispatchInline">dispatchInline</a></li><li data-type='method'><a href="Action.html#.hasAuth">hasAuth</a></li><li data-type='method'><a href="Action.html#.requireAuth">requireAuth</a></li><li data-type='method'><a href="Action.html#.requirePermissionLevel">requirePermissionLevel</a></li><li data-type='method'><a href="Action.html#.requireRecipient">requireRecipient</a></li></ul></li><li><a href="Asset.html">Asset</a><ul class='methods'><li data-type='method'><a href="Asset.html#.balanceOf">balanceOf</a></li><li data-type='method'><a href="Asset.html#.StringToSymbol">StringToSymbol</a></li><li data-type='method'><a href="Asset.html#.SymbolNameLength">SymbolNameLength</a></li><li data-type='method'><a href="Asset.html#.transfer">transfer</a></li><li data-type='method'><a href="Asset.html#add">add</a></li><li data-type='method'><a href="Asset.html#clone">clone</a></li><li data-type='method'><a href="Asset.html#divide">divide</a></li><li data-type='method'><a href="Asset.html#getAmount">getAmount</a></li><li data-type='method'><a href="Asset.html#getSymbol">getSymbol</a></li><li data-type='method'><a href="Asset.html#isAmountWithinRange">isAmountWithinRange</a></li><li data-type='method'><a href="Asset.html#isSymbolValid">isSymbolValid</a></li><li data-type='method'><a href="Asset.html#isValid">isValid</a></li><li data-type='method'><a href="Asset.html#multi">multi</a></li><li data-type='method'><a href="Asset.html#setAmount">setAmount</a></li><li data-type='method'><a href="Asset.html#setSymbol">setSymbol</a></li><li data-type='method'><a href="Asset.html#sub">sub</a></li><li data-type='method'><a href="Asset.html#symbolName">symbolName</a></li><li data-type='method'><a href="Asset.html#symbolNameLength">symbolNameLength</a></li><li data-type='method'><a href="Asset.html#symbolPrecision">symbolPrecision</a></li></ul></li><li><a href="Block.html">Block</a></li><li><a href="Contract.html">Contract</a><ul class='methods'><li data-type='method'><a href="Contract.html#onInit">onInit</a></li><li data-type='method'><a href="Contract.html#onStop">onStop</a></li></ul></li><li><a href="Crypto.html">Crypto</a><ul class='methods'><li data-type='method'><a href="Crypto.html#.assert_ripemd160">assert_ripemd160</a></li><li data-type='method'><a href="Crypto.html#.assert_sha1">assert_sha1</a></li><li data-type='method'><a href="Crypto.html#.assert_sha256">assert_sha256</a></li><li data-type='method'><a href="Crypto.html#.assert_sha512">assert_sha512</a></li><li data-type='method'><a href="Crypto.html#fromString">fromString</a></li><li data-type='method'><a href="Crypto.html#toString">toString</a></li></ul></li><li><a href="DBManager.html">DBManager</a><ul class='methods'><li data-type='method'><a href="DBManager.html#emplace">emplace</a></li><li data-type='method'><a href="DBManager.html#erase">erase</a></li><li data-type='method'><a href="DBManager.html#get">get</a></li><li data-type='method'><a href="DBManager.html#modify">modify</a></li></ul></li><li><a href="DBManager_DBManager.html">DBManager</a></li><li><a href="Logger.html">Logger</a><ul class='methods'><li data-type='method'><a href="Logger.html#flush">flush</a></li><li data-type='method'><a href="Logger.html#i">i</a></li><li data-type='method'><a href="Logger.html#s">s</a></li></ul></li><li><a href="Ripemd160.html">Ripemd160</a><ul class='methods'><li data-type='method'><a href="Ripemd160.html#fromString">fromString</a></li><li data-type='method'><a href="Ripemd160.html#toString">toString</a></li></ul></li><li><a href="SHA1.html">SHA1</a><ul class='methods'><li data-type='method'><a href="SHA1.html#fromString">fromString</a></li><li data-type='method'><a href="SHA1.html#hash">hash</a></li><li data-type='method'><a href="SHA1.html#toString">toString</a></li></ul></li><li><a href="SHA256.html">SHA256</a><ul class='methods'><li data-type='method'><a href="SHA256.html#fromString">fromString</a></li><li data-type='method'><a href="SHA256.html#toString">toString</a></li></ul></li><li><a href="SHA512.html">SHA512</a><ul class='methods'><li data-type='method'><a href="SHA512.html#fromString">fromString</a></li><li data-type='method'><a href="SHA512.html#toString">toString</a></li></ul></li><li><a href="TransferParams.html">TransferParams</a></li></ul><h3>Namespaces</h3><ul><li><a href="chain.html">chain</a><ul class='methods'><li data-type='method'><a href="chain.html#.abiBin2json">abiBin2json</a></li><li data-type='method'><a href="chain.html#.abiJson2bin">abiJson2bin</a></li><li data-type='method'><a href="chain.html#.getAbi">getAbi</a></li><li data-type='method'><a href="chain.html#.getAccountInfo">getAccountInfo</a></li><li data-type='method'><a href="chain.html#.getBlockHeaderState">getBlockHeaderState</a></li><li data-type='method'><a href="chain.html#.getBlockInfo">getBlockInfo</a></li><li data-type='method'><a href="chain.html#.getChainInfo">getChainInfo</a></li><li data-type='method'><a href="chain.html#.getContract">getContract</a></li><li data-type='method'><a href="chain.html#.getCurrencyBalance">getCurrencyBalance</a></li><li data-type='method'><a href="chain.html#.getCurrencyStats">getCurrencyStats</a></li><li data-type='method'><a href="chain.html#.getProducerSchedule">getProducerSchedule</a></li><li data-type='method'><a href="chain.html#.getRawCodeAndAbi">getRawCodeAndAbi</a></li><li data-type='method'><a href="chain.html#.getRequiredKeys">getRequiredKeys</a></li><li data-type='method'><a href="chain.html#.getScheduledTransactions">getScheduledTransactions</a></li><li data-type='method'><a href="chain.html#.getSourcerate">getSourcerate</a></li><li data-type='method'><a href="chain.html#.getTableRecords">getTableRecords</a></li><li data-type='method'><a href="chain.html#.pushBlock">pushBlock</a></li><li data-type='method'><a href="chain.html#.pushTx">pushTx</a></li><li data-type='method'><a href="chain.html#.pushTxs">pushTxs</a></li><li data-type='method'><a href="chain.html#.registerEvent">registerEvent</a></li><li data-type='method'><a href="chain.html#.unregisterEvent">unregisterEvent</a></li></ul></li><li><a href="ecc.html">ecc</a><ul class='methods'><li data-type='method'><a href="ecc.html#.generateKeyPairByMnemonic">generateKeyPairByMnemonic</a></li><li data-type='method'><a href="ecc.html#.generateKeyPairBySeed">generateKeyPairBySeed</a></li><li data-type='method'><a href="ecc.html#.generateKeyPairWithMnemonic">generateKeyPairWithMnemonic</a></li><li data-type='method'><a href="ecc.html#.privateToPublic">privateToPublic</a></li></ul></li><li><a href="history.html">history</a><ul class='methods'><li data-type='method'><a href="history.html#.getActionsByAccount">getActionsByAccount</a></li><li data-type='method'><a href="history.html#.getActionsByTxid">getActionsByTxid</a></li><li data-type='method'><a href="history.html#.getAllAccounts">getAllAccounts</a></li><li data-type='method'><a href="history.html#.getAllBlocks">getAllBlocks</a></li><li data-type='method'><a href="history.html#.getAllTxs">getAllTxs</a></li><li data-type='method'><a href="history.html#.getBlocksByContract">getBlocksByContract</a></li><li data-type='method'><a href="history.html#.getContractByName">getContractByName</a></li><li data-type='method'><a href="history.html#.getContracts">getContracts</a></li><li data-type='method'><a href="history.html#.getExistAccount">getExistAccount</a></li><li data-type='method'><a href="history.html#.getTxByTxId">getTxByTxId</a></li><li data-type='method'><a href="history.html#.getTxsByBlockNum">getTxsByBlockNum</a></li><li data-type='method'><a href="history.html#.getTxTraceByTxid">getTxTraceByTxid</a></li><li data-type='method'><a href="history.html#.search">search</a></li></ul></li><li><a href="token.html">token</a><ul class='methods'><li data-type='method'><a href="token.html#.account">account</a></li><li data-type='method'><a href="token.html#.accountName">accountName</a></li><li data-type='method'><a href="token.html#.create">create</a></li><li data-type='method'><a href="token.html#.currencyStats">currencyStats</a></li><li data-type='method'><a href="token.html#.issue">issue</a></li><li data-type='method'><a href="token.html#.transfer">transfer</a></li></ul></li></ul><h3>Global</h3><ul><li><a href="global.html#emit">emit</a></li><li><a href="global.html#intToString">intToString</a></li><li><a href="global.html#Log">Log</a></li><li><a href="global.html#Return">Return</a></li><li><a href="global.html#ReturnArray">ReturnArray</a></li><li><a href="global.html#SafeMath">SafeMath</a></li><li><a href="global.html#ultrain_assert">ultrain_assert</a></li></ul>
+
+    <h2><a href="index.html">Home</a></h2>
+    <h3>Namespaces</h3>
+    <ul>
+        <li><a href="chain.html">chain</a>
+            <ul class='methods'>
+                <li data-type='method'><a href="chain.html#.abiBin2json">abiBin2json</a></li>
+                <li data-type='method'><a href="chain.html#.abiJson2bin">abiJson2bin</a></li>
+                <li data-type='method'><a href="chain.html#.getAbi">getAbi</a></li>
+                <li data-type='method'><a href="chain.html#.getAccountInfo">getAccountInfo</a></li>
+                <li data-type='method'><a href="chain.html#.getBlockHeaderState">getBlockHeaderState</a></li>
+                <li data-type='method'><a href="chain.html#.getBlockInfo">getBlockInfo</a></li>
+                <li data-type='method'><a href="chain.html#.getChainInfo">getChainInfo</a></li>
+                <li data-type='method'><a href="chain.html#.getContract">getContract</a></li>
+                <li data-type='method'><a href="chain.html#.getCurrencyBalance">getCurrencyBalance</a></li>
+                <li data-type='method'><a href="chain.html#.getCurrencyStats">getCurrencyStats</a></li>
+                <li data-type='method'><a href="chain.html#.getProducerSchedule">getProducerSchedule</a></li>
+                <li data-type='method'><a href="chain.html#.getRawCodeAndAbi">getRawCodeAndAbi</a></li>
+                <li data-type='method'><a href="chain.html#.getRequiredKeys">getRequiredKeys</a></li>
+                <li data-type='method'><a href="chain.html#.getScheduledTransactions">getScheduledTransactions</a></li>
+                <li data-type='method'><a href="chain.html#.getSourcerate">getSourcerate</a></li>
+                <li data-type='method'><a href="chain.html#.getTableRecords">getTableRecords</a></li>
+                <li data-type='method'><a href="chain.html#.pushBlock">pushBlock</a></li>
+                <li data-type='method'><a href="chain.html#.pushTx">pushTx</a></li>
+                <li data-type='method'><a href="chain.html#.pushTxs">pushTxs</a></li>
+                <li data-type='method'><a href="chain.html#.registerEvent">registerEvent</a></li>
+                <li data-type='method'><a href="chain.html#.unregisterEvent">unregisterEvent</a></li>
+            </ul>
+        </li>
+        <li><a href="ecc.html">ecc</a>
+            <ul class='methods'>
+                <li data-type='method'><a href="ecc.html#.generateKeyPairByMnemonic">generateKeyPairByMnemonic</a></li>
+                <li data-type='method'><a href="ecc.html#.generateKeyPairBySeed">generateKeyPairBySeed</a></li>
+                <li data-type='method'><a href="ecc.html#.generateKeyPairWithMnemonic">generateKeyPairWithMnemonic</a>
+                </li>
+                <li data-type='method'><a href="ecc.html#.privateToPublic">privateToPublic</a></li>
+            </ul>
+        </li>
+        <li><a href="history.html">history</a>
+            <ul class='methods'>
+                <li data-type='method'><a href="history.html#.getActionsByAccount">getActionsByAccount</a></li>
+                <li data-type='method'><a href="history.html#.getActionsByTxid">getActionsByTxid</a></li>
+                <li data-type='method'><a href="history.html#.getAllAccounts">getAllAccounts</a></li>
+                <li data-type='method'><a href="history.html#.getAllBlocks">getAllBlocks</a></li>
+                <li data-type='method'><a href="history.html#.getAllTxs">getAllTxs</a></li>
+                <li data-type='method'><a href="history.html#.getBlocksByContract">getBlocksByContract</a></li>
+                <li data-type='method'><a href="history.html#.getContractByName">getContractByName</a></li>
+                <li data-type='method'><a href="history.html#.getContracts">getContracts</a></li>
+                <li data-type='method'><a href="history.html#.getCreateAccountByName">getCreateAccountByName</a></li>
+                <li data-type='method'><a href="history.html#.getExistAccount">getExistAccount</a></li>
+                <li data-type='method'><a href="history.html#.getTxByTxId">getTxByTxId</a></li>
+                <li data-type='method'><a href="history.html#.getTxsByBlockNum">getTxsByBlockNum</a></li>
+                <li data-type='method'><a href="history.html#.getTxTraceByTxid">getTxTraceByTxid</a></li>
+                <li data-type='method'><a href="history.html#.search">search</a></li>
+            </ul>
+        </li>
+        <li><a href="token.html">token</a>
+            <ul class='methods'>
+                <li data-type='method'><a href="token.html#.account">account</a></li>
+                <li data-type='method'><a href="token.html#.accountName">accountName</a></li>
+                <li data-type='method'><a href="token.html#.create">create</a></li>
+                <li data-type='method'><a href="token.html#.currencyStats">currencyStats</a></li>
+                <li data-type='method'><a href="token.html#.issue">issue</a></li>
+                <li data-type='method'><a href="token.html#.transfer">transfer</a></li>
+            </ul>
+        </li>
+        <li><a href="utils.html">utils</a>
+            <ul class='methods'>
+                <li data-type='method'><a href="utils.html#.DecimalImply">DecimalImply</a></li>
+                <li data-type='method'><a href="utils.html#.DecimalPad">DecimalPad</a></li>
+                <li data-type='method'><a href="utils.html#.DecimalString">DecimalString</a></li>
+                <li data-type='method'><a href="utils.html#.DecimalUnimply">DecimalUnimply</a></li>
+                <li data-type='method'><a href="utils.html#.decodeName">decodeName</a></li>
+                <li data-type='method'><a href="utils.html#.decodeNameEx">decodeNameEx</a></li>
+                <li data-type='method'><a href="utils.html#.encodeName">encodeName</a></li>
+                <li data-type='method'><a href="utils.html#.encodeNameEx">encodeNameEx</a></li>
+                <li data-type='method'><a href="utils.html#.Ensurespropertrailingzerosthenremovesdecimalplace">Ensures
+                    proper trailing zeros then removes decimal place</a></li>
+                <li data-type='method'><a href="utils.html#.isName">isName</a></li>
+                <li data-type='method'><a href="utils.html#.parseAsset">parseAsset</a></li>
+                <li data-type='method'><a href="utils.html#.parseExtendedAsset">parseExtendedAsset</a></li>
+                <li data-type='method'><a href="utils.html#.UDecimalPad">UDecimalPad</a></li>
+                <li data-type='method'><a href="utils.html#.UDecimalString">UDecimalString</a></li>
+                <li data-type='method'><a href="utils.html#.UDecimalUnimply">UDecimalUnimply</a></li>
+                <li data-type='method'><a href="utils.html#.ULong">ULong</a></li>
+            </ul>
+        </li>
+    </ul>
 </nav>
 
 <div id="main">
-    
-
-    
-
-
-
-    
-
-
-
-
-
-
-
-
-
-    
 
 
     <section class="readme">
-        <article><h2>Introduction</h2><p>sets of sdk wrapped in javascript for common purpose.</p>
-<h2>Precondition</h2><ul>
-<li><p>Install docker on your machine</p>
-</li>
-<li><p>Config <code>--registry-mirror</code> as docker daemon process</p>
-<pre class="prettyprint source"><code>  > docker --registry-mirror=https://registry.docker-cn.com daemon
-
-  > killall Docker && open /Applications/Docker.app</code></pre></li>
-<li><p>Start building a local ultrain-chain consensus net</p>
-<pre class="prettyprint source"><code>  > cd u3.js/docker-testnet && ./start.sh</code></pre></li>
-</ul>
-<p>Note: </p>
-<blockquote>
-<p> u3.js will interactive with api service using the default configuration on the below and you can custom them. </p>
-</blockquote>
-<blockquote>
-<p> httpEndpoint is the realtime data rest service serving by the ultrain-chain node. 
-httpEndpoint_history is express api service just for history data query which you can launch it by yourself. the source code is here: <code>https://github.com/ultrain-os/ultrain-rest-api.git</code></p>
-</blockquote>
-<blockquote>
-<ul>
-<li>httpEndpoint: &quot;http://127.0.0.1:8888&quot;,</li>
-<li>httpEndpoint_history: &quot;http://127.0.0.1:3000&quot;</li>
-</ul>
-</blockquote>
-<h2>Install</h2><p>install width <code>npm install u3.js</code> or <code>yarn add u3.js</code></p>
-<h2>Enviroment</h2><p>NodeJS or ES6 for browser</p>
-<h2>Usage</h2><p>if you use u3.js in browser environment, reference the example below.</p>
-<pre class="prettyprint source"><code>    &lt;!DOCTYPE html>
-    &lt;html lang=&quot;en&quot;>
-    &lt;head>
-        &lt;meta charset=&quot;UTF-8&quot;>
-        &lt;title>test&lt;/title>
-        &lt;script src=&quot;../dist/u3.js&quot;>&lt;/script>
-        &lt;script>
-
-          let u3 = U3.createU3({
-            httpEndpoint: 'http://127.0.0.1:8888',
-            httpEndpoint_history: 'http://127.0.0.1:3000',
-            broadcast: true,
-            debug: false,
-            sign: true,
-            logger: {
-              log: console.log,
-              error: console.error,
-              debug: console.log
-            },
-            chainId:'2616bfbc21e11d60d10cb798f00893c2befba10e2338b7277bb3865d2e658f58',
-            symbol: 'UGAS'
-          });
-
-          u3.getChainInfo((err, info) => {
-            if (err) {
-              throw err;
-            }
-            console.log(info);
-          });
-        &lt;/script>
-    &lt;/head>
-    &lt;body>
-    &lt;/body>
-    &lt;/html></code></pre><h2>Configuration</h2><pre class="prettyprint source"><code>const { createU3 } = require('u3.js');
-let config = {
-  httpEndpoint: 'http://127.0.0.1:8888',
-  chainId: null, // 32 byte (64 char) hex string
-  keyProvider: ['PrivateKeys...'], // WIF string or array of keys..
-  expireInSeconds: 60,
-  broadcast: true,
-  sign: true
-}
-let u3 = createU3(config);
-</code></pre><ul>
-<li><b>httpEndpoint</b> string - http or https location of a ultrain-chain providing a chain API. When using u3.js from a browser remember to configure the same origin policy in nodultrain or proxy server. For testing, nodultrain configuration access-control-allow-origin = * could be used.</li>
-<li><b>chainId</b> Unique ID for the blockchain you're connecting to. This is required for valid transaction signing. The chainId is provided via the get_chain_info API call.</li>
-<li><b>keyProvider</b> [array<string>|string|function] - Provides private keys used to sign transactions. If multiple private keys are found, the API get_required_keys is called to discover which signing keys to use. If a function is provided, this function is called for each transaction.
-If a keyProvider is not provided here, you should provided on a per-action or per-transaction basis in Options.</li>
-<li><b>expireInSeconds</b> number - number of seconds before the transaction will expire. The time is based on the nodultrain's clock. An unexpired transaction that may have had an error is a liability until the expiration is reached, this time should be brief.</li>
-<li><b>broadcast</b> [boolean=true] - post the transaction to the blockchain. Use false to obtain a fully signed transaction and it will not push to the blockchain.</li>
-<li><b>verbose</b> [boolean=false] - verbose logging such as API activity.</li>
-<li><b>debug</b> [boolean=false] - low level debug logging (serialization).</li>
-<li><b>sign</b> [boolean=true] - sign the transaction with a private key. Leaving a transaction unsigned avoids the need to provide a private key.</li>
-<li><b>logger</b> - default logging configuration.
-<code>`</code>
-logger: {
-log: config.verbose ? console.log : null,  // null to disable
-error: config.verbose ? console.error : null,
-}</li>
-</ul>
-<pre class="prettyprint source"><code>
-For example, redirect error logs: config.logger = {error: (...args) => ..}
-* &lt;b>authorization&lt;/b> - replace the default u3.js authorization on actions. An authorization provided here may still be over-written by specifying an authorization for each individual action.
-
-For example, if most actions in an dapp are based on the posting key, this would replace the default active authorization with a posting authorization:
-
-{authorization: 'xxx@active'}
-
-#### Options
-
-Options may be provided after parameters. Authorization is for individual actions.eg:</code></pre><p>options = {
-  authorization: 'alice@active',
-  broadcast: true,
-  sign: true
-}</p>
-<pre class="prettyprint source"><code></code></pre><p>u3.transfer('alice', 'bob', '1.0000 UGAS', '', options)</p>
-<pre class="prettyprint source"><code>
-* &lt;b>authorization&lt;/b> [array&lt;auth>|auth] - identifies the signing account and permission typically in a multisig configuration. Authorization may be a string formatted as account@permission.
-* &lt;b>broadcast&lt;/b> [boolean=true] - post the transaction to the blockchain. Use false to obtain a fully signed transaction.
-* &lt;b>sign&lt;/b> [boolean=true] - sign the transaction with a private key. Leaving a transaction unsigned avoids the need to provide a private key.
-* &lt;b>keyProvider&lt;/b> [array&lt;string>|string|function] - just like the global keyProvider except this provides a temporary key for a single action or transaction.
-
-</code></pre><p>await u3.anyAction('args', {keyProvider})
-await u3.transaction(tr =&gt; { tr.anyAction() }, {keyProvider})</p>
-<pre class="prettyprint source"><code>
-## create Account
-
-   create accounts will need some staked tokens for RAM and bandwidth.
-</code></pre><p> const u3 = createU3(config);
- const name = 'abc';
- let params = {
-     creator: 'ultrainio',
-     name: name,
-     owner: pubkey,
-     active: pubkey,
-     updateable: 0,
-     ram_bytes: 6666,
-     stake_net_quantity: '1.0000 UGAS',
-     stake_cpu_quantity: '1.0000 UGAS',
-     transfer: 0
-  };
-  await u3.createUser(params);</p>
-<pre class="prettyprint source"><code>
-
-## Transfer
-
-transfer functions are used more frequently. 
-
-* transfer(from,to,content,memo)  the content param should be using strict format with right decimal and symbol, eg '1.0000 UGAS'
-</code></pre><p>const u3 = createU3(config);</p>
-<p>// with positional parameters
-await u3.transfer('ben', 'bob', '1.2000 UGAS', '')
-// or with named parameters
-await u3.transfer({from: 'bob', to: 'ben', quantity: '1.3000 UGAS', memo: ''})</p>
-<pre class="prettyprint source"><code>
-## Sign
-
-#### send unsigned_transaction
-
-Using `{ sign: false, broadcast: false }` to create a U3 instance and do some action.
-And Then send the unsigned_transaction object to the ultrain-chain wallet.</code></pre><p>  const u3_offline = createU3({ sign: false, broadcast: false });</p>
-<p>  let unsigned_transaction = await u3_offline.transfer('ultrainio', 'ben', '1 UGAS', 'uu');</p>
-<pre class="prettyprint source"><code>
-#### sign and push signed_transaction
-
-In the wallet you can provide your privateKey or mnemonic to make a signature. 
-And then push the signedTransaction to the ultrain-chain.</code></pre><p>  const u3_online = createU3();
-  let signature = await u3_online.sign(unsigned_transaction, privateKeyOrMnemonic, chainId);
-  if (signature) {
-     let signedTransaction = Object.assign({}, unsigned_transaction.transaction, { signatures: [signature] });
-     let processedTransaction = await u3_online.pushTx(signedTransaction);
-  }</p>
-<pre class="prettyprint source"><code>
-
-## Contracts
-
-#### deploy
-
-Deploy and call smart contracts. Before you deploy the smart contract, you need to compile the typescript source files
-to webassembly targets, which are *.abi,*.wast,*.wasm.
-* deploy(contracts_files_path, deploy_account)  the contracts_files_path param is the absolute path of *.abi,*.wast,*.wasm.
-and the deploy_account is the one who will deploy the smart contract.
-</code></pre><p>  const u3 = createU3(config);
-  await u3.deploy(path.resolve(__dirname, '../contracts/token/token'), 'bob');</p>
-<pre class="prettyprint source"><code>
-
-#### call actions
-</code></pre><p>const u3 = createU3(config);
-const tr = await u3.contract('ben');
-await tr.transfer('bob', 'ben', '1.0000 UGAS','');</p>
-<p>//or maybe like this
-await u3.contract('ben').then(sm =&gt; sm.transfer('bob', 'ben', '1.0000 UGAS',''))</p>
-<p>// Transaction with multiple contracts
-await u3.transaction(['ben', 'bob'], ({sm1, sm2}) =&gt; {
-   sm1.myaction(..)
-   sm2.myaction(..)
-})</p>
-<pre class="prettyprint source"><code>
-#### custom Token
-
-</code></pre><p>const u3 = createU3(config);
-const account = 'bob';
-await u3.transaction(account, token =&gt; {
-    token.create(account, '10000000.0000 DDD');
-    token.issue(account, '10000000.0000 DDD', 'issue');
-});</p>
-<p>const balance = await u3.getCurrencyBalance(account, account, 'DDD')
-console.log('currency balance', balance)
-<code>`</code></p></article>
+        <article><h1>Overview</h1>
+            <h3>Product relationship diagram</h3>
+            <p>
+                <img style="width: 70%;" src="https://user-images.githubusercontent.com/1866848/46458190-8787d900-c7e7-11e8-8bcf-df66c5cbf170.jpeg"
+                     alt="wechatimg35 1"></p>
+            <h3>Development flow chart</h3>
+            <p>
+                <img style="width: 70%;" src="https://user-images.githubusercontent.com/1866848/46464390-d25e1c80-c7f8-11e8-99a9-5d8fdb1d6adf.png"
+                     alt="wechatimg5398 1"></p>
+            <h3>Document description</h3>
+            <ul>
+                <li><p>Using the Robin development framework to develop smart contract is mainly used for two libraries,
+                    <code>ultrain_ts_lib</code> and <code>u3.js</code>, the former is the basic dependency for writing
+                    contracts, and the latter is the SDK for interacting with chains. The following documents contain
+                    both parts, where all documents under <strong>namespace</strong> are interfaces of
+                    <code>u3.js</code>, including <strong>chain</strong>, <strong>history</strong>, <strong>ecc</strong>,
+                    <strong>token</strong>, <strong>utils</strong>; documents outside of namespace belong to the
+                    interface or class of <code>ultrain_ts_lib</code>.</p>
+                </li>
+                <li><p>For specific use of these interfaces, please read the following document or tutorial <a
+                        href="http://developer.ultrain.io/tutorial/contract_tutorial">ultrain_ts_lib</a> and <a
+                        href="http://developer.ultrain.io/tutorial/u3_tutorial">u3.js</a>.</p>
+                </li>
+            </ul>
+        </article>
     </section>
 
 
-
-
-
-
-    
-    
 </div>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Wed Sep 26 2018 17:14:16 GMT+0800 (CST) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Thu Oct 04 2018 17:14:16
+    GMT+0800 (CST) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
 </footer>
 
 <script>prettyPrint();</script>
