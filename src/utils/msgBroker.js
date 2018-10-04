@@ -1,55 +1,38 @@
-var http = require('http');
-var url = require('url');
+const http = require('http');
+const port = 3001;
 
-// Create http server.
-var httpServer = http.createServer(function(req, resp) {
+let server = http.createServer((request, response) => {
 
-  // Get client request url.
-  var reqUrlString = req.url;
+    const { headers, method, url } = request;
+    console.log(method);
+    console.log(url);
+    let body = [];
+    request.on('error', (err) => {
+        console.error(err);
+    }).on('data', (chunk) => {
+        body.push(chunk);
+    }).on('end', () => {
+        body = Buffer.concat(body).toString();
 
-  // Get client request path name.
-  var pathName = url.parse(reqUrlString, true, false).pathname;
+        console.log("received msg:",body);
+ 
 
-  // Get request method.
-  var method = req.method;
+        response.on('error', (err) => {
+            console.error(err);
+        });
 
-  // If post.
-  if ('POST' === method) {
-    var postData = '';
-
-    // Get all post data when receive data event.
-    req.on('data', function(chunk) {
-
-      postData += chunk;
-
+        response.statusCode = 200;
+        response.setHeader('Content-Type', 'application/json');
+        response.write("ok");
+        response.end();
     });
 
-    // When all request post data has been received.
-    req.on('end', function() {
-      console.log('Client post data : ' + postData);
-      resp.writeHead(200, { 'Access-Control-Allow-Origin': '*' });
-    });
-  }
-});
-httpServer.listen(4444);
-console.log('Listening at http://localhost:4444');
-/*
-var util = require("util"),
-  EventEmitter = require("events").EventEmitter;
-
-var Server = function(){
-  console.log("init");
-};
-
-util.inherits(Server, EventEmitter);
-
-var s = new Server();
-
-s.on("eventName", function(para1,para2,para3){
-  console.log("eventName : abc");
-  console.log("para1 : "+para1);
-  console.log("para2 : "+para2);
-  console.log("para3 : "+para3);
 });
 
-s.emit("eventName","a","b","c");*/
+server.keepAliveTimeout = 0;
+server.timeout = 0;
+
+server.listen(port, function () {
+    console.log((new Date()) + " Server is listening on port " + port);
+});
+
