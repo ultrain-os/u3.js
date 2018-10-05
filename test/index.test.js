@@ -6,9 +6,8 @@ const fs = require('fs');
 const path = require('path');
 const defaultConfig = require('../src/config');
 const U3Utils = require('u3-utils/dist/es5');
-const listener = require('../src/utils/listener');
 
-const { createU3, format, ecc, Fcbuffer, version } = require('../src');
+const { createU3, format, ecc, Fcbuffer, listener, version } = require('../src');
 
 const wif = '5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79zkvFD3'; //ultrainio
 const pubkey = 'UTR6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV'; //ultrainio
