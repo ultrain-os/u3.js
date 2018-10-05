@@ -6,7 +6,7 @@ const fs = require('fs');
 const path = require('path');
 const defaultConfig = require('../src/config');
 const U3Utils = require('u3-utils/dist/es5');
-
+const listener = require('../src/utils/listener');
 
 const { createU3, format, ecc, Fcbuffer, version } = require('../src');
 
@@ -648,11 +648,14 @@ describe('u3.js', () => {
   // 6 event
   describe('subscribe', () => {
 
+    //make sure '192.168.1.5' is your local IP
+    //and 'http://192.168.1.5:3002' is an accessible service form docker
+
     // 6.1 subscribe event
     it('subscribe', async () => {
       const config = { keyProvider: mockedUsers['ben'].private_key };
       const u3 = createU3(config);
-      const sub = await u3.registerEvent('ben', 'http://127.0.0.1:4444');
+      const sub = await u3.registerEvent('ben', 'http://192.168.1.5:3002');
       console.log(sub);
     });
 
@@ -660,10 +663,24 @@ describe('u3.js', () => {
     it('unsubscribe', async () => {
       const config = { keyProvider: mockedUsers['ben'].private_key };
       const u3 = createU3(config);
-      const unSub = await u3.unregisterEvent('ultrainio', 'http://127.0.0.1:4444');
+      const unSub = await u3.unregisterEvent('ben', 'http://192.168.1.5:3002');
       console.log(unSub);
     });
 
+
+    // 6.3 event listener
+    it('unsubscribe', async () => {
+      // just do some biz in the callback
+      // the data is the message that ultrain will push to you
+      listener(function(data) {
+        console.log(data);
+      });
+
+      U3Utils.wait(2000);
+
+      //emit event defined  in the contract action
+      //...
+    });
 
   });
 
