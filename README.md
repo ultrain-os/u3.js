@@ -267,6 +267,7 @@ Ultrain provides an event registration and listening mechanism for asynchronous 
 * unregisterEvent(deployer, listen_url)
 
 **deployer** : the account who deploy the contract
+
 **listen_url** : the listening url which will receive the message
 
 note: If you are testing in a docker envirnment, make sure the listening address is a local IP and can be access from docker.
