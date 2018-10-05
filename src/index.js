@@ -10,6 +10,7 @@ const fs = require('fs');
 const path = require('path');
 const configDefaults = require('./config');
 const ecc = require('./utils/index');
+const listener = require('./utils/listener');
 const Fcbuffer = require('fcbuffer');
 const apiGen = require('./utils/apigen');
 const api = require('./v1/chain');
@@ -21,7 +22,7 @@ const writeApiGen = require('./write-api');
 const format = require('./format');
 const schema = require('./v1/schema');
 const pkg = require('../package.json');
-const defaultConfig = require("../src/config");
+const defaultConfig = require('../src/config');
 
 const version = pkg.version;
 
@@ -226,7 +227,7 @@ async function getRamrate() {
 
     let ramrate = (1 * quote_balance) / (1 + base_balance / 1024);
     return `${ramrate} ${defaultConfig.symbol}/KB`;
-  }else{
+  } else {
     return rs;
   }
 }
@@ -406,5 +407,6 @@ module.exports = {
   format,
   ecc,
   Fcbuffer,
+  listener,
   version
 };
