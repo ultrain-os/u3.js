@@ -251,7 +251,7 @@ async function getRamrate() {
  */
 async function createUser(params) {
   let defaults = {
-    updateable: 0,
+    updateable: 1,//default updateable
     ram_bytes: 8912,
     stake_net_quantity: '1.0000 ' + defaultConfig.symbol,
     stake_cpu_quantity: '1.0000 ' + defaultConfig.symbol,
