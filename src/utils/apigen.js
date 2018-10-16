@@ -1,8 +1,8 @@
-require("isomorphic-fetch");
-const camelCase = require("camel-case");
-const processArgs = require("./process-args");
-const configDefaults = require("../config");
-const helpers = require('./exported-helpers')
+require('isomorphic-fetch');
+const camelCase = require('camel-case');
+const processArgs = require('./process-args');
+const configDefaults = require('../config');
+const helpers = require('./exported-helpers');
 
 module.exports = apiGen;
 
@@ -34,7 +34,7 @@ function apiGen(version, definitions, config) {
 
   var _loop = function _loop(helper) {
     // Insert `api` as the first parameter to all API helpers
-    api[helper] = function () {
+    api[helper] = function() {
       var _helpers$api;
 
       for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
@@ -55,7 +55,7 @@ function fetchMethod(methodName, url, definition, config) {
   var logger = config.logger;
 
 
-  return function () {
+  return function() {
     for (var _len2 = arguments.length, args = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
       args[_key2] = arguments[_key2];
     }
@@ -81,25 +81,25 @@ function fetchMethod(methodName, url, definition, config) {
 
     var body = JSON.stringify(params);
     if (logger.log) {
-      logger.log('api >', 'post', '\t', url, body);
+      logger.log('\napi >', url.endsWith('chain/get_chain_info') ? 'get' : 'post', '\t', url, '\n', body);
     }
     var fetchConfiguration = { body: body, method: 'POST' };
     Object.assign(fetchConfiguration, config.fetchConfiguration);
 
-    fetch(url, fetchConfiguration).then(function (response) {
+    fetch(url, fetchConfiguration).then(function(response) {
       if (response.status >= 200 && response.status < 300) {
         return response.json();
       } else {
-        return response.text().then(function (bodyResp) {
+        return response.text().then(function(bodyResp) {
           var error = new Error(bodyResp);
           error.status = response.status;
           error.statusText = response.statusText;
           throw error;
         });
       }
-    }).then(function (objectResp) {
+    }).then(function(objectResp) {
       if (logger.log) {
-        logger.log('api <', 'response', '\t', url, JSON.stringify(objectResp));
+        logger.log('\napi <', 'response', '\t', url, '\n', JSON.stringify(objectResp), '\n\n');
       }
       try {
         callback(null, objectResp);
@@ -108,11 +108,12 @@ function fetchMethod(methodName, url, definition, config) {
           logger.error('api <', 'result callback', ':', callbackError);
         }
       }
-    }).catch(function (error) {
+    }).catch(function(error) {
       var message = '';
       try {
         message = JSON.parse(error.message).error.details[0];
-      } catch (e2) {}
+      } catch (e2) {
+      }
 
       if (logger.error) {
         logger.error('api <', 'error', '\t', message, url, body);

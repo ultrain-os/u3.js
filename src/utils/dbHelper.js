@@ -1,5 +1,6 @@
-var async = require('async');
-var axios = require('axios');
+const async = require('async');
+const axios = require('axios');
+const defaultConfig = require('../config');
 
 /**
  *
@@ -46,9 +47,17 @@ var pageQuery = function(page, pageSize, Model, queryParams, sortParams) {
  * @returns {*}
  */
 var fetchUrl = function(url, data) {
-  data = data || {}
+  data = data || {};
+  var logger = defaultConfig.logger;
+
+  if (logger.log) {
+    logger.log('\napi >', 'post', '\t', url, '\n', data);
+  }
   return axios.post(url, data)
     .then(function(response) {
+      if (logger.log) {
+        logger.log('\napi <', 'response', '\t', url, '\n', response.data, '\n\n');
+      }
       return response.data;
     })
     .catch(function(error) {
@@ -65,6 +74,6 @@ var fetchUrl = function(url, data) {
 };
 
 module.exports = {
-  pageQuery:pageQuery,
-  fetchUrl:fetchUrl
+  pageQuery: pageQuery,
+  fetchUrl: fetchUrl
 };
