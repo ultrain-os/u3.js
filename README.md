@@ -257,4 +257,43 @@ console.log('currency balance', balance)
 ```
 
 
+## Event
+
+Ultrain provides an event registration and listening mechanism for asynchronous scenarios that trigger another action in the contract.The client needs to first register a listener address to the ultrain, then trigger the event via the emit method in the contract, and Ultrain will push the message to the registered listener address.
+
+#### register/unregister
+
+* registerEvent(deployer, listen_url)
+* unregisterEvent(deployer, listen_url)
+
+**deployer** : the account who deploy the contract
+
+**listen_url** : the listening url which will receive the message
+
+note: If you are testing in a docker envirnment, make sure the listening address is a local IP and can be access from docker.
+
+```
+const u3 = createU3(config);
+const subscribe = await u3.registerEvent('ben', 'http://192.168.1.5:3002');
+
+//or
+const unsubscribe = await u3.unregisterEvent('ben', 'http://192.168.1.5:3002');
+```
+
+#### listen
+
+```
+const { createU3 listener } = require('u3.js/src');
+listener(function(data) {
+   // do callback logic
+   console.log(data);
+});
+
+U3Utils.wait(2000);
+
+//must call listener function before emit event
+const contract = await u3.contract(account);
+contract.hi('ben', 30, 'It is a test', { authorization: [`ben@active`] });
+
+```
 

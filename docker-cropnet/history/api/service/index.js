@@ -116,12 +116,6 @@ exports.getAllTxs = async function (page, pageSize, queryParams, sortParams) {
     let txs = pageInfo.results;
 
     for (let i in txs) {
-        // get block_num by trx_id
-        let block = await Blocks.findOne({ "block.transactions.trx.id": txs[i].trx_id });
-        if (block) {
-            txs[i].block_num = block.block_num;
-        }
-
         // get status from transactions traces
         let trxTrace = await TxTraces.getTxTraceByTxid(txs[i].trx_id);
         txs[i].receipt = trxTrace.receipt || {};

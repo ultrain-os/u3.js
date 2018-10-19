@@ -1,10 +1,17 @@
 {
   "tags": {
     "allowUnknownTags": true,
-    "dictionaries": ["jsdoc"]
+    "dictionaries": [
+      "jsdoc"
+    ]
   },
   "source": {
-    "include": ["README.md","src/apidoc.js","src/history.js","src/utils/api_common.js",
+    "include": [
+      "README.md",
+      "src/apidoc.js",
+      "src/history.js",
+      "src/utils/api_common.js",
+      "src/format.js",
       "src/module/src/account.js",
       "src/module/src/action.js",
       "src/module/src/asset.js",
