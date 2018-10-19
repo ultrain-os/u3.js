@@ -510,3 +510,31 @@ function parseAsset(str) {
 
   return {amount, precision, symbol, contract}
 }
+
+
+/**
+ * decode an integer style value to Asset's Symbol Name.
+ *
+ * @param {*} symbolName uint 64 value to be parsed to Asset's Symbol Name, it can be a string like "1396787029",
+ * or a integer like 1396787029.
+ * @param {boolean} [littleEndian=true] to determine if 'symbolName' is little endian or big endian.
+ * @returns a String stands for Asset's Symbol Name.
+ */
+function decodeSymbolName(symbolName, littleEndian = true) {
+  symbolName = ULong(symbolName);
+  const bytes = littleEndian ? symbolName.toBytesLE() : symbolName.toBytesBE();
+
+  let chars = [];
+  for(const b of bytes) {
+    if (b >= 0x41 && b <= 0x5a) { // between "A" and "Z"
+      chars.push(b);
+    } else {
+        // ignore '0'
+        if (b != 0) throw new TypeError('Invalid symbol code ' + symbolName);
+    }
+  }
+
+  chars.reverse(); // Asset's Symbol is encoded reversed.
+
+  return String.fromCharCode(...chars);
+}
