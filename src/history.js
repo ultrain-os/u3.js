@@ -28,12 +28,53 @@ module.exports = function(config) {
 };
 
 /**
- * get all blocks
+ * fetch all blocks
  * @param { Number } page
  * @param { Number } pageSize
  * @param { Object } queryParams
  * @param { Object } sortParams
  * @memberOf history
+ * @example
+ * import {getAllBlocks} from "u3.js/src/history";
+ * const u3 = createU3(config)
+ * u3.getAllBlocks({
+ *   'page': 1,
+     'pageSize': 10,
+     'queryParams': {block.proposer:'genesis'},
+     'sortParams': { _id: -1 }
+ * })
+ *
+ * json structure:
+ * {
+    "_id" : ObjectId("5bc5e218a6659aa6c218cfa8"),
+    "block_id" : "0000000280155952392ddaa5c4fb6611e74e3c93f61852c50f67f47c9c8b90ba",
+    "block" : {
+        "timestamp" : "2018-10-16T13:05:20.000",
+        "proposer" : "genesis",
+        "proposerProof" : "c71e700a8e90c767a7f0378cb33ac6e574b2a12815f4200ea2184057f3c4500975c3814ab2a9d934f2a12f3aca9471add5c5062364e3054757d352348cbfe80b",
+        "version" : NumberInt(0),
+        "previous" : "00000001407532c91f75e45a8da21b4de763126d7819d50dbd660c32bd5946eb",
+        "transaction_mroot" : "0000000000000000000000000000000000000000000000000000000000000000",
+        "action_mroot" : "35ecb67176b6db41bdf93b6d9157bf8d9b2ee94b00edf1289febacc445f49f85",
+        "new_producers" : null,
+        "header_extensions" : [
+
+        ],
+        "signature" : "",
+        "transactions" : [
+
+        ],
+        "block_extensions" : [
+
+        ]
+    },
+    "block_num" : NumberInt(2),
+    "createdAt" : ISODate("2018-10-16T13:05:28.930+0000"),
+    "irreversible" : true,
+    "in_current_chain" : true,
+    "updatedAt" : ISODate("2018-10-16T13:05:41.015+0000"),
+    "validated" : true
+}
  */
 function getAllBlocks(page, pageSize, queryParams, sortParams) {
   let data = {
