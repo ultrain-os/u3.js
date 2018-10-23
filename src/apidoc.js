@@ -30,9 +30,9 @@ function getCurrencyStats(){}
 function getProducerSchedule(){}
 
 /**
-* @param {bool} json - 
-* @param {string} lower_bound - 
-* @param {uint32} limit - 
+* @param {bool} json undefined 
+* @param {string} lower_bound undefined 
+* @param {uint32} limit undefined 
 * @memberOf chain
 */
 function getScheduledTransactions(){}
@@ -45,7 +45,7 @@ function getChainInfo(){}
 
 /**
 * Fetch a block from the blockchain.
-* @param {string} block_num_or_id - 
+* @param {string} block_num_or_id blockNum or blockId 
 * @memberOf chain
 */
 function getBlockInfo(){}
@@ -67,7 +67,7 @@ function getAccountInfo(){}
 /**
 * Fetch smart contract code
 * @param {name} account_name - 
-* @param {bool} code_as_wasm - 
+* @param {bool} code_as_wasm undefined 
 * @memberOf chain
 */
 function getContract(){}
@@ -86,16 +86,16 @@ function getRawCodeAndAbi(){}
 
 /**
 * Fetch smart contract data from an account.
-* @param {bool} json - 
+* @param {bool} json undefined 
 * @param {name} code - 
 * @param {string} scope - 
 * @param {name} table - 
 * @param {string} table_key - 
-* @param {string} lower_bound - 
-* @param {string} upper_bound - 
-* @param {uint32} limit - 
-* @param {string} key_type - 
-* @param {string} index_position - 
+* @param {string} lower_bound undefined 
+* @param {string} upper_bound undefined 
+* @param {uint32} limit undefined 
+* @param {string} key_type undefined 
+* @param {string} index_position undefined 
 * @memberOf chain
 */
 function getTableRecords(){}

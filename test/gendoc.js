@@ -37,12 +37,12 @@ function generateFuncWidthDocs(definitions) {
 
       if (content.params) {
         Object.entries(content.params).forEach(function(k, v) {
-          //console.log(k);
+          console.log(k[1]);
           if (isJson(k[1])) {
-            comment += '* @param {' + k[1].type + '} ' + k[0] + ' - \n';
+            comment += '* @param {' + k[1].type + '} ' + k[0] +  ' ' +  k[1].description + ' \n';
           } else {
             k[1] = k[1].replace('set[public_key]', 'array');
-            comment += '* @param {' + k[1] + '} ' + k[0] + ' - \n';
+            comment += '* @param {' + k[1] + '} ' + k[0] +  ' ' +  k[1].description + ' \n';
           }
         });
       } else if (content.fields) {
@@ -58,6 +58,10 @@ function generateFuncWidthDocs(definitions) {
         });
       }
       comment += '* @memberOf ' + apiGroup + '\n';
+      if (content.example) {
+
+      }
+
       comment += '*/\n';
 
       var func_ = 'function ' + methodName + '(){}';

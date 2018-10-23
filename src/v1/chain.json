@@ -81,7 +81,10 @@
   "get_block_info": {
     "brief": "Fetch a block from the blockchain.",
     "params": {
-      "block_num_or_id": "string"
+      "block_num_or_id": {
+        "type":"string",
+        "description":"blockNum or blockId"
+      }
     },
     "results": "variant",
     "errors": {
