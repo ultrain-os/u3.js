@@ -2,30 +2,60 @@
   "get_sourcerate": {
     "brief": "Return net rate and cpu rate",
     "params": {
-      "account_name": "name"
+      "account_name": {
+        "type":"name",
+        "description":"Account name to get sourcerate"
+      }
     },
     "results": {
       "net_rate": "uint64",
       "cpu_rate": "uint64"
+    },
+    "example": {
+      "func_parameter": {
+        "account_name": "account"
+      }
     }
   },
   "get_currency_balance": {
     "params": {
       "code": "name",
-      "account": "name",
-      "symbol": "optional<string>"
+      "account": {
+        "type":"name",
+        "description":"account to get balance of"
+      },
+      "symbol": {
+        "type":"optional<string>",
+        "description":"symbol to query"
+      }
     },
-    "results": "asset[]"
+    "results": "asset[]",
+    "example": {
+      "func_parameter": {
+        "code": "account",
+        "account": "account",
+        "symbol": "UGAS"
+      }
+    }
   },
   "get_currency_stats": {
     "params": {
       "code": "name",
-      "symbol": "string"
+      "symbol": {
+        "type":"string",
+        "description":"currency symbol to get the stats for"
+      }
     },
     "results": {
       "supply": "asset",
       "max_supply": "asset",
       "issuer": "account_name"
+    },
+    "example": {
+      "func_parameter": {
+        "code": "account",
+        "symbol": "UGAS"
+      }
     }
   },
   "get_producer_schedule": {
@@ -42,14 +72,16 @@
     "params": {
       "json": {
         "type": "bool",
+        "description": "Provide true or false",
         "default": false
       },
       "lower_bound": {
         "type": "string",
-        "doc": "timestamp OR transaction ID"
+        "description": "timestamp OR transaction ID"
       },
       "limit": {
         "type": "uint32",
+        "description": "",
         "default": "50"
       }
     },
@@ -58,6 +90,13 @@
       "more": {
         "type": "string",
         "doc": "fill lower_bound with this to fetch next set of transactions"
+      }
+    },
+    "example": {
+      "func_parameter": {
+        "json": false,
+        "lower_bound": "2a57d0f636625abc9f63656e3b8ada8b8b7a4fdf7a7663e4db27bc88be730b51",
+        "limit": "50"
       }
     }
   },
@@ -83,29 +122,45 @@
     "params": {
       "block_num_or_id": {
         "type":"string",
-        "description":"blockNum or blockId"
+        "description":"Provide a block number or a block id"
       }
     },
     "results": "variant",
     "errors": {
       "unknown block": null
+    },
+    "example": {
+      "func_parameter": {
+        "block_id": "0000000280155952392ddaa5c4fb6611e74e3c93f61852c50f67f47c9c8b90ba"
+      }
     }
   },
   "get_block_header_state": {
     "brief": "Fetch the minimum state necessary to validate transaction headers.",
     "params": {
-      "block_num_or_id": "string"
+      "block_num_or_id": {
+        "type":"string",
+        "description":"Provide a block number or a block id"
+      }
     },
     "results": "string",
     "errors": {
       "block_id_type_exception": "Invalid block ID",
       "unknown_block_exception": "Could not find reversible block"
+    },
+    "example": {
+      "func_parameter": {
+        "block_id": "0000000280155952392ddaa5c4fb6611e74e3c93f61852c50f67f47c9c8b90ba"
+      }
     }
   },
   "get_account_info": {
     "brief": "Fetch a blockchain account",
     "params": {
-      "account_name": "name"
+      "account_name": {
+        "type":"name",
+        "description":"Provide an account name"
+      }
     },
     "results": {
       "account_name": "name",
@@ -122,15 +177,23 @@
       "total_resources": "variant",
       "delegated_bandwidth": "variant",
       "voter_info": "variant"
+    },
+    "example": {
+      "func_parameter": {
+        "account_name": "account"
+      }
     }
   },
   "get_contract": {
     "brief": "Fetch smart contract code",
     "params": {
-      "account_name": "name",
+      "account_name": {
+        "type":"name",
+        "description":"Provide a smart contract account name"
+      },
       "code_as_wasm": {
         "type": "bool",
-        "default": false
+        "description": "was deprecated"
       }
     },
     "results": {
@@ -139,25 +202,46 @@
       "wasm": "string",
       "code_hash": "sha256",
       "abi": "optional<abi_def>"
+    },
+    "example": {
+      "func_parameter": {
+        "account_name": "account"
+      }
     }
   },
   "get_abi": {
     "params": {
-      "account_name": "name"
+      "account_name": {
+        "type": "name",
+        "description": "name of account to retrieve ABI for"
+      }
     },
     "results": {
       "account_name": "name",
       "abi": "abi_def?"
+    },
+    "example": {
+      "func_parameter": {
+        "account_name": "account"
+      }
     }
   },
   "get_raw_code_and_abi": {
     "params": {
-      "account_name": "name"
+      "account_name": {
+        "type": "name",
+        "description": "Account name to get code and abi for"
+      }
     },
     "results": {
       "account_name": "name",
       "wasm": "bytes",
       "abi": "abi_def?"
+    },
+    "example": {
+      "func_parameter": {
+        "account_name": "account"
+      }
     }
   },
   "get_table_records": {
@@ -165,31 +249,44 @@
     "params": {
       "json": {
         "type": "bool",
+        "description": "Provide true or false",
         "default": false
       },
-      "code": "name",
-      "scope": "string",
-      "table": "name",
+      "code": {
+        "type": "name",
+        "description": "Provide the smart contract name"
+      },
+      "scope": {
+        "type": "string",
+        "description": "Provide the account name"
+      },
+      "table": {
+        "type": "name",
+        "description": "Provide the table name"
+      },
       "table_key": "string",
       "lower_bound": {
         "type": "string",
+        "description": "",
         "default": "0"
       },
       "upper_bound": {
         "type": "string",
+        "description": "",
         "default": "-1"
       },
       "limit": {
         "type": "uint32",
+        "description": "",
         "default": "10"
       },
       "key_type": {
         "type": "string",
-        "doc": "The key type of --index, primary only supports (i64), all others support (i64, i128, i256, float64, float128). Special type 'name' indicates an account name."
+        "description": "The key type of --index,<br/> primary only supports (i64),<br/> all others support (i64, i128, i256, float64, float128).<br/> Special type 'name' indicates an account name."
       },
       "index_position": {
         "type": "string",
-        "doc": "1 - primary (first), 2 - secondary index (in order defined by multi_index), 3 - third index, etc"
+        "description": "1 - primary (first),<br/> 2 - secondary index (in order defined by multi_index),<br/> 3 - third index, etc"
       }
     },
     "results": {
@@ -201,38 +298,119 @@
         "type": "bool",
         "doc": "True if last element in data is not the end and sizeof data() < limit"
       }
+    },
+    "example": {
+      "func_parameter": {
+        "json": false,
+        "code": "account1",
+        "scope": "account2",
+        "table": "table",
+        "table_key": "",
+        "lower_bound": "0",
+        "upper_bound": "-1",
+        "limit": "10",
+        "key_type": "i64",
+        "index_position": ""
+      }
     }
   },
   "abi_json2bin": {
     "brief": "Manually serialize json into binary hex.  The binayargs is usually stored in Action.data.",
     "params": {
-      "code": "name",
-      "action": "name",
-      "args": "bytes"
+      "code": {
+        "type": "name",
+        "description": "Provide the account name."
+      },
+      "action": {
+        "type": "name",
+        "description": "Provide the action arguments"
+      },
+      "args": {
+        "type": "bytes",
+        "description": "Provide the json arguments"
+      }
     },
     "results": {
       "binargs": "bytes"
+    },
+    "example": {
+      "func_parameter": {
+        "code": "account1",
+        "action": "account2",
+        "args": {
+          "from": "initb",
+          "to": "initc",
+          "quantity": 1000
+        }
+      }
     }
   },
   "abi_bin2json": {
     "brief": "Convert bin hex back into Abi json definition.",
     "params": {
-      "code": "name",
-      "action": "name",
-      "binargs": "bytes"
+      "code": {
+        "type": "name",
+        "description": "Provide the smart contract account name"
+      },
+      "action": {
+        "type": "name",
+        "description": "Provide the action name"
+      },
+      "binargs": {
+        "type": "bytes",
+        "description": "Provide the binary arguments"
+      }
     },
     "results": {
       "args": "bytes",
       "required_scope": "name[]",
       "required_auth": "name[]"
+    },
+    "example": {
+      "func_parameter": {
+        "code": "account1",
+        "action": "account2",
+        "binargs": "000000008093dd74000000000094dd74e803000000000000"
+      }
     }
   },
   "get_required_keys": {
     "params": {
-      "transaction": "transaction",
-      "available_keys": "set[public_key]"
+      "transaction": {
+        "type": "transaction",
+        "description": "Provide the transaction object"
+      },
+      "available_keys": {
+        "type": "Array",
+        "description": "Provide the available keys"
+      }
     },
-    "results": "Set[public_key]"
+    "results": "Set[public_key]",
+    "example": {
+      "func_parameter": {
+        "transaction": {
+          "ref_block_num": "100",
+          "ref_block_prefix": "137469861",
+          "expiration": "2017-09-25T06:28:49",
+          "scope": ["initb", "initc"],
+          "actions": [{
+            "code": "currency",
+            "type": "transfer",
+            "recipients": ["initb", "initc"],
+            "authorization": [{
+              "account": "initb",
+              "permission": "active"
+            }],
+            "data": "000000000041934b000000008041934be803000000000000"
+          }],
+          "signatures": [],
+          "authorizations": []
+        },
+        "available_keys": ["EOS4toFS3YXEQCkuuw1aqDLrtHim86Gz9u3hBdcBw5KNPZcursVHq",
+          "EOS7d9A3uLe6As66jzN8j44TXJUqJSK3bFjjEEqR4oTvNAB3iM9SA",
+          "EOS6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV"]
+      }
+    }
   },
   "push_block": {
     "brief": "Append a block to the chain database.",
@@ -244,7 +422,10 @@
   "push_tx": {
     "brief": "Attempts to push the transaction into the pending queue.",
     "params": {
-      "signed_transaction": "signed_transaction"
+      "signed_transaction": {
+        "type": "signed_transaction",
+        "description": "Provide the authorizations for the transaction"
+      }
     },
     "results": {
       "transaction_id": "fixed_bytes32",
@@ -254,24 +435,45 @@
   "push_txs": {
     "brief": "Attempts to push transactions into the pending queue.",
     "params": {
-      "signed_transaction[]": "signed_transaction"
+      "signed_transaction[]": {
+        "type": "signed_transaction",
+        "description": "Provide the authorizations for the transaction"
+      }
     },
     "results": "vector[push_transaction.results]"
   },
   "register_event": {
     "brief": "subscribe to ultrain chain event.",
     "params": {
-      "account": "name",
+      "account": {
+        "type": "name",
+        "description": "Provide the action name"
+      },
       "post_url": "string"
     },
-    "results": ""
+    "results": "",
+    "example": {
+      "func_parameter": {
+        "account": "name",
+        "post_url": "http://10.10.10.114:3002"
+      }
+    }
   },
   "unregister_event": {
     "brief": "unsubscribe to ultrain chain event.",
     "params": {
-      "account": "name",
+      "account": {
+        "type": "name",
+        "description": "Provide the action name"
+      },
       "post_url": "string"
     },
-    "results": ""
+    "results": "",
+    "example": {
+      "func_parameter": {
+        "account": "name",
+        "post_url": "http://10.10.10.114:3002"
+      }
+    }
   }
 }

@@ -37,12 +37,12 @@ function generateFuncWidthDocs(definitions) {
 
       if (content.params) {
         Object.entries(content.params).forEach(function(k, v) {
-          console.log(k[1]);
+          // console.log(k[1]);
           if (isJson(k[1])) {
             comment += '* @param {' + k[1].type + '} ' + k[0] +  ' ' +  k[1].description + ' \n';
           } else {
             k[1] = k[1].replace('set[public_key]', 'array');
-            comment += '* @param {' + k[1] + '} ' + k[0] +  ' ' +  k[1].description + ' \n';
+            comment += '* @param {' + k[1] + '} ' + k[0] +  ' ' +  '-' + ' \n';
           }
         });
       } else if (content.fields) {
@@ -50,7 +50,7 @@ function generateFuncWidthDocs(definitions) {
           //console.log(k);
 
           if (isJson(k[1])) {
-            comment += '* @param {' + k[1].type + '} ' + k[0] + ' - \n';
+            comment += '* @param {' + k[1].type + '} ' + k[0] + ' ' + k[1].description + ' \n';
           } else {
             k[1] = k[1].replace('set[public_key]', 'array');
             comment += '* @param {' + k[1] + '} ' + k[0] + ' - \n';
@@ -58,10 +58,19 @@ function generateFuncWidthDocs(definitions) {
         });
       }
       comment += '* @memberOf ' + apiGroup + '\n';
+
       if (content.example) {
-
+        comment += `* @example
+        * import {${methodName}} from "u3.js/src/apidoc";
+        `
+        if (content.example.func_parameter) {
+          comment += `* const u3 = createU3(config)
+          * u3.${methodName}(${JSON.stringify(content.example.func_parameter,null,2)})
+          `
+        }
       }
-
+      
+      
       comment += '*/\n';
 
       var func_ = 'function ' + methodName + '(){}';

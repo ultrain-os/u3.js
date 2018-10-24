@@ -3,7 +3,8 @@
     "base": "",
     "fields": {
       "balance": "asset"
-    }
+    },
+    "example": {}
   },
   "account_name": "name",
   "create": {
@@ -15,7 +16,8 @@
     "fields": {
       "issuer": "account_name",
       "maximum_supply": "asset"
-    }
+    },
+    "example": {}
   },
   "currency_stats": {
     "base": "",
@@ -23,7 +25,8 @@
       "supply": "asset",
       "max_supply": "asset",
       "issuer": "account_name"
-    }
+    },
+    "example": {}
   },
   "issue": {
     "base": "",
@@ -35,7 +38,8 @@
       "to": "account_name",
       "quantity": "asset",
       "memo": "string"
-    }
+    },
+    "example": {}
   },
   "transfer": {
     "base": "",
@@ -48,6 +52,7 @@
       "to": "account_name",
       "quantity": "asset",
       "memo": "string"
-    }
+    },
+    "example": {}
   }
 }

@@ -25,8 +25,15 @@ const ecc = {
 
   /**
    * transfer private key to public key
-   * @param wif
+   * @param wif private key
    * @returns {string}
+   * 
+   * @example
+   * import {privateToPublic} from "u3.js/src/utils/api_common";
+   * const u3 = createU3(config)
+   * u3.privateToPublic({
+    "wif": "5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79zkvFD3"
+   * })
    */
   privateToPublic: wif => PrivateKey(wif).toPublic().toString(),
 
@@ -89,6 +96,13 @@ const ecc = {
    * generate key pair by seed
    * @param seed  a seed can regenerate the same key pair
    * @returns {{public_key: (*|string), private_key: *}}
+   * 
+   * @example
+   * import {generateKeyPairBySeed} from "u3.js/src/utils/api_common";
+   * const u3 = createU3(config)
+   * u3.generateKeyPairBySeed({
+    "seed": "ultrain12345"
+   * })
    */
   generateKeyPairBySeed: (seed) => {
     if (isEmpty(seed) || !isString(seed)) {
@@ -120,8 +134,15 @@ const ecc = {
 
   /**
    * regenerate key pair by mnemonic
-   * @param mnemonic
+   * @param { String } mnemonic
    * @returns {{mnemonic: *, public_key: (*|string), private_key: *}}
+   * 
+   * @example
+   * import {generateKeyPairByMnemonic} from "u3.js/src/utils/api_common";
+   * const u3 = createU3(config)
+   * u3.generateKeyPairByMnemonic({
+    "mnemonic": "ben john tony jack bob tom jerry alice"
+   * })
    */
   generateKeyPairByMnemonic: (mnemonic) => {
     const seed = BIP39.mnemonicToSeed(mnemonic).toString("hex");
