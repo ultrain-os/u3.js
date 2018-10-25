@@ -36,7 +36,7 @@ module.exports = {
  * @param radix
  * @returns {*}
  * @example
- * import {ULong} from "u3.js/src/format";
+ * import {ULong} from "u3.js/src";
  */
 function ULong(value, unsigned = true, radix = 10) {
   if (typeof value === 'number') {
@@ -60,7 +60,7 @@ function ULong(value, unsigned = true, radix = 10) {
  * @param err
  * @returns {boolean}
  * @example
- * import {isName} from "u3.js/src/format";
+ * import {isName} from "u3.js/src";
  */
 function isName(str, err) {
   try {
@@ -89,7 +89,7 @@ const charidx = ch => {
  * @param littleEndian
  * @returns {string}
  * @example
- * import {encodeName} from "u3.js/src/format";
+ * import {encodeName} from "u3.js/src";
  */
 function encodeName(name, littleEndian = true) {
   if (typeof name !== 'string')
@@ -133,7 +133,7 @@ function encodeName(name, littleEndian = true) {
  * @param littleEndian
  * @returns {string | string}
  * @example
- * import {decodeName} from "u3.js/src/format";
+ * import {decodeName} from "u3.js/src";
  */
 function decodeName(value, littleEndian = true) {
   value = ULong(value);
@@ -178,7 +178,7 @@ const NameExIndex = ch => {
  * @param name
  * @param littleEndian
  * @example
- * import {encodeNameEx} from "u3.js/src/format";
+ * import {encodeNameEx} from "u3.js/src";
  */
 function encodeNameEx(name, littleEndian = true) {
   if (typeof name !== 'string')
@@ -242,7 +242,7 @@ function encodeNameEx(name, littleEndian = true) {
  * @param littleEndian
  * @returns {string | string}
  * @example
- * import {decodeNameEx} from "u3.js/src/format";
+ * import {decodeNameEx} from "u3.js/src";
  */
 function decodeNameEx(valueH, valueL, littleEndian = true) {
   let convert = value => {
@@ -298,7 +298,7 @@ function decodeNameEx(valueH, valueL, littleEndian = true) {
  * @param value
  * @returns {string}
  * @example
- * import {UDecimalString} from "u3.js/src/format";
+ * import {UDecimalString} from "u3.js/src";
  */
 function UDecimalString(value) {
   assert(value != null, 'value is required');
@@ -334,7 +334,7 @@ function UDecimalString(value) {
  * @param precision
  * @returns {*}
  * @example
- * import {UDecimalPad} from "u3.js/src/format";
+ * import {UDecimalPad} from "u3.js/src";
  */
 function UDecimalPad(num, precision) {
   const value = UDecimalString(num);
@@ -378,7 +378,7 @@ function UDecimalImply(value, precision) {
  * @param precision
  * @returns {*}
  * @example
- * import {UDecimalUnimply} from "u3.js/src/format";
+ * import {UDecimalUnimply} from "u3.js/src";
  */
 function UDecimalUnimply(value, precision) {
   assert(value != null, 'value is required');
@@ -403,7 +403,7 @@ function UDecimalUnimply(value, precision) {
  * @param str
  * @returns {{amount: null, precision: any, symbol: null, contract: null}}
  * @example
- * import {parseExtendedAsset} from "u3.js/src/format";
+ * import {parseExtendedAsset} from "u3.js/src";
  */
 function parseExtendedAsset(str) {
   const [amountRaw] = str.split(' ');
@@ -448,7 +448,7 @@ function parseExtendedAsset(str) {
  @function
  @memberOf utils
  * @example
- * import {DecimalString} from "u3.js/src/format";
+ * import {DecimalString} from "u3.js/src";
  */
 function DecimalString(value) {
   assert(value != null, 'value is required');
@@ -492,7 +492,7 @@ function DecimalString(value) {
  @function
  @memberOf utils
  * @example
- * import {DecimalPad} from "u3.js/src/format";
+ * import {DecimalPad} from "u3.js/src";
  * const u3 = createU3(config)
  * u3.DecimalPad(10.2, 3) === '10.200'
  */
@@ -527,7 +527,7 @@ function DecimalPad(num, precision) {
  * @param precision
  * @returns {string}
  * @example
- * import {DecimalImply} from "u3.js/src/format";
+ * import {DecimalImply} from "u3.js/src";
  * const u3 = createU3(config)
  * u3.DecimalImply(10.2, 3) === '10200'
  */
@@ -544,7 +544,7 @@ function DecimalImply(value, precision) {
  * @function
  * @memberOf utils
  * @example
- * import {DecimalUnimply} from "u3.js/src/format";
+ * import {DecimalUnimply} from "u3.js/src";
  * const u3 = createU3(config)
  * u3.DecimalUnimply(10000, 4) === '1.0000'
  */
@@ -597,7 +597,7 @@ function printAsset({ amount, precision, symbol, contract }) {
  @throws AssertionError
  @memberOf utils
  * @example
- * import {parseAsset} from "u3.js/src/format";
+ * import {parseAsset} from "u3.js/src";
  */
 function parseAsset(str) {
   const [amountRaw] = str.split(' ');

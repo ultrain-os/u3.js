@@ -7,7 +7,7 @@
 * @param {name} account_name Account name to get sourcerate 
 * @memberOf chain
 * @example
-        * import {getSourcerate} from "u3.js/src/apidoc";
+        * import {getSourcerate} from "u3.js/src";
         * const u3 = createU3(config)
           * u3.getSourcerate({
   "account_name": "account"
@@ -21,7 +21,7 @@ function getSourcerate(){}
 * @param {optional<string>} symbol symbol to query 
 * @memberOf chain
 * @example
-        * import {getCurrencyBalance} from "u3.js/src/apidoc";
+        * import {getCurrencyBalance} from "u3.js/src";
         * const u3 = createU3(config)
           * u3.getCurrencyBalance({
   "code": "account",
@@ -36,7 +36,7 @@ function getCurrencyBalance(){}
 * @param {string} symbol currency symbol to get the stats for 
 * @memberOf chain
 * @example
-        * import {getCurrencyStats} from "u3.js/src/apidoc";
+        * import {getCurrencyStats} from "u3.js/src";
         * const u3 = createU3(config)
           * u3.getCurrencyStats({
   "code": "account",
@@ -56,7 +56,7 @@ function getProducerSchedule(){}
 * @param {uint32} limit  
 * @memberOf chain
 * @example
-        * import {getScheduledTransactions} from "u3.js/src/apidoc";
+        * import {getScheduledTransactions} from "u3.js/src";
         * const u3 = createU3(config)
           * u3.getScheduledTransactions({
   "json": false,
@@ -77,7 +77,7 @@ function getChainInfo(){}
 * @param {string} block_num_or_id Provide a block number or a block id 
 * @memberOf chain
 * @example
-        * import {getBlockInfo} from "u3.js/src/apidoc";
+        * import {getBlockInfo} from "u3.js/src";
         * const u3 = createU3(config)
           * u3.getBlockInfo({
   "block_id": "0000000280155952392ddaa5c4fb6611e74e3c93f61852c50f67f47c9c8b90ba"
@@ -90,7 +90,7 @@ function getBlockInfo(){}
 * @param {string} block_num_or_id Provide a block number or a block id 
 * @memberOf chain
 * @example
-        * import {getBlockHeaderState} from "u3.js/src/apidoc";
+        * import {getBlockHeaderState} from "u3.js/src";
         * const u3 = createU3(config)
           * u3.getBlockHeaderState({
   "block_id": "0000000280155952392ddaa5c4fb6611e74e3c93f61852c50f67f47c9c8b90ba"
@@ -103,7 +103,7 @@ function getBlockHeaderState(){}
 * @param {name} account_name Provide an account name 
 * @memberOf chain
 * @example
-        * import {getAccountInfo} from "u3.js/src/apidoc";
+        * import {getAccountInfo} from "u3.js/src";
         * const u3 = createU3(config)
           * u3.getAccountInfo({
   "account_name": "account"
@@ -117,7 +117,7 @@ function getAccountInfo(){}
 * @param {bool} code_as_wasm was deprecated 
 * @memberOf chain
 * @example
-        * import {getContract} from "u3.js/src/apidoc";
+        * import {getContract} from "u3.js/src";
         * const u3 = createU3(config)
           * u3.getContract({
   "account_name": "account"
@@ -129,7 +129,7 @@ function getContract(){}
 * @param {name} account_name name of account to retrieve ABI for 
 * @memberOf chain
 * @example
-        * import {getAbi} from "u3.js/src/apidoc";
+        * import {getAbi} from "u3.js/src";
         * const u3 = createU3(config)
           * u3.getAbi({
   "account_name": "account"
@@ -141,7 +141,7 @@ function getAbi(){}
 * @param {name} account_name Account name to get code and abi for 
 * @memberOf chain
 * @example
-        * import {getRawCodeAndAbi} from "u3.js/src/apidoc";
+        * import {getRawCodeAndAbi} from "u3.js/src";
         * const u3 = createU3(config)
           * u3.getRawCodeAndAbi({
   "account_name": "account"
@@ -163,7 +163,7 @@ function getRawCodeAndAbi(){}
 * @param {string} index_position 1 - primary (first),<br/> 2 - secondary index (in order defined by multi_index),<br/> 3 - third index, etc 
 * @memberOf chain
 * @example
-        * import {getTableRecords} from "u3.js/src/apidoc";
+        * import {getTableRecords} from "u3.js/src";
         * const u3 = createU3(config)
           * u3.getTableRecords({
   "json": false,
@@ -187,7 +187,7 @@ function getTableRecords(){}
 * @param {bytes} args Provide the json arguments 
 * @memberOf chain
 * @example
-        * import {abiJson2bin} from "u3.js/src/apidoc";
+        * import {abiJson2bin} from "u3.js/src";
         * const u3 = createU3(config)
           * u3.abiJson2bin({
   "code": "account1",
@@ -208,7 +208,7 @@ function abiJson2bin(){}
 * @param {bytes} binargs Provide the binary arguments 
 * @memberOf chain
 * @example
-        * import {abiBin2json} from "u3.js/src/apidoc";
+        * import {abiBin2json} from "u3.js/src";
         * const u3 = createU3(config)
           * u3.abiBin2json({
   "code": "account1",
@@ -223,7 +223,7 @@ function abiBin2json(){}
 * @param {Array} available_keys Provide the available keys 
 * @memberOf chain
 * @example
-        * import {getRequiredKeys} from "u3.js/src/apidoc";
+        * import {getRequiredKeys} from "u3.js/src";
         * const u3 = createU3(config)
           * u3.getRequiredKeys({
   "transaction": {
@@ -290,7 +290,7 @@ function pushTxs(){}
 * @param {string} post_url - 
 * @memberOf chain
 * @example
-        * import {registerEvent} from "u3.js/src/apidoc";
+        * import {registerEvent} from "u3.js/src";
         * const u3 = createU3(config)
           * u3.registerEvent({
   "account": "name",
@@ -305,7 +305,7 @@ function registerEvent(){}
 * @param {string} post_url - 
 * @memberOf chain
 * @example
-        * import {unregisterEvent} from "u3.js/src/apidoc";
+        * import {unregisterEvent} from "u3.js/src";
         * const u3 = createU3(config)
           * u3.unregisterEvent({
   "account": "name",
@@ -318,7 +318,7 @@ function unregisterEvent(){}
 * @param {asset} balance - 
 * @memberOf token
 * @example
-        * import {account} from "u3.js/src/apidoc";
+        * import {account} from "u3.js/src";
         */
 function account(){}
 
@@ -332,7 +332,7 @@ function accountName(){}
 * @param {asset} maximum_supply - 
 * @memberOf token
 * @example
-        * import {create} from "u3.js/src/apidoc";
+        * import {create} from "u3.js/src";
         */
 function create(){}
 
@@ -342,7 +342,7 @@ function create(){}
 * @param {account_name} issuer - 
 * @memberOf token
 * @example
-        * import {currencyStats} from "u3.js/src/apidoc";
+        * import {currencyStats} from "u3.js/src";
         */
 function currencyStats(){}
 
@@ -352,7 +352,7 @@ function currencyStats(){}
 * @param {string} memo - 
 * @memberOf token
 * @example
-        * import {issue} from "u3.js/src/apidoc";
+        * import {issue} from "u3.js/src";
         */
 function issue(){}
 
@@ -363,6 +363,6 @@ function issue(){}
 * @param {string} memo - 
 * @memberOf token
 * @example
-        * import {transfer} from "u3.js/src/apidoc";
+        * import {transfer} from "u3.js/src";
         */
 function transfer(){}

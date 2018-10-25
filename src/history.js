@@ -29,18 +29,18 @@ module.exports = function(config) {
 
 /**
  * fetch all blocks
- * @param { Number } page
- * @param { Number } pageSize
- * @param { Object } queryParams
- * @param { Object } sortParams
+ * @param {Number} page page numbers
+ * @param {Number} pageSize how many pieces are displayed per page
+ * @param {Object} queryParams query parameter for Blocks
+ * @param {Object} sortParams sorting parameter
  * @memberOf history
  * @example
- * import {getAllBlocks} from "u3.js/src/history";
+ * import {getAllBlocks} from "u3.js/src";
  * const u3 = createU3(config)
  * u3.getAllBlocks({
     'page': 1,
     'pageSize': 10,
-    'queryParams': {block.proposer:'genesis'},
+    'queryParams': {},
     'sortParams': { _id: -1 }
  * })
  *
@@ -51,7 +51,7 @@ module.exports = function(config) {
     "block" : {
         "timestamp" : "2018-10-16T13:05:20.000",
         "proposer" : "genesis",
-        "proposerProof" : "c71e700a8e90c767a7f0378cb33ac6e574b2a12815f4200ea2184057f3c4500975c3814ab2a9d934f2a12f3aca9471add5c5062364e3054757d352348cbfe80b",
+        "proposerProof" : "c71e700a8e90c767a7f0378cb33ac6e574b2a12815f4200ea2184...",
         "version" : NumberInt(0),
         "previous" : "00000001407532c91f75e45a8da21b4de763126d7819d50dbd660c32bd5946eb",
         "transaction_mroot" : "0000000000000000000000000000000000000000000000000000000000000000",
@@ -89,19 +89,19 @@ function getAllBlocks(page, pageSize, queryParams, sortParams) {
 
 /**
  * get all contracts
- * @param { Number } page
- * @param { Number } pageSize
- * @param { Object } queryParams
- * @param { Object } sortParams
+ * @param {Number} page page numbers
+ * @param {Number} pageSize how many pieces are displayed per page
+ * @param {Object} queryParams query parameter for Contracts
+ * @param {Object} sortParams sorting parameter
  * @memberOf history
  * 
  * @example
- * import {getContracts} from "u3.js/src/history";
+ * import {getContracts} from "u3.js/src";
  * const u3 = createU3(config)
  * u3.getContracts({
     'page': 1,
     'pageSize': 10,
-    'queryParams': {account:'ultrainio'},
+    'queryParams': {},
     'sortParams': { _id: -1 }
  * })
  *
@@ -135,11 +135,11 @@ function getContracts(page, pageSize, queryParams, sortParams) {
 
 /**
  * get contract by name
- * @param {String} name
+ * @param {String} name contract name eg. onblock
  * @memberOf history
  * 
  * @example
- * import {getContractByName} from "u3.js/src/history";
+ * import {getContractByName} from "u3.js/src";
  * const u3 = createU3(config)
  * u3.getContractByName({
     'name': 'onblock'
@@ -168,36 +168,26 @@ function getContractByName(name) {
 
 /**
  * get all accounts
- * @param { Number } page
- * @param { Number } pageSize
- * @param { Object } queryParams
- * @param { Object } sortParams
+ * @param {Number} page page numbers
+ * @param {Number} pageSize how many pieces are displayed per page
+ * @param {Object} queryParams query parameter for Accounts
+ * @param {Object} sortParams sorting parameter
  * @memberOf history
  * @example
- * import {getAllAccounts} from "u3.js/src/history";
+ * import {getAllAccounts} from "u3.js/src";
  * const u3 = createU3(config)
  * u3.getAllAccounts({
     'page': 1,
     'pageSize': 10,
-    'queryParams': {account:'ultrainio'},
+    'queryParams': {},
     'sortParams': { _id: -1 }
  * })
  *
  * json structure:
- * { 
-    "_id" : ObjectId("5b7d11b859bd97fab30ba7f3"), 
-    "action_num" : NumberInt(0), 
-    "trx_id" : "40ed51618da80804373fd84015548c8343da8c7ade8af00548ada4952d3e38b9", 
-    "cfa" : false, 
-    "account" : "ultrainio", 
-    "name" : "onblock", 
-    "authorization" : [
-        {
-            "actor" : "ultrainio", 
-            "permission" : "active"
-        }
-    ], 
-    "hex_data" : "80e34745000000000000000001000000000000..."
+ *{ 
+    "_id" : ObjectId("5b7d11cc59bd97fab30ba86b"), 
+    "name" : "utrio.code", 
+    "createdAt" : ISODate("2018-08-22T07:33:32.092+0000")
 }
  */
 async function getAllAccounts(page, pageSize, queryParams, sortParams) {
@@ -241,21 +231,18 @@ async function getAllAccounts(page, pageSize, queryParams, sortParams) {
 
 /**
  * get all transactions
- * @param { Number } page
- * @param { Number } pageSize
- * @param { Object } queryParams
- * @param { Object } sortParams
+ * @param {Number} page page numbers
+ * @param {Number} pageSize how many pieces are displayed per page
+ * @param {Object} queryParams query parameter for transactions
+ * @param {Object} sortParams sorting parameter
  * @memberOf history
  * @example
- * import {getAllTxs} from "u3.js/src/history";
+ * import {getAllTxs} from "u3.js/src";
  * const u3 = createU3(config)
  * u3.getAllTxs({
     'page': 1,
     'pageSize': 10,
-    'queryParams': {
-      'actions.name':'onblock',
-      'actions.authorization.actor':'ultrainio'
-    },
+    'queryParams': {},
     'sortParams': { _id: -1 }
  * })
  *
@@ -316,7 +303,7 @@ function getAllTxs(page, pageSize, queryParams, sortParams) {
  * @param {String} id transaction's id
  * @memberOf history
  * @example
- * import {getTxByTxId} from "u3.js/src/history";
+ * import {getTxByTxId} from "u3.js/src";
  * const u3 = createU3(config)
  * u3.getTxByTxId({
     'id': '40ed51618da80804373fd84015548c8343da8c7ade8af00548ada4952d3e38b9',
@@ -372,7 +359,7 @@ function getTxByTxId(id) {
  * @param {String} id  transaction's id
  * @memberOf history
  * @example
- * import {getActionsByTxid} from "u3.js/src/history";
+ * import {getActionsByTxid} from "u3.js/src";
  * const u3 = createU3(config)
  * u3.getActionsByTxid({
  *   'id': "40ed51618da80804373fd84015548c8343da8c7ade8af00548ada4952d3e38b9"
@@ -380,19 +367,43 @@ function getTxByTxId(id) {
  *
  * json structure:
  * { 
-    "_id" : ObjectId("5b7d11b859bd97fab30ba7f3"), 
-    "action_num" : NumberInt(0), 
+    "_id" : ObjectId("5b7d11b859bd97fab30ba7f4"), 
     "trx_id" : "40ed51618da80804373fd84015548c8343da8c7ade8af00548ada4952d3e38b9", 
-    "cfa" : false, 
-    "account" : "ultrainio", 
-    "name" : "onblock", 
-    "authorization" : [
+    "irreversible" : false, 
+    "transaction_header" : {
+        "expiration" : "2018-08-22T07:33:13", 
+        "ref_block_num" : NumberInt(1), 
+        "ref_block_prefix" : NumberLong(2517196066), 
+        "max_net_usage_words" : NumberInt(0), 
+        "max_cpu_usage_ms" : NumberInt(0), 
+        "delay_sec" : NumberInt(0)
+    }, 
+    "actions" : [
         {
-            "actor" : "ultrainio", 
-            "permission" : "active"
+            "action_num" : NumberInt(0), 
+            "trx_id" : "40ed51618da80804373fd84015548c8343da8c7ade8af00548ada4952d3e38b9", 
+            "cfa" : false, 
+            "account" : "ultrainio", 
+            "name" : "onblock", 
+            "authorization" : [
+                {
+                    "actor" : "ultrainio", 
+                    "permission" : "active"
+                }
+            ], 
+            "hex_data" : "80e34745000000000000000001000000000000000..."
         }
     ], 
-    "hex_data" : "80e34745000000000000000001000000000000..."
+    "transaction_extensions" : {
+
+    }, 
+    "signatures" : {
+
+    }, 
+    "context_free_data" : {
+
+    }, 
+    "createdAt" : ISODate("2018-08-22T07:33:12.469+0000")
 }
  */
 function getActionsByTxid(id) {
@@ -401,13 +412,13 @@ function getActionsByTxid(id) {
 
 /**
  * get actions by account name
- * @param {*} page
- * @param {*} pageSize
- * @param {*} queryParams e.g. {"account_name":"test1"}
- * @param {*} sortParams
+ * @param {Number} page page numbers
+ * @param {Number} pageSize how many pieces are displayed per page
+ * @param {Object} queryParams query parameter for Account
+ * @param {Object} sortParams sorting parameter
  * @memberOf history
  * @example
- * import {getActionsByAccount} from "u3.js/src/history";
+ * import {getActionsByAccount} from "u3.js/src";
  * const u3 = createU3(config)
  * u3.getActionsByAccount({
      'page': 1,
@@ -445,13 +456,13 @@ function getActionsByAccount(page, pageSize, queryParams, sortParams) {
 
 /**
  * get transactions by block_num
- * @param {*} page
- * @param {*} pageSize
- * @param {*} queryParams e.g. {block_num: 1}
- * @param {*} sortParams
+ * @param {Number} page page numbers
+ * @param {Number} pageSize how many pieces are displayed per page
+ * @param {Object} queryParams query parameter for Blocks
+ * @param {Object} sortParams sorting parameter
  * @memberOf history
  * @example
- * import {getTxsByBlockNum} from "u3.js/src/history";
+ * import {getTxsByBlockNum} from "u3.js/src";
  * const u3 = createU3(config)
  * u3.getTxsByBlockNum({
     'page': 1,
@@ -464,43 +475,31 @@ function getActionsByAccount(page, pageSize, queryParams, sortParams) {
  *
  * json structure:
  * { 
-    "_id" : ObjectId("5b7d11b859bd97fab30ba7f4"), 
-    "trx_id" : "40ed51618da80804373fd84015548c8343da8c7ade8af00548ada4952d3e38b9", 
-    "irreversible" : false, 
-    "transaction_header" : {
-        "expiration" : "2018-08-22T07:33:13", 
-        "ref_block_num" : NumberInt(1), 
-        "ref_block_prefix" : NumberLong(2517196066), 
-        "max_net_usage_words" : NumberInt(0), 
-        "max_cpu_usage_ms" : NumberInt(0), 
-        "delay_sec" : NumberInt(0)
-    }, 
-    "actions" : [
-        {
-            "action_num" : NumberInt(0), 
-            "trx_id" : "40ed51618da80804373fd84015548c8343da8c7ade8af00548ada4952d3e38b9", 
-            "cfa" : false, 
-            "account" : "ultrainio", 
-            "name" : "onblock", 
-            "authorization" : [
-                {
-                    "actor" : "ultrainio", 
-                    "permission" : "active"
-                }
-            ], 
-            "hex_data" : "80e34745000000000000000001000000000000000000000000000..."
-        }
-    ], 
-    "transaction_extensions" : {
+    "_id" : ObjectId("5b7d11b90fae3a7948ccc241"), 
+    "block_id" : "00000002d99f33473ee5553e0993f6b821f68ce12787c7d5e8ba90393eb1f6e6", 
+    "block" : {
+        "timestamp" : "2018-08-22T07:33:13.000", 
+        "producer" : "ultrainio", 
+        "confirmed" : NumberInt(0), 
+        "previous" : "00000001bcf2f448225d099685f14da76803028926af04d2607eafcf609c265c", 
+        "transaction_mroot" : "0000000000000000000000000000000000000000000000000000000000000000", 
+        "action_mroot" : "62c9c892ea1f9f7000a22c05d4aa6f2664637838536da3a7d3c16db447addaa8", 
+        "schedule_version" : NumberInt(0), 
+        "new_producers" : null, 
+        "header_extensions" : [
 
-    }, 
-    "signatures" : {
+        ], 
+        "producer_signature" : "SIG_K1_K2fughyG1DWU21kahiCa7MCrc14Kg37...", 
+        "transactions" : [
 
-    }, 
-    "context_free_data" : {
+        ], 
+        "block_extensions" : [
 
+        ]
     }, 
-    "createdAt" : ISODate("2018-08-22T07:33:12.469+0000")
+    "block_num" : NumberInt(2), 
+    "createdAt" : ISODate("2018-08-22T07:33:13.005+0000"), 
+    "irreversible" : false
 }
  */
 function getTxsByBlockNum(page, pageSize, queryParams, sortParams) {
@@ -515,11 +514,11 @@ function getTxsByBlockNum(page, pageSize, queryParams, sortParams) {
 
 /**
  * get account's info  by its name if it is existed
- * @param name account name
+ * @param {string} name account name
  * @returns {account|null}
  * @memberOf history
  * @example
- * import {getExistAccount} from "u3.js/src/history";
+ * import {getExistAccount} from "u3.js/src";
  * const u3 = createU3(config)
  * u3.getExistAccount({
      'name': 'onblock'
@@ -554,45 +553,30 @@ function getExistAccount(name) {
  * @param { String } contract_method contract method eg. transfer
  * @memberOf history
  * @example
- * import {getBlocksByContract} from "u3.js/src/history";
+ * import {getBlocksByContract} from "u3.js/src";
  * const u3 = createU3(config)
  * u3.getBlocksByContract({
     'block_num': 1,
-    'account': "ben",
+    'account': "ultrainio",
     'contract': "utrio.token",
     'contract_method': "transfer"
  * })
  *
  * json structure:
- * {
-    "_id" : ObjectId("5bc5e218a6659aa6c218cfa8"),
-    "block_id" : "0000000280155952392ddaa5c4fb6611e74e3c93f61852c50f67f47c9c8b90ba",
-    "block" : {
-        "timestamp" : "2018-10-16T13:05:20.000",
-        "proposer" : "genesis",
-        "proposerProof" : "c71e700a8e90c767a7f0378cb33ac6e574b2a12815f4200ea2184057f3c4500975c3814ab2a9d934f2a12f3aca9471add5c5062364e3054757d352348cbfe80b",
-        "version" : NumberInt(0),
-        "previous" : "00000001407532c91f75e45a8da21b4de763126d7819d50dbd660c32bd5946eb",
-        "transaction_mroot" : "0000000000000000000000000000000000000000000000000000000000000000",
-        "action_mroot" : "35ecb67176b6db41bdf93b6d9157bf8d9b2ee94b00edf1289febacc445f49f85",
-        "new_producers" : null,
-        "header_extensions" : [
-
-        ],
-        "signature" : "",
-        "transactions" : [
-
-        ],
-        "block_extensions" : [
-
-        ]
-    },
-    "block_num" : NumberInt(2),
-    "createdAt" : ISODate("2018-10-16T13:05:28.930+0000"),
-    "irreversible" : true,
-    "in_current_chain" : true,
-    "updatedAt" : ISODate("2018-10-16T13:05:41.015+0000"),
-    "validated" : true
+ * { 
+    "_id" : ObjectId("5b7d11b859bd97fab30ba7f3"), 
+    "action_num" : NumberInt(0), 
+    "trx_id" : "40ed51618da80804373fd84015548c8343da8c7ade8af00548ada4952d3e38b9", 
+    "cfa" : false, 
+    "account" : "ultrainio", 
+    "name" : "onblock", 
+    "authorization" : [
+        {
+            "actor" : "ultrainio", 
+            "permission" : "active"
+        }
+    ], 
+    "hex_data" : "80e34745000000000000000001000000000000..."
 }
  */
 function getBlocksByContract(block_num, account, contract, contract_method) {
@@ -607,68 +591,55 @@ function getBlocksByContract(block_num, account, contract, contract_method) {
 
 /**
  * get transaction trace by transaction's id
- * @param { String } id
+ * @param { String } id transaction's id
  * @memberOf history
  * 
  * @example
- * import {getTxTraceByTxid} from "u3.js/src/history";
+ * import {getTxTraceByTxid} from "u3.js/src";
  * const u3 = createU3(config)
  * u3.getTxTraceByTxid({
-    'id': '5b7d11b859bd97fab30ba7f5'
+    'id': '5b7d11b859bd97fab30ba7f4'
  * })
  *
  * json structure:
  * { 
-    "_id" : ObjectId("5b7d11b859bd97fab30ba7f5"), 
-    "id" : "40ed51618da80804373fd84015548c8343da8c7ade8af00548ada4952d3e38b9", 
-    "receipt" : {
-        "status" : "executed", 
-        "cpu_usage_us" : NumberInt(100), 
-        "net_usage_words" : NumberInt(0)
+    "_id" : ObjectId("5b7d11b859bd97fab30ba7f4"), 
+    "trx_id" : "40ed51618da80804373fd84015548c8343da8c7ade8af00548ada4952d3e38b9", 
+    "irreversible" : false, 
+    "transaction_header" : {
+        "expiration" : "2018-08-22T07:33:13", 
+        "ref_block_num" : NumberInt(1), 
+        "ref_block_prefix" : NumberLong(2517196066), 
+        "max_net_usage_words" : NumberInt(0), 
+        "max_cpu_usage_ms" : NumberInt(0), 
+        "delay_sec" : NumberInt(0)
     }, 
-    "elapsed" : NumberInt(96), 
-    "net_usage" : NumberInt(0), 
-    "scheduled" : false, 
-    "action_traces" : [
+    "actions" : [
         {
-            "receipt" : {
-                "receiver" : "ultrainio", 
-                "act_digest" : "de5a3e72eda46b3e8342289ef2e370e3e3996ef871da307fe92ce213984c34e5", 
-                "global_sequence" : NumberInt(1), 
-                "recv_sequence" : NumberInt(1), 
-                "auth_sequence" : [
-                    [
-                        "ultrainio", 
-                        NumberInt(1)
-                    ]
-                ], 
-                "code_sequence" : NumberInt(0), 
-                "abi_sequence" : NumberInt(0)
-            }, 
-            "act" : {
-                "account" : "ultrainio", 
-                "name" : "onblock", 
-                "authorization" : [
-                    {
-                        "actor" : "ultrainio", 
-                        "permission" : "active"
-                    }
-                ], 
-                "data" : "80e34745000000000000000001000000000000000..."
-            }, 
-            "elapsed" : NumberInt(27), 
-            "cpu_usage" : NumberInt(0), 
-            "console" : "", 
-            "total_cpu_usage" : NumberInt(0), 
+            "action_num" : NumberInt(0), 
             "trx_id" : "40ed51618da80804373fd84015548c8343da8c7ade8af00548ada4952d3e38b9", 
-            "return_value" : "", 
-            "inline_traces" : [
-
-            ]
+            "cfa" : false, 
+            "account" : "ultrainio", 
+            "name" : "onblock", 
+            "authorization" : [
+                {
+                    "actor" : "ultrainio", 
+                    "permission" : "active"
+                }
+            ], 
+            "hex_data" : "80e3474500000000000000000100000000000000000000..."
         }
     ], 
-    "except" : null, 
-    "createdAt" : ISODate("2018-08-22T07:33:12.471+0000")
+    "transaction_extensions" : {
+
+    }, 
+    "signatures" : {
+
+    }, 
+    "context_free_data" : {
+
+    }, 
+    "createdAt" : ISODate("2018-08-22T07:33:12.469+0000")
 }
  */
 function getTxTraceByTxid(id) {
@@ -681,7 +652,9 @@ function getTxTraceByTxid(id) {
  * @memberOf history
  * 
  * @example
- * import {search} from "u3.js/src/history";
+ * import {search} from "u3.js/src";
+ * const u3 = createU3(config)
+ * u3.search(5b7d11b859bd97fab30ba7f5)
  */
 async function search(param) {
   let rs = await fetchUrl(`${httpEndPoint}/search/${param}`);
@@ -710,10 +683,10 @@ async function search(param) {
 
 /**
  * get createaccountbyname 
- * @param {String} name 
+ * @param {String} name account name
  * @memberOf history
  * @example
- * import {getCreateAccountByName} from "u3.js/src/history";
+ * import {getCreateAccountByName} from "u3.js/src";
  * const u3 = createU3(config)
  * u3.getCreateAccountByName({
      'name': 'onblock'

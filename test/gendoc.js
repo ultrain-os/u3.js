@@ -61,7 +61,7 @@ function generateFuncWidthDocs(definitions) {
 
       if (content.example) {
         comment += `* @example
-        * import {${methodName}} from "u3.js/src/apidoc";
+        * import {${methodName}} from "u3.js/src";
         `
         if (content.example.func_parameter) {
           comment += `* const u3 = createU3(config)

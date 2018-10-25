@@ -25,11 +25,11 @@ const ecc = {
 
   /**
    * transfer private key to public key
-   * @param wif private key
+   * @param { String } wif private key
    * @returns {string}
    * 
    * @example
-   * import {privateToPublic} from "u3.js/src/utils/api_common";
+   * import {privateToPublic} from "u3.js/src";
    * const u3 = createU3(config)
    * u3.privateToPublic({
     "wif": "5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79zkvFD3"
@@ -94,11 +94,10 @@ const ecc = {
 
   /**
    * generate key pair by seed
-   * @param seed  a seed can regenerate the same key pair
+   * @param { String } seed  a seed can regenerate the same key pair
    * @returns {{public_key: (*|string), private_key: *}}
-   * 
    * @example
-   * import {generateKeyPairBySeed} from "u3.js/src/utils/api_common";
+   * import {generateKeyPairBySeed} from "u3.js/src";
    * const u3 = createU3(config)
    * u3.generateKeyPairBySeed({
     "seed": "ultrain12345"
@@ -134,11 +133,9 @@ const ecc = {
 
   /**
    * regenerate key pair by mnemonic
-   * @param { String } mnemonic
-   * @returns {{mnemonic: *, public_key: (*|string), private_key: *}}
-   * 
+   * @param { String } mnemonic words that help memory
    * @example
-   * import {generateKeyPairByMnemonic} from "u3.js/src/utils/api_common";
+   * import {generateKeyPairByMnemonic} from "u3.js/src";
    * const u3 = createU3(config)
    * u3.generateKeyPairByMnemonic({
     "mnemonic": "ben john tony jack bob tom jerry alice"
