@@ -328,41 +328,65 @@ function account(){}
 function accountName(){}
 
 /**
-* @param {account_name} issuer - 
-* @param {asset} maximum_supply - 
+* @param {account_name} issuer The person who issued the token 
+* @param {asset} maximum_supply Maximum supply quantity 
 * @memberOf token
 * @example
         * import {create} from "u3.js/src";
-        */
+        * const u3 = createU3(config)
+          * u3.create({
+  "issuer": "ben",
+  "maximum_supply": "1000000ugas"
+})
+          */
 function create(){}
 
 /**
-* @param {asset} supply - 
-* @param {asset} max_supply - 
-* @param {account_name} issuer - 
+* @param {asset} supply Supply quantity 
+* @param {asset} max_supply Maximum supply quantity 
+* @param {account_name} issuer The person who issued the token 
 * @memberOf token
 * @example
         * import {currencyStats} from "u3.js/src";
-        */
+        * const u3 = createU3(config)
+          * u3.currencyStats({
+  "supply": "1000ugas",
+  "max_supply": "1000000ugas",
+  "issuer": "ben"
+})
+          */
 function currencyStats(){}
 
 /**
-* @param {account_name} to - 
-* @param {asset} quantity - 
-* @param {string} memo - 
+* @param {account_name} to The person who got the token 
+* @param {asset} quantity token quantity 
+* @param {string} memo any remark information 
 * @memberOf token
 * @example
         * import {issue} from "u3.js/src";
-        */
+        * const u3 = createU3(config)
+          * u3.issue({
+  "to": "bob",
+  "quantity": "1000ugas",
+  "memo": "issue"
+})
+          */
 function issue(){}
 
 /**
-* @param {account_name} from - 
-* @param {account_name} to - 
-* @param {asset} quantity - 
-* @param {string} memo - 
+* @param {account_name} from The person who transferred the token 
+* @param {account_name} to The person who got the token 
+* @param {asset} quantity token quantity 
+* @param {string} memo any remark information 
 * @memberOf token
 * @example
         * import {transfer} from "u3.js/src";
-        */
+        * const u3 = createU3(config)
+          * u3.transfer({
+  "from": "ben",
+  "to": "bob",
+  "quantity": "1000ugas",
+  "memo": "issue"
+})
+          */
 function transfer(){}

@@ -14,19 +14,45 @@
       "account": "utrio.token"
     },
     "fields": {
-      "issuer": "account_name",
-      "maximum_supply": "asset"
+      "issuer": {
+        "type": "account_name",
+        "description": "The person who issued the token"
+      },
+      "maximum_supply": {
+        "type": "asset",
+        "description": "Maximum supply quantity"
+      }
     },
-    "example": {}
+    "example": {
+      "func_parameter": {
+        "issuer": "ben",
+        "maximum_supply": "1000000ugas"
+      }
+    }
   },
   "currency_stats": {
     "base": "",
     "fields": {
-      "supply": "asset",
-      "max_supply": "asset",
-      "issuer": "account_name"
+      "supply": {
+        "type": "asset",
+        "description": "Supply quantity"
+      },
+      "max_supply": {
+        "type": "asset",
+        "description": "Maximum supply quantity"
+      },
+      "issuer": {
+        "type": "account_name",
+        "description": "The person who issued the token"
+      }
     },
-    "example": {}
+    "example": {
+      "func_parameter": {
+        "supply": "1000ugas",
+        "max_supply": "1000000ugas",
+        "issuer": "ben"
+      }
+    }
   },
   "issue": {
     "base": "",
@@ -35,11 +61,26 @@
       "account": "utrio.token"
     },
     "fields": {
-      "to": "account_name",
-      "quantity": "asset",
-      "memo": "string"
+      "to": {
+        "type": "account_name",
+        "description": "The person who got the token"
+      },
+      "quantity": {
+        "type": "asset",
+        "description": "token quantity"
+      },
+      "memo": {
+        "type": "string",
+        "description": "any remark information"
+      }
     },
-    "example": {}
+    "example": {
+      "func_parameter": {
+        "to": "bob",
+        "quantity": "1000ugas",
+        "memo": "issue"
+      }
+    }
   },
   "transfer": {
     "base": "",
@@ -48,11 +89,30 @@
       "account": "utrio.token"
     },
     "fields": {
-      "from": "account_name",
-      "to": "account_name",
-      "quantity": "asset",
-      "memo": "string"
+      "from": {
+        "type": "account_name",
+        "description": "The person who transferred the token"
+      },
+      "to": {
+        "type": "account_name",
+        "description": "The person who got the token"
+      },
+      "quantity": {
+        "type": "asset",
+        "description": "token quantity"
+      },
+      "memo": {
+        "type": "string",
+        "description": "any remark information"
+      }
     },
-    "example": {}
+    "example": {
+      "func_parameter": {
+        "from": "ben",
+        "to": "bob",
+        "quantity": "1000ugas",
+        "memo": "issue"
+      }
+    }
   }
 }

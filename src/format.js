@@ -56,11 +56,13 @@ function ULong(value, unsigned = true, radix = 10) {
 
 /**
  * @memberOf utils
- * @param str
- * @param err
+ * @param {string} str code name 
+ * @param {boolean} err Whether to display an error message
  * @returns {boolean}
  * @example
  * import {isName} from "u3.js/src";
+ * const u3 = createU3(config)
+ * u3.isName('ultrain')
  */
 function isName(str, err) {
   try {
@@ -85,11 +87,13 @@ const charidx = ch => {
 
 /**
  * @memberOf utils
- * @param name
+ * @param name A name can be up to 12 characters long
  * @param littleEndian
  * @returns {string}
  * @example
  * import {encodeName} from "u3.js/src";
+ * const u3 = createU3(config)
+ * u3.encodeName('ultrain')
  */
 function encodeName(name, littleEndian = true) {
   if (typeof name !== 'string')
@@ -129,11 +133,13 @@ function encodeName(name, littleEndian = true) {
 
 /**
  * @memberOf utils
- * @param value
+ * @param {string} value
  * @param littleEndian
  * @returns {string | string}
  * @example
  * import {decodeName} from "u3.js/src";
+ * const u3 = createU3(config)
+ * u3.decodeName(encodeName('ultrain'))
  */
 function decodeName(value, littleEndian = true) {
   value = ULong(value);
@@ -175,10 +181,12 @@ const NameExIndex = ch => {
 
 /**
  * @memberOf utils
- * @param name
+ * @param name A name_ex can be up to 21 characters long
  * @param littleEndian
  * @example
  * import {encodeNameEx} from "u3.js/src";
+ * const u3 = createU3(config)
+ * u3.encodeNameEx('ultrain')
  */
 function encodeNameEx(name, littleEndian = true) {
   if (typeof name !== 'string')
@@ -295,10 +303,12 @@ function decodeNameEx(valueH, valueL, littleEndian = true) {
 /**
  * @function
  * @memberOf utils
- * @param value
+ * @param {Number} value Decimal
  * @returns {string}
  * @example
  * import {UDecimalString} from "u3.js/src";
+ * const u3 = createU3(config)
+ * u3.UDecimalString(10.1)
  */
 function UDecimalString(value) {
   assert(value != null, 'value is required');
@@ -330,11 +340,13 @@ function UDecimalString(value) {
 /**
  * @function
  * @memberOf utils
- * @param num
- * @param precision
+ * @param {String} num decimal
+ * @param {Number} precision Precision should be 18 characters or less
  * @returns {*}
  * @example
  * import {UDecimalPad} from "u3.js/src";
+ * const u3 = createU3(config)
+ * u3.UDecimalPad('10.1', 1)
  */
 function UDecimalPad(num, precision) {
   const value = UDecimalString(num);
@@ -374,11 +386,13 @@ function UDecimalImply(value, precision) {
 /**
  * @function
  * @memberOf utils
- * @param value
- * @param precision
+ * @param {String} value Integer
+ * @param {Number} precision Precision should be 18 characters or less
  * @returns {*}
  * @example
  * import {UDecimalUnimply} from "u3.js/src";
+ * const u3 = createU3(config)
+ * u3.UDecimalUnimply('10', 1)
  */
 function UDecimalUnimply(value, precision) {
   assert(value != null, 'value is required');
@@ -400,10 +414,12 @@ function UDecimalUnimply(value, precision) {
 
 /**
  * @memberOf utils
- * @param str
+ * @param {String} str  String to be parsed
  * @returns {{amount: null, precision: any, symbol: null, contract: null}}
  * @example
  * import {parseExtendedAsset} from "u3.js/src";
+ * const u3 = createU3(config)
+ * u3.parseExtendedAsset('1.0 4,SYM@tract.token')
  */
 function parseExtendedAsset(str) {
   const [amountRaw] = str.split(' ');
@@ -523,8 +539,8 @@ function DecimalPad(num, precision) {
  * Ensures proper trailing zeros then removes decimal place.
  * @function
  * @memberOf utils
- * @param value
- * @param precision
+ * @param {number|string|object.toString} value eg.10.2
+ * @param {number} precision eg.3
  * @returns {string}
  * @example
  * import {DecimalImply} from "u3.js/src";
