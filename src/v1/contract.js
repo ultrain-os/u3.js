@@ -1,3 +1,3 @@
 module.exports = {
-  token: require('./ultrainio_token.json'),
+  // token: require('./ultrainio_token.json'),
 }
