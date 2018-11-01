@@ -320,6 +320,53 @@
       }
     }
   },
+  "get_table_by_scope": {
+    "brief": "Fetch smart contract data from an account.",
+    "params": {
+      "code": {
+        "type": "name",
+        "description": "Provide the smart contract name"
+      },
+      "table": {
+        "type": "name",
+        "description": "Provide the table name"
+      },
+      "lower_bound": {
+        "type": "string",
+        "description": "",
+        "default": "0"
+      },
+      "upper_bound": {
+        "type": "string",
+        "description": "",
+        "default": "-1"
+      },
+      "limit": {
+        "type": "uint32",
+        "description": "",
+        "default": "10"
+      }
+    },
+    "results": {
+      "rows": {
+        "type": "vector",
+        "doc": "One row per item, either encoded as hex String or JSON object"
+      },
+      "more": {
+        "type": "bool",
+        "doc": "True if last element in data is not the end and sizeof data() < limit"
+      }
+    },
+    "example": {
+      "func_parameter": {
+        "code": "account1",
+        "table": "table",
+        "lower_bound": "0",
+        "upper_bound": "-1",
+        "limit": "10"
+      }
+    }
+  },
   "abi_json2bin": {
     "brief": "Manually serialize json into binary hex.  The binayargs is usually stored in Action.data.",
     "params": {

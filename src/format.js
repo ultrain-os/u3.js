@@ -24,7 +24,7 @@ module.exports = {
   DecimalUnimply,
   printAsset,
   parseAsset,
-
+  decodeSymbolName,
   parseExtendedAsset
 };
 
@@ -56,7 +56,7 @@ function ULong(value, unsigned = true, radix = 10) {
 
 /**
  * @memberOf utils
- * @param {string} str code name 
+ * @param {string} str code name
  * @param {boolean} err Whether to display an error message
  * @returns {boolean}
  * @example
@@ -656,6 +656,7 @@ function parseAsset(str) {
  * or a integer like 1396787029.
  * @param {boolean} [littleEndian=true] to determine if 'symbolName' is little endian or big endian.
  * @returns a String stands for Asset's Symbol Name.
+ * @memberOf utils
  */
 function decodeSymbolName(symbolName, littleEndian = true) {
   symbolName = ULong(symbolName);
@@ -667,11 +668,9 @@ function decodeSymbolName(symbolName, littleEndian = true) {
       chars.push(b);
     } else {
         // ignore '0'
-        if (b != 0) throw new TypeError('Invalid symbol code ' + symbolName);
+        if (b !== 0) throw new TypeError('Invalid symbol code ' + symbolName);
     }
   }
-
-  chars.reverse(); // Asset's Symbol is encoded reversed.
-
+  //chars.reverse(); // Asset's Symbol is encoded reversed.
   return String.fromCharCode(...chars);
 }

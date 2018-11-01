@@ -24,6 +24,7 @@ describe('format', () => {
     })
 
     it('encode / decode', () => {
+
       assert.equal('413297505236', encodeName('ultrain'), 'encode')
       assert.equal('603a7373d4', encodeNameHex('ultrain'), 'encode hex')
       assert.equal(decodeName(encodeName('ultrain')), 'ultrain', 'decode')

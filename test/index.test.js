@@ -139,7 +139,7 @@ describe('u3.js', () => {
       const u3 = createU3(config);
       let account = 'bob';
       const tr = await u3.contract(account);
-      const result = await tr.transfer('bob', 'ben', '1.0000 VHOZ', '', { authorization: [`bob@active`] });
+      const result = await tr.transfer('bob', 'bos23wag1tqx', '1.0000 EHYW', '', { authorization: [`bob@active`] });
 
       let tx = await u3.getTxByTxId(result.transaction_id);
       while (!tx.irreversible) {
@@ -179,10 +179,11 @@ describe('u3.js', () => {
       let account = 'bob';
       //const options = { authorization: [`ben@active`] };
       let customCurrency = randomAsset();
+      console.log('created token named: ' + customCurrency)
       await u3.transaction(account, token => {
         token.create(account, '10000000.0000 ' + customCurrency);
         token.issue(account, '10000000.0000 ' + customCurrency, 'issue');
-        //token.transfer(account, 'ben', '1000.0000 ' + customCurrency, '');
+        token.transfer(account, 'ben', '1000.0000 ' + customCurrency, '');
       });
 
       await u3.getCurrencyStats({
@@ -201,6 +202,35 @@ describe('u3.js', () => {
         symbol: customCurrency,
         account: 'ben'
       });
+    });
+
+    // 4.6 query token holder and token symbol when issued
+    it('get table by scope', async () => {
+      const config = { keyProvider: mockedUsers['bob'].private_key };
+      const u3 = createU3(config);
+      let account = 'bob';
+
+      //all holder accounts which held tokens created by the creator
+      const holders_arr = await u3.getTableByScope({
+        code: account,//token creator
+        table: 'accounts', //token table name
+      });
+      //console.log('token holders: ', holders_arr)
+      for(let h in holders_arr.rows){
+        let holder_account = format.decodeName(holders_arr.rows[h].scope,false);
+        console.log(holder_account)
+      }
+
+      //all token symbols created by the creator
+      const symbols_arr = await u3.getTableByScope({
+        code: account,//token creator
+        table: 'stat',//token table scope
+      });
+      //console.log('token symbols :', symbols_arr)
+      for(let s in symbols_arr.rows){
+        let symbol = format.decodeSymbolName(symbols_arr.rows[s].scope);
+        console.log(symbol)
+      }
     });
 
   });

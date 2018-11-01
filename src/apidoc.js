@@ -15,7 +15,7 @@
 function getSourcerate(){}
 
 /**
-* @param {name} code - 
+* @param {name} code account which deployed the contract 
 * @param {name} account account to get balance of 
 * @param {optional<string>} symbol symbol to query 
 * @memberOf chain
@@ -31,7 +31,7 @@ function getSourcerate(){}
 function getCurrencyBalance(){}
 
 /**
-* @param {name} code - 
+* @param {name} code account which deployed the contract 
 * @param {string} symbol currency symbol to get the stats for 
 * @memberOf chain
 * @example
