@@ -103,10 +103,21 @@ function getAllBlocks(page, pageSize, queryParams, sortParams) {
  * })
  *
  * json structure:
- * { 
-    "_id" : ObjectId("5b7d11cc59bd97fab30ba86b"), 
-    "name" : "utrio.code", 
-    "createdAt" : ISODate("2018-08-22T07:33:32.092+0000")
+ {
+    "_id" : ObjectId("5bd2e8347705c6005a6f4d12"),
+    "name" : "ultrainio",
+    "createdAt" : ISODate("2018-10-26T10:11:00.683+0000"),
+    "abi" : {
+        "version" : "ultrainio::abi/1.0",
+        "types" : [...],
+        "structs" : [...],
+        "actions" : [...],
+        "tables" : [...],
+        "ricardian_clauses" : [],
+        "error_messages" : [],
+        "abi_extensions" : []
+    },
+    "updatedAt" : ISODate("2018-10-26T10:11:49.162+0000")
 }
  */
 function getContracts(page, pageSize, queryParams, sortParams) {
@@ -133,10 +144,21 @@ function getContracts(page, pageSize, queryParams, sortParams) {
  * })
  *
  * json structure:
- * { 
-    "_id" : ObjectId("5b7d11cc59bd97fab30ba86b"), 
-    "name" : "utrio.code", 
-    "createdAt" : ISODate("2018-08-22T07:33:32.092+0000")
+ *  {
+    "_id" : ObjectId("5bd2e8347705c6005a6f4d12"),
+    "name" : "utrio.code",
+    "createdAt" : ISODate("2018-10-26T10:11:00.683+0000"),
+    "abi" : {
+        "version" : "ultrainio::abi/1.0",
+        "types" : [...],
+        "structs" : [...],
+        "actions" : [...],
+        "tables" : [...],
+        "ricardian_clauses" : [],
+        "error_messages" : [],
+        "abi_extensions" : []
+    },
+    "updatedAt" : ISODate("2018-10-26T10:11:49.162+0000")
 }
  */
 function getContractByName(name) {
