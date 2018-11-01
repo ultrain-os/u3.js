@@ -19,7 +19,10 @@
   },
   "get_currency_balance": {
     "params": {
-      "code": "name",
+      "code":  {
+        "type":"name",
+        "description":"account which deployed the contract"
+      },
       "account": {
         "type":"name",
         "description":"account to get balance of"
@@ -40,7 +43,10 @@
   },
   "get_currency_stats": {
     "params": {
-      "code": "name",
+      "code":  {
+        "type":"name",
+        "description":"account which deployed the contract"
+      },
       "symbol": {
         "type":"string",
         "description":"currency symbol to get the stats for"
