@@ -61,8 +61,8 @@
  (global $~lib/ultrain-ts-lib/src/asset/SYS (mut i64) (i64.const 0))
  (global $~lib/ultrain-ts-lib/src/asset/SYS_NAME (mut i64) (i64.const 0))
  (global $~lib/ultrain-ts-lib/src/asset/MAX_AMOUNT i64 (i64.const 4611686018427387903))
- (global $contract/MyContract/STATSTABLE i32 (i32.const 1624))
- (global $contract/MyContract/ACCOUNTTABLE i32 (i32.const 1640))
+ (global $contract/token/STATSTABLE i32 (i32.const 1624))
+ (global $contract/token/ACCOUNTTABLE i32 (i32.const 1640))
  (global $~lib/datastream/HEADER_SIZE i32 (i32.const 4))
  (global $HEAP_BASE i32 (i32.const 3920))
  (memory $0 1)
@@ -214,12 +214,12 @@
  (export "MyContract#getDataStream" (func $~lib/ultrain-ts-lib/src/contract/Contract#getDataStream))
  (export "MyContract#onInit" (func $~lib/ultrain-ts-lib/src/contract/Contract#onInit))
  (export "MyContract#onStop" (func $~lib/ultrain-ts-lib/src/contract/Contract#onStop))
- (export "MyContract#create" (func $contract/MyContract/MyContract#create))
- (export "MyContract#issue" (func $contract/MyContract/MyContract#issue))
- (export "MyContract#transfer" (func $contract/MyContract/MyContract#transfer))
- (export "MyContract#getSupply" (func $contract/MyContract/MyContract#getSupply))
- (export "MyContract#getBalance" (func $contract/MyContract/MyContract#getBalance))
- (export "apply" (func $contract/MyContract/apply))
+ (export "MyContract#create" (func $contract/token/MyContract#create))
+ (export "MyContract#issue" (func $contract/token/MyContract#issue))
+ (export "MyContract#transfer" (func $contract/token/MyContract#transfer))
+ (export "MyContract#getSupply" (func $contract/token/MyContract#getSupply))
+ (export "MyContract#getBalance" (func $contract/token/MyContract#getBalance))
+ (export "apply" (func $contract/token/apply))
  (start $start)
  (func $~lib/allocator/arena/__memory_allocate (; 17 ;) (type $ii) (param $0 i32) (result i32)
   (local $1 i32)
@@ -5205,7 +5205,7 @@
    )
   )
  )
- (func $contract/MyContract/MyContract#create (; 74 ;) (type $iIiv) (param $0 i32) (param $1 i64) (param $2 i32)
+ (func $contract/token/MyContract#create (; 74 ;) (type $iIiv) (param $0 i32) (param $1 i64) (param $2 i32)
   (local $3 i64)
   (local $4 i32)
   (local $5 i32)
@@ -5236,7 +5236,7 @@
    (call $~lib/dbmanager/DBManager<CurrencyStats>#constructor
     (i32.const 0)
     (call $~lib/ultrain-ts-lib/src/account/NAME
-     (get_global $contract/MyContract/STATSTABLE)
+     (get_global $contract/token/STATSTABLE)
     )
     (call $~lib/ultrain-ts-lib/src/contract/Contract#get:receiver
      (get_local $0)
@@ -5723,7 +5723,7 @@
    )
   )
  )
- (func $contract/MyContract/MyContract#addBalance (; 90 ;) (type $iIiIv) (param $0 i32) (param $1 i64) (param $2 i32) (param $3 i64)
+ (func $contract/token/MyContract#addBalance (; 90 ;) (type $iIiIv) (param $0 i32) (param $1 i64) (param $2 i32) (param $3 i64)
   (local $4 i32)
   (local $5 i32)
   (local $6 i32)
@@ -5733,7 +5733,7 @@
    (call $~lib/dbmanager/DBManager<CurrencyAccount>#constructor
     (i32.const 0)
     (call $~lib/ultrain-ts-lib/src/account/NAME
-     (get_global $contract/MyContract/ACCOUNTTABLE)
+     (get_global $contract/token/ACCOUNTTABLE)
     )
     (call $~lib/ultrain-ts-lib/src/contract/Contract#get:receiver
      (get_local $0)
@@ -6695,7 +6695,7 @@
    )
   )
  )
- (func $contract/MyContract/MyContract#issue (; 111 ;) (type $iIiiv) (param $0 i32) (param $1 i64) (param $2 i32) (param $3 i32)
+ (func $contract/token/MyContract#issue (; 111 ;) (type $iIiiv) (param $0 i32) (param $1 i64) (param $2 i32) (param $3 i32)
   (local $4 i32)
   (local $5 i32)
   (local $6 i32)
@@ -6721,7 +6721,7 @@
    (call $~lib/dbmanager/DBManager<CurrencyStats>#constructor
     (i32.const 0)
     (call $~lib/ultrain-ts-lib/src/account/NAME
-     (get_global $contract/MyContract/STATSTABLE)
+     (get_global $contract/token/STATSTABLE)
     )
     (call $~lib/ultrain-ts-lib/src/contract/Contract#get:receiver
      (get_local $0)
@@ -6828,7 +6828,7 @@
    (i64.const 0)
    (get_local $5)
   )
-  (call $contract/MyContract/MyContract#addBalance
+  (call $contract/token/MyContract#addBalance
    (get_local $0)
    (i64.load offset=8
     (get_local $5)
@@ -6937,7 +6937,7 @@
    (nop)
   )
  )
- (func $contract/MyContract/MyContract#subBalance (; 113 ;) (type $iIiv) (param $0 i32) (param $1 i64) (param $2 i32)
+ (func $contract/token/MyContract#subBalance (; 113 ;) (type $iIiv) (param $0 i32) (param $1 i64) (param $2 i32)
   (local $3 i32)
   (local $4 i32)
   (local $5 i32)
@@ -6946,7 +6946,7 @@
    (call $~lib/dbmanager/DBManager<CurrencyAccount>#constructor
     (i32.const 0)
     (call $~lib/ultrain-ts-lib/src/account/NAME
-     (get_global $contract/MyContract/ACCOUNTTABLE)
+     (get_global $contract/token/ACCOUNTTABLE)
     )
     (call $~lib/ultrain-ts-lib/src/contract/Contract#get:receiver
      (get_local $0)
@@ -7034,7 +7034,7 @@
    )
   )
  )
- (func $contract/MyContract/MyContract#transfer (; 114 ;) (type $iIIiiv) (param $0 i32) (param $1 i64) (param $2 i64) (param $3 i32) (param $4 i32)
+ (func $contract/token/MyContract#transfer (; 114 ;) (type $iIIiiv) (param $0 i32) (param $1 i64) (param $2 i64) (param $3 i32) (param $4 i32)
   (local $5 i32)
   (local $6 i32)
   (local $7 i32)
@@ -7058,7 +7058,7 @@
    (call $~lib/dbmanager/DBManager<CurrencyStats>#constructor
     (i32.const 0)
     (call $~lib/ultrain-ts-lib/src/account/NAME
-     (get_global $contract/MyContract/STATSTABLE)
+     (get_global $contract/token/STATSTABLE)
     )
     (call $~lib/ultrain-ts-lib/src/contract/Contract#get:receiver
      (get_local $0)
@@ -7132,19 +7132,19 @@
    )
    (i32.const 3280)
   )
-  (call $contract/MyContract/MyContract#subBalance
+  (call $contract/token/MyContract#subBalance
    (get_local $0)
    (get_local $1)
    (get_local $3)
   )
-  (call $contract/MyContract/MyContract#addBalance
+  (call $contract/token/MyContract#addBalance
    (get_local $0)
    (get_local $2)
    (get_local $3)
    (get_local $1)
   )
  )
- (func $contract/MyContract/MyContract#getSupply (; 115 ;) (type $iii) (param $0 i32) (param $1 i32) (result i32)
+ (func $contract/token/MyContract#getSupply (; 115 ;) (type $iii) (param $0 i32) (param $1 i32) (result i32)
   (local $2 i64)
   (local $3 i32)
   (local $4 i32)
@@ -7162,7 +7162,7 @@
    (call $~lib/dbmanager/DBManager<CurrencyStats>#constructor
     (i32.const 0)
     (call $~lib/ultrain-ts-lib/src/account/NAME
-     (get_global $contract/MyContract/STATSTABLE)
+     (get_global $contract/token/STATSTABLE)
     )
     (call $~lib/ultrain-ts-lib/src/contract/Contract#get:receiver
      (get_local $0)
@@ -7202,7 +7202,7 @@
    (get_local $4)
   )
  )
- (func $contract/MyContract/MyContract#getBalance (; 116 ;) (type $iIii) (param $0 i32) (param $1 i64) (param $2 i32) (result i32)
+ (func $contract/token/MyContract#getBalance (; 116 ;) (type $iIii) (param $0 i32) (param $1 i64) (param $2 i32) (result i32)
   (local $3 i64)
   (local $4 i32)
   (local $5 i32)
@@ -7220,7 +7220,7 @@
    (call $~lib/dbmanager/DBManager<CurrencyAccount>#constructor
     (i32.const 0)
     (call $~lib/ultrain-ts-lib/src/account/NAME
-     (get_global $contract/MyContract/ACCOUNTTABLE)
+     (get_global $contract/token/ACCOUNTTABLE)
     )
     (get_local $1)
     (get_local $3)
@@ -7449,7 +7449,7 @@
   )
   (get_local $2)
  )
- (func $contract/MyContract/apply (; 121 ;) (type $IIIIv) (param $0 i64) (param $1 i64) (param $2 i64) (param $3 i64)
+ (func $contract/token/apply (; 121 ;) (type $IIIIv) (param $0 i64) (param $1 i64) (param $2 i64) (param $3 i64)
   (local $4 i32)
   (local $5 i32)
   (local $6 i64)
@@ -7503,7 +7503,7 @@
        (get_local $7)
        (get_local $5)
       )
-      (call $contract/MyContract/MyContract#create
+      (call $contract/token/MyContract#create
        (get_local $4)
        (get_local $6)
        (get_local $7)
@@ -7537,7 +7537,7 @@
         (get_local $5)
        )
       )
-      (call $contract/MyContract/MyContract#issue
+      (call $contract/token/MyContract#issue
        (get_local $4)
        (get_local $6)
        (get_local $7)
@@ -7577,7 +7577,7 @@
         (get_local $5)
        )
       )
-      (call $contract/MyContract/MyContract#transfer
+      (call $contract/token/MyContract#transfer
        (get_local $4)
        (get_local $6)
        (get_local $9)
@@ -7598,7 +7598,7 @@
        )
       )
       (drop
-       (call $contract/MyContract/MyContract#getSupply
+       (call $contract/token/MyContract#getSupply
         (get_local $4)
         (get_local $7)
        )
@@ -7622,7 +7622,7 @@
        )
       )
       (drop
-       (call $contract/MyContract/MyContract#getBalance
+       (call $contract/token/MyContract#getBalance
         (get_local $4)
         (get_local $9)
         (get_local $7)

@@ -1,6 +1,5 @@
 {
-  "version": "ultraio:1.0",
-  "proposal": "UIP06",
+  "version": "ultraio:1.0:UIP06",
   "types": [
     {
       "new_type_name": "account_name",

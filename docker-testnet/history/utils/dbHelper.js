@@ -29,7 +29,7 @@ var pageQuery = function (page, pageSize, Model, queryParams, sortParams, select
         }, function (err, results) {
             var count = results.count;
             $page.total = results.count;
-            $page.pageCount = (count - 1) / pageSize + 1;
+            $page.pageCount = Math.floor((count - 1) / pageSize + 1);
             $page.results = results.records;
 
             if(err) reject(err);

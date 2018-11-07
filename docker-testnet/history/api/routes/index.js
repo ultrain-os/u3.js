@@ -188,6 +188,12 @@ router.post('/getcreateaccount', async function (req, res, next) {
   next();
 });
 
+router.post('/base', async function (req, res, next) {
+  let result = await History.getBaseInfo();
+  res.json(result);
+  next();
+});
+
 router.get('/', function (req, res, next) {
   res.send("test");
 });

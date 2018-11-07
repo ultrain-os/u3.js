@@ -5,6 +5,8 @@ const Blocks = require('../model/block');
 const Txs = require('../model/transaction');
 const TxTraces = require('../model/transaction_traces');
 const dbHelper = require('../../utils/dbHelper');
+const { createU3 } = require("u3.js/src");
+const u3 = createU3();
 
 /**
  * getContractByName
@@ -35,23 +37,24 @@ exports.getContracts = async function (page, pageSize, queryParams, sortParams) 
  * @returns {Object}
  */
 exports.getAllBlocks = async function (page, pageSize, queryParams, sortParams) {
-    let rs = await dbHelper.pageQuery(page, pageSize, 
-        Blocks, 
-        queryParams, 
+    let rs = await dbHelper.pageQuery(page, pageSize,
+        Blocks,
+        queryParams,
         sortParams,
         {
-            "block_id" : 1,
+            "block_id": 1,
             "block_num": 1,
             "createdAt": 1,
             "irreversible": 1,
             "block.producer": 1,
-            "block.proposer": 1
-    });
+            "block.proposer": 1,
+            "updatedAt": 1
+        });
 
     let pageInfo = JSON.parse(JSON.stringify(rs));
     let blocks = pageInfo.results;
 
-    for(let i in blocks){
+    for (let i in blocks) {
         // get tx_num by block_num
         let trx_num = await Blocks.getTrxNumByBlockNum(blocks[i].block_num);
         blocks[i].trx_num = trx_num;
@@ -80,15 +83,15 @@ exports.getAllAccounts = async function (page, pageSize, queryParams, sortParams
  * @param {*} queryParams 
  * @param {*} sortParams 
  */
-exports.getAllAccountsForClow = async function(page, pageSize, queryParams, sortParams){
-    const excludeUser = ['ultrainio','utrio.code','ultrio.bpay','utrio.msig','utrio.names','utrio.ram','utrio.ramfee','utrio.saving','utrio.stake','utrio.token','utrio.vpay','exchange'];
-    
-    if(queryParams.name){
+exports.getAllAccountsForClow = async function (page, pageSize, queryParams, sortParams) {
+    const excludeUser = ['ultrainio', 'utrio.code', 'ultrio.bpay', 'utrio.msig', 'utrio.names', 'utrio.ram', 'utrio.ramfee', 'utrio.saving', 'utrio.stake', 'utrio.token', 'utrio.vpay', 'exchange'];
+
+    if (queryParams.name) {
         queryParams = { name: queryParams.name };
-    }else{
-        queryParams = { name: {$nin: excludeUser }};
+    } else {
+        queryParams = { name: { $nin: excludeUser } };
     }
-    
+
     const rs = await dbHelper.pageQuery(page, pageSize, Accounts, queryParams, sortParams);
     return JSON.parse(JSON.stringify(rs));
 }
@@ -97,7 +100,7 @@ exports.getAllAccountsForClow = async function(page, pageSize, queryParams, sort
  * get account by name
  * @param { String } name 
  */
-exports.getAccountByName = async function (name){
+exports.getAccountByName = async function (name) {
     const rs = await Accounts.getAccountByName(name);
     return JSON.parse(JSON.stringify(rs));
 }
@@ -113,13 +116,6 @@ exports.getAccountByName = async function (name){
 exports.getAllTxs = async function (page, pageSize, queryParams, sortParams) {
     const rs = await dbHelper.pageQuery(page, pageSize, Txs, queryParams, sortParams);
     let pageInfo = JSON.parse(JSON.stringify(rs));
-    let txs = pageInfo.results;
-
-    for (let i in txs) {
-        // get status from transactions traces
-        let trxTrace = await TxTraces.getTxTraceByTxid(txs[i].trx_id);
-        txs[i].receipt = trxTrace.receipt || {};
-    }
 
     return pageInfo;
 }
@@ -150,16 +146,18 @@ exports.getActionsByTxid = async function (trx_id) {
  */
 exports.getActionsByAccount = async function (page, pageSize, queryParams, sortParams) {
     // const typeList = ['']
-    queryParams = { $or: [ 
-        { "data.to": queryParams.account_name }, 
-        { "data.receiver": queryParams.account_name }, 
-        { "authorization.actor": queryParams.account_name } ] };
+    queryParams = {
+        $or: [
+            { "data.to": queryParams.account_name },
+            { "data.receiver": queryParams.account_name },
+            { "authorization.actor": queryParams.account_name }]
+    };
     const rs = await dbHelper.pageQuery(page, pageSize, Actions, queryParams, sortParams);
     let pageInfo = JSON.parse(JSON.stringify(rs));
     let actions = pageInfo.results;
     // get trx createdtime / updatedtime
-    for(let i in actions){
-        let txInfo = await Txs.findOne({ trx_id: actions[i].trx_id},{updatedAt:1,createdAt:1});
+    for (let i in actions) {
+        let txInfo = await Txs.findOne({ trx_id: actions[i].trx_id }, { updatedAt: 1, createdAt: 1 });
         txInfo = JSON.parse(JSON.stringify(txInfo));
         actions[i].updatedAt = txInfo.updatedAt;
         actions[i].createdAt = txInfo.createdAt;
@@ -185,8 +183,8 @@ exports.getTxsByBlockNum = async function (page, pageSize, queryParams, sortPara
  * @param { String } contract contract name eg. utrio.token
  * @param { String } contract_method contract method eg. transfer
  */
-exports.getBlocksByContract = async function (block_num,account,contract,contract_name){
-    const rs = await Blocks.getBlocksByContract(block_num,account,contract,contract_name);
+exports.getBlocksByContract = async function (block_num, account, contract, contract_name) {
+    const rs = await Blocks.getBlocksByContract(block_num, account, contract, contract_name);
     return JSON.parse(JSON.stringify(rs));
 }
 
@@ -205,20 +203,20 @@ exports.getTxTraceByTxid = async function (tx_id) {
  * @param { String | Number} query eg. block_num,trx_hash,account
  * @param {Object} pageInfo 
  */
-exports.search = async function(query){
+exports.search = async function (query) {
     let type;
     let rs;
-    if(query.length == 64){
+    if (query.length == 64) {
         type = 'trx';
         rs = await TxTraces.getTxTraceByTxid(query);
-    }else if(isNaN(query)){
+    } else if (isNaN(query)) {
         rs = await Accounts.getAccountByName(query);
         type = "account";
-    }else{
+    } else {
         rs = await Blocks.getBlockByBlockNum(query);
         type = "block";
     }
-    
+
     return {
         "data": rs,
         "type": type
@@ -229,21 +227,78 @@ exports.search = async function(query){
  * 根据用户名查询用户创建者
  * @param {String} name 
  */
-exports.getCreateAccountByName = async function(name){
-    let rs = await Actions.findOne({"data.name":name,"name":"newaccount"});
-    if(!rs){
+exports.getCreateAccountByName = async function (name) {
+    let rs = await Actions.findOne({ "data.name": name, "name": "newaccount" });
+    if (!rs) {
         return {};
     }
 
     let infoObj = JSON.parse(JSON.stringify(rs));
 
     // 根据trx_id 获取创建日期
-    let txInfo = await Txs.findOne({ trx_id: infoObj.trx_id},{updatedAt:1});
+    let txInfo = await Txs.findOne({ trx_id: infoObj.trx_id }, { updatedAt: 1 });
 
     txInfo = JSON.parse(JSON.stringify(txInfo));
-    
+
     return {
         "account": infoObj.data.creator,
         "updatedAt": txInfo.updatedAt
     }
+}
+
+/**
+ * get base info
+ * {
+ * headblock,transactions,tps,accounts,contracts,tokens
+ * }
+ */
+exports.getBaseInfo = () => {
+    return new Promise((resolve,reject) => {
+        u3.getChainInfo(async (err, info) => {
+            if (err) {
+                reject({ err });
+            }
+            // tx_num
+            let tx_num = await Txs.countDocuments({});
+
+            // headblock
+            let head_block_num = info.head_block_num;
+
+            // accounts
+            let account_num = await Accounts.countDocuments({
+                "abi": { $exists: false }
+            });
+
+            // contracts
+            let contract_num = await Accounts.countDocuments({
+                $and: [
+                    { "abi": { $exists: true } },
+                    { "abi.proposal": { $exists: false } }
+                ]
+            });
+
+            // tokens
+            let token_num = await Accounts.countDocuments({
+                $and: [
+                    { "abi": { $exists: true } },
+                    { "abi.proposal": { $exists: true } }
+                ]
+            });
+
+            // tps (tx_num of latest block / 10)
+            let blockInfo = await Blocks.findOne({}).sort({ _id: -1 });
+            let tps = blockInfo.block.transactions.length / 10;
+
+            let baseInfo = {
+                head_block_num,
+                tx_num,
+                tps,
+                token_num,
+                account_num,
+                contract_num
+            };
+
+            resolve(baseInfo);
+        })
+    })
 }

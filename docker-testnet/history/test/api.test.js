@@ -8,6 +8,19 @@ var requestData = {
     "queryParams": {},
     "sortParams": { _id: -1 }
 }
+describe('baseinfo', () => {
+    it("base",() => {
+        axios.post('http://127.0.0.1:3000/base', requestData)
+          .then(function (response) {
+            console.log(response);
+            assert.ok(response.status == 200);
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
+    });
+})
+
 describe('block', () => {
     it("list",() => {
         axios.post('http://127.0.0.1:3000/blocks', requestData)
@@ -115,7 +128,7 @@ describe('txs', () =>{
     it("tx by block_num",async () => {
         requestData.queryParams = {}
         await request({
-            url: "http://127.0.0.1:3001/txs/by/blocknum",
+            url: "http://127.0.0.1:3000/txs/by/blocknum",
             method: "POST",
             headers: {
                 "content-type": "application/json",
