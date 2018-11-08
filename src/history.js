@@ -751,7 +751,7 @@ function getAllTokens(page, pageSize, queryParams, sortParams) {
  * @example
  * import {createU3} from "u3.js/src";
  * const u3 = createU3(config)
- * u3.getTokenBySymbol("ZTPJ")
+ * u3.getTokenBySymbol("ZTPJ","ben")
  * 
  * json structure:
  * {
