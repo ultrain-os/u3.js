@@ -744,8 +744,9 @@ function getAllTokens(page, pageSize, queryParams, sortParams) {
 }
 
 /**
- * get token by symbol
+ * get token by symbol and creator
  * @param { String } symbol symbol of token
+ * @param { String } creator creator of symbol
  * @memberOf history
  * @example
  * import {createU3} from "u3.js/src";
@@ -768,8 +769,8 @@ function getAllTokens(page, pageSize, queryParams, sortParams) {
     "id": "5be2ccc244ed468a4c331487"
     }
  */
-function getTokenBySymbol(symbol) {
-    return fetchUrl(`${httpEndPoint}/token/${symbol}`);
+function getTokenBySymbol(symbol, creator) {
+    return fetchUrl(`${httpEndPoint}/token/${symbol}/${creator}`);
 }
 
 /**
@@ -824,7 +825,7 @@ function getBalanceByAccount(account) {
 }
 
 /**
- * get all tokens
+ * get holders by symbol and creator
  * @param {Number} page page numbers
  * @param {Number} pageSize how many records are displayed per page
  * @param {Object} queryParams query parameter for transactions
@@ -836,7 +837,7 @@ function getBalanceByAccount(account) {
  * u3.getHoldersBySymbol({
     'page': 1,
     'pageSize': 10,
-    'queryParams': {},
+    'queryParams': {"token_account":"ben","token_symbol":"BJMZ"},
     'sortParams': { current_balance: -1 }
  * })
  *

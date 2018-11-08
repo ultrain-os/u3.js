@@ -111,7 +111,7 @@ describe('history', async () => {
     })
 
     it("getTokenBySymbol", async () => {
-        let rs = await u3Instance.getTokenBySymbol("ZTPJ");
+        let rs = await u3Instance.getTokenBySymbol("ZTPJ", "ben");
         console.log(JSON.stringify(rs, null, 2));
         assert.ok(rs);
     })
@@ -129,7 +129,7 @@ describe('history', async () => {
     })
 
     it("getHoldersBySymbol", async () => {
-        let rs = await u3Instance.getHoldersBySymbol(1, 10, {}, { current_balance: -1 });
+        let rs = await u3Instance.getHoldersBySymbol(1, 10, { token_account: "ben", token_symbol: "BJMZ" }, { current_balance: -1 });
         console.log(JSON.stringify(rs, null, 2));
         assert.ok(rs);
     })
