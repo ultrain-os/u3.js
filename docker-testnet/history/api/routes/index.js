@@ -49,9 +49,9 @@ router.post('/accounts', async function (req, res, next) {
   let sortParams = req.body.sortParams || { _id: -1 };
 
   let result;
-  if(req.query.type && req.query.type == 'clow'){
+  if (req.query.type && req.query.type == 'clow') {
     result = await History.getAllAccountsForClow(page, pageSize, queryParams, sortParams);
-  }else{
+  } else {
     result = await History.getAllAccounts(page, pageSize, queryParams, sortParams);
   }
   res.json(result);
@@ -104,9 +104,9 @@ router.post('/actions/by/account', async function (req, res, next) {
   let pageSize = req.body.pageSize || 10;
   let queryParams = req.body.queryParams || {};
   let sortParams = req.body.sortParams || { _id: -1 };
-  
-  if(!queryParams.account_name)
-    return res.json({error_msg:"queryParams.account_name is required."}); 
+
+  if (!queryParams.account_name)
+    return res.json({ error_msg: "queryParams.account_name is required." });
 
   let result = await History.getActionsByAccount(page, pageSize, queryParams, sortParams);
   res.json(result);
@@ -121,13 +121,13 @@ router.post('/txs/by/blocknum', async function (req, res, next) {
   let pageSize = req.body.pageSize || 10;
   let queryParams = req.body.queryParams || {};
   let sortParams = req.body.sortParams || { _id: -1 };
-  if(!queryParams.block_num)
-    return res.json({error_msg:"queryParams.block_num is required."});
-  
-  try{
+  if (!queryParams.block_num)
+    return res.json({ error_msg: "queryParams.block_num is required." });
+
+  try {
     queryParams.block_num = parseInt(queryParams.block_num);
-  }catch(e){
-    return res.json({error_msg:"queryParams.block_num must be number."});
+  } catch (e) {
+    return res.json({ error_msg: "queryParams.block_num must be number." });
   }
 
   console.log(queryParams);
@@ -146,11 +146,11 @@ router.post('/blocks/contract', async function (req, res, next) {
   const contract = req.body.contract;
   const contract_method = req.body.contract_method;
 
-  if(!block_num || !account || !contract || !contract_method){
-    return res.json({"error_msg":"invalid params."});
+  if (!block_num || !account || !contract || !contract_method) {
+    return res.json({ "error_msg": "invalid params." });
   }
 
-  let result = await History.getBlocksByContract(block_num,account,contract,contract_method);
+  let result = await History.getBlocksByContract(block_num, account, contract, contract_method);
   res.json(result);
   next();
 });
@@ -169,8 +169,8 @@ router.post('/txtraces/:tx_id', async function (req, res, next) {
  * query params block_num,tx_hash,accunt,account of contract
  */
 router.post('/search/:query', async function (req, res, next) {
-  if(!req.params || !req.params.query){
-    return res.json({error_msg:'invaild params.'});
+  if (!req.params || !req.params.query) {
+    return res.json({ error_msg: 'invaild params.' });
   }
 
   let result = await History.search(req.params.query);
@@ -179,8 +179,8 @@ router.post('/search/:query', async function (req, res, next) {
 });
 
 router.post('/getcreateaccount', async function (req, res, next) {
-  if(!req.params || !req.body.name){
-    return res.json({error_msg:'invaild params.'});
+  if (!req.params || !req.body.name) {
+    return res.json({ error_msg: 'invaild params.' });
   }
 
   let result = await History.getCreateAccountByName(req.body.name);
@@ -190,6 +190,48 @@ router.post('/getcreateaccount', async function (req, res, next) {
 
 router.post('/base', async function (req, res, next) {
   let result = await History.getBaseInfo();
+  res.json(result);
+  next();
+});
+
+router.post('/tokens', async function (req, res, next) {
+  let page = req.body.page || 1;
+  let pageSize = req.body.pageSize || 10;
+  let queryParams = req.body.queryParams || {};
+  let sortParams = req.body.sortParams || { _id: -1 };
+
+  let result = await History.getAllTokens(page, pageSize, queryParams, sortParams);
+  res.json(result);
+  next();
+});
+
+router.post('/balance/:account', async function (req, res, next) {
+  if (!req.params || !req.params.account) {
+    return res.json({ error_msg: 'invaild params.' });
+  }
+
+  let result = await History.getTokenBalanceByAccount(req.params.account);
+  res.json(result);
+  next();
+});
+
+router.post('/holders/by/symbol', async function (req, res, next) {
+  let page = req.body.page || 1;
+  let pageSize = req.body.pageSize || 10;
+  let queryParams = req.body.queryParams || {};
+  let sortParams = req.body.sortParams || { current_balance: -1 };
+
+  let result = await History.getHoldersBySymbol(page, pageSize, queryParams, sortParams);
+  res.json(result);
+  next();
+});
+
+router.post('/token/:symbol/:creator', async function (req, res, next) {
+  if (!req.params || !req.params.symbol || !req.params.creator) {
+    return res.json({ error_msg: 'invaild params.' });
+  }
+
+  let result = await History.getTokenBySymbol(req.params.symbol, req.params.creator);
   res.json(result);
   next();
 });

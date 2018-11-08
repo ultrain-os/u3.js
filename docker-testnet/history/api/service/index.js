@@ -4,6 +4,8 @@ const Actions = require('../model/action');
 const Blocks = require('../model/block');
 const Txs = require('../model/transaction');
 const TxTraces = require('../model/transaction_traces');
+const Tokens = require('../model/token');
+const Balances = require('../model/balance');
 const dbHelper = require('../../utils/dbHelper');
 const { createU3 } = require("u3.js/src");
 const u3 = createU3();
@@ -253,7 +255,7 @@ exports.getCreateAccountByName = async function (name) {
  * }
  */
 exports.getBaseInfo = () => {
-    return new Promise((resolve,reject) => {
+    return new Promise((resolve, reject) => {
         u3.getChainInfo(async (err, info) => {
             if (err) {
                 reject({ err });
@@ -301,4 +303,43 @@ exports.getBaseInfo = () => {
             resolve(baseInfo);
         })
     })
+}
+
+/**
+ * getAllTokens
+ * @param {Number} page current page
+ * @param {Number} pageSize pagesize
+ * @param {Object} queryParams query param
+ * @param {Object} sortParams sort param
+ * @returns {Object}
+ */
+exports.getAllTokens = async function (page, pageSize, queryParams, sortParams) {
+    const rs = await dbHelper.pageQuery(page, pageSize, Tokens, queryParams, sortParams);
+    let pageInfo = JSON.parse(JSON.stringify(rs));
+
+    let tokens = pageInfo.results;
+
+    for (let i in tokens) {
+        // get holders
+        let holders = await Balances.countDocuments({ "token_symbol": tokens[i].symbol, "token_account": tokens[i].account });
+        tokens[i].holders = holders;
+    }
+    return pageInfo;
+}
+
+exports.getTokenBalanceByAccount = async (account) => {
+    let balance = await Balances.find({ "holder_account": account }).sort({ "token_symbol": 1 });
+    return JSON.parse(JSON.stringify(balance));
+}
+
+exports.getHoldersBySymbol = async (page, pageSize, queryParams, sortParams) => {
+    const rs = await dbHelper.pageQuery(page, pageSize, Balances, queryParams, sortParams);
+    let pageInfo = JSON.parse(JSON.stringify(rs));
+
+    return pageInfo;
+}
+
+exports.getTokenBySymbol = async (symbol, creator) => {
+    let token = await Tokens.findOne({ symbol, "account": creator });
+    return token;
 }

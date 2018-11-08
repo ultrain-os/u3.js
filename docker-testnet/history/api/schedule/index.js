@@ -1,9 +1,9 @@
 const { createU3, format } = require("u3.js/src");
-const u3 = createU3({
-  httpEndpoint_history: 'http://127.0.0.1:3000',
-});
+const u3 = createU3();
 const Balance = require("../model/balance");
 const Token = require("../model/token");
+const Actions = require("../model/action");
+const Txs = require('../model/transaction');
 
 /**
  * washing holder balance every minutes
@@ -68,25 +68,42 @@ iterateResolveToken = (arr) => {
       let stats = await u3.getCurrencyStats(creator, symbol);
       //console.log(creator, symbol, stats);
 
+      // get issue time
+      let issueAction = await Actions.findOne(
+        {
+          "account": creator,
+          "data.quantity": { $regex: symbol },
+          "name": "issue"
+        },
+        {
+          trx_id: 1
+        }
+      );
+      issueAction = JSON.parse(JSON.stringify(issueAction));
+
+      let issueTx = await Txs.findOne({ "trx_id": issueAction.trx_id }, { createdAt: 1 });
+      issueTx = JSON.parse(JSON.stringify(issueTx));
+
       let response = stats[symbol];
       let max_supply = response.max_supply.replace(" " + symbol, "");
       let decimal_arr = max_supply.split(".");
       let decimal = decimal_arr.length < 2 ? 0 : decimal_arr[1].length;
 
       await Token.updateMany({
-          account: creator,
-          symbol: symbol
-        }, {
+        account: creator,
+        symbol: symbol
+      }, {
           account: creator,
           symbol: symbol,
           decimals: decimal,
           supply: response.supply ? response.supply.replace(" " + symbol, "") : 0,
           max_supply: max_supply,
-          issuer: response.issuer
+          issuer: response.issuer,
+          issue_time: issueTx.createdAt
         },
-        { upsert: true }).catch(function(e) {
-        console.error(e.message);
-      });
+        { upsert: true }).catch(function (e) {
+          console.error(e.message);
+        });
     }
 
 
@@ -102,18 +119,18 @@ iterateResolveToken = (arr) => {
         let symbol = balance_symbol[1];
 
         await Balance.updateMany({
-            holder_account: holder_account,
-            token_account: creator,
-            token_symbol: symbol
-          }, {
+          holder_account: holder_account,
+          token_account: creator,
+          token_symbol: symbol
+        }, {
             holder_account: holder_account,
             token_account: creator,
             token_symbol: symbol,
             current_balance: balance
           },
-          { upsert: true }).catch(function(e) {
-          console.error(e.message);
-        });
+          { upsert: true }).catch(function (e) {
+            console.error(e.message);
+          });
 
       });
 

@@ -10,12 +10,13 @@ let TokensSchema = new Schema({
   decimals: Number,
   supply: String,
   max_supply: String,
-  issuer: String
+  issuer: String,
+  issue_time: Date
 }, {
-  timestamps: true
-});
+    timestamps: true
+  });
 
-TokensSchema.static("getAllTokens", async function() {
+TokensSchema.static("getAllTokens", async function () {
   const res = await this.find({});
   return res;
 });
