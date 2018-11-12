@@ -28,7 +28,8 @@ module.exports = function (config) {
         getTokenBySymbol,
         getBaseInfo,
         getBalanceByAccount,
-        getHoldersBySymbol
+        getHoldersBySymbol,
+        getAllBlocksHeader
     };
 };
 
@@ -870,4 +871,62 @@ function getHoldersBySymbol(page, pageSize, queryParams, sortParams) {
     };
 
     return fetchUrl(`${httpEndPoint}/holders/by/symbol`, data);
+}
+
+/**
+ * get holders by symbol and creator
+ * @param {Number} page page numbers
+ * @param {Number} pageSize how many records are displayed per page
+ * @param {Object} queryParams query parameter for transactions
+ * @param {Object} sortParams sorting parameter
+ * @memberOf history
+ * @example
+ * import {createU3} from "u3.js/src";
+ * const u3 = createU3(config)
+ * u3.getHoldersBySymbol({
+    'page': 1,
+    'pageSize': 10,
+    'queryParams': {"token_account":"ben","token_symbol":"BJMZ"},
+    'sortParams': { current_balance: -1 }
+ * })
+ *
+ * json structure:
+ * {
+  "pageNumber": 1,
+  "total": 10856,
+  "pageCount": 10856,
+  "results": [
+    {
+        "_id": "5be8fb7144ed468a4c348078",
+        "block_id": "00002a69fd784315971f971571684d01dffd612efb791dabf12dff8b56dc2eb1",
+        "block": {
+            "timestamp": "2018-11-12T04:31:20.000",
+            "proposer": "genesis",
+            "proposerProof": "28bd727f9b9771cda08241fefab6426500e4d99a3083defef26d6860d02230abb2788a8a94aa009c05cee3fa05e82d57953008880de9fb74e31b31970a0c1c03",
+            "version": 0,
+            "previous": "00002a684784f9c27c0c22b749ec396aee458db7d4bb4aae9b2547ca1bfa6d22",
+            "transaction_mroot": "0000000000000000000000000000000000000000000000000000000000000000",
+            "action_mroot": "bfc55c5a4cbf78b7bd5cfb3ab67dde8f3c048d1a95ad85e1e869fb8a5f6d5ad5",
+            "committee_mroot": "0000000000000000000000000000000000000000000000000000000000000000",
+            "header_extensions": [],
+            "signature": "",
+            "block_extensions": []
+        },
+        "block_num": 10857,
+        "createdAt": "2018-11-12T04:02:58.011Z",
+        "irreversible": false,
+        "id": "5be8fb7144ed468a4c348078"
+        }
+    ]
+    }
+ */
+function getAllBlocksHeader(page, pageSize, queryParams, sortParams) {
+    let data = {
+        'page': page || 1,
+        'pageSize': pageSize || 10,
+        'queryParams': queryParams || {},
+        'sortParams': sortParams || { _id: -1 }
+    };
+
+    return fetchUrl(`${httpEndPoint}/blocksheader`, data);
 }

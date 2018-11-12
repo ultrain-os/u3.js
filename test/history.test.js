@@ -133,4 +133,10 @@ describe('history', async () => {
         console.log(JSON.stringify(rs, null, 2));
         assert.ok(rs);
     })
+
+    it("getAllBlocksHeader", async () => {
+        let rs = await u3Instance.getAllBlocksHeader(1, 1, {}, { _id: -1 });
+        console.log(JSON.stringify(rs, null, 2));
+        assert.ok(rs);
+    })
 })
