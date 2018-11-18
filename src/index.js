@@ -1,28 +1,28 @@
 try {
-  require('babel-polyfill');
+  require("babel-polyfill");
 } catch (e) {
-  if (e.message.indexOf('only one instance of babel-polyfill is allowed') === -1) {
+  if (e.message.indexOf("only one instance of babel-polyfill is allowed") === -1) {
     console.error(e);
   }
 }
 
-const fs = require('fs');
-const path = require('path');
-const configDefaults = require('./config');
-const ecc = require('./utils/index');
-const listener = require('./utils/listener');
-const Fcbuffer = require('fcbuffer');
-const apiGen = require('./utils/apigen');
-const api = require('./v1/chain');
-const assert = require('assert');
-const Structs = require('./structs');
-const AbiCache = require('./abi-cache');
-const AssetCache = require('./asset-cache');
-const writeApiGen = require('./write-api');
-const format = require('./format');
-const schema = require('./v1/schema');
-const pkg = require('../package.json');
-const defaultConfig = require('../src/config');
+const fs = require("fs");
+const path = require("path");
+const configDefaults = require("./config");
+const {ecc} = require("u3-utils/src");
+const listener = require("./utils/listener");
+const Fcbuffer = require("fcbuffer");
+const apiGen = require("./utils/apigen");
+const api = require("./v1/chain");
+const assert = require("assert");
+const Structs = require("./structs");
+const AbiCache = require("./abi-cache");
+const AssetCache = require("./asset-cache");
+const writeApiGen = require("./write-api");
+const format = require("./format");
+const schema = require("./v1/schema");
+const pkg = require("../package.json");
+const defaultConfig = require("../src/config");
 
 const version = pkg.version;
 
@@ -30,11 +30,11 @@ const defaultSignProvider = (u3, config) => async function({ sign, buf, transact
   const { keyProvider } = config;
 
   if (!keyProvider) {
-    throw new TypeError('This transaction requires a config.keyProvider for signing');
+    throw new TypeError("This transaction requires a config.keyProvider for signing");
   }
 
   let keys = keyProvider;
-  if (typeof keyProvider === 'function') {
+  if (typeof keyProvider === "function") {
     keys = keyProvider({ transaction });
   }
 
@@ -53,11 +53,11 @@ const defaultSignProvider = (u3, config) => async function({ sign, buf, transact
       // normalize format (UTRKey => PUB_K1_base58publicKey)
       return { public: ecc.PublicKey(key).toString() };
     }
-    assert(false, 'expecting public or private keys from keyProvider');
+    assert(false, "expecting public or private keys from keyProvider");
   });
 
   if (!keys.length) {
-    throw new Error('missing key, check your keyProvider');
+    throw new Error("missing key, check your keyProvider");
   }
 
   // simplify default signing #17
@@ -84,7 +84,7 @@ const defaultSignProvider = (u3, config) => async function({ sign, buf, transact
 
   return u3.getRequiredKeys(transaction, pubkeys).then(({ required_keys }) => {
     if (!required_keys.length) {
-      throw new Error('missing required keys for ' + JSON.stringify(transaction));
+      throw new Error("missing required keys for " + JSON.stringify(transaction));
     }
 
     const pvts = [], missingKeys = [];
@@ -102,8 +102,8 @@ const defaultSignProvider = (u3, config) => async function({ sign, buf, transact
     }
 
     if (missingKeys.length !== 0) {
-      assert(typeof keyProvider === 'function',
-        'keyProvider function is needed for private key lookup');
+      assert(typeof keyProvider === "function",
+        "keyProvider function is needed for private key lookup");
 
       // const pubkeys = missingKeys.map(key => ecc.PublicKey(key).toStringLegacy())
       keyProvider({ pubkeys: missingKeys })
@@ -128,31 +128,31 @@ const defaultSignProvider = (u3, config) => async function({ sign, buf, transact
  */
 const createU3 = (config = {}) => {
   config = Object.assign({}, configDefaults, config);
-  const history = require('./history')(config);
+  const history = require("./history")(config);
   const defaultLogger = {
     log: config.verbose ? console.log : null,
     error: console.error
   };
   config.logger = Object.assign({}, defaultLogger, config.logger);
 
-  const network = config.httpEndpoint != null ? apiGen('v1', api, config) : null;
+  const network = config.httpEndpoint != null ? apiGen("v1", api, config) : null;
   config.network = network;
 
   config.assetCache = AssetCache(network);
   config.abiCache = AbiCache(network, config);
 
   if (!config.chainId) {
-    config.chainId = 'cf057bbfb72640471fd910bcb67639c22df9f92470936cddc1ade0e2f2e7dc4f';
+    config.chainId = "cf057bbfb72640471fd910bcb67639c22df9f92470936cddc1ade0e2f2e7dc4f";
   }
 
   _checkChainId(network, config.chainId);
 
   if (config.mockTransactions != null) {
-    if (typeof config.mockTransactions === 'string') {
+    if (typeof config.mockTransactions === "string") {
       const mock = config.mockTransactions;
       config.mockTransactions = () => mock;
     }
-    assert.equal(typeof config.mockTransactions, 'function', 'config.mockTransactions');
+    assert.equal(typeof config.mockTransactions, "function", "config.mockTransactions");
   }
 
   const { structs, types, fromBuffer, toBuffer } = Structs(config);
@@ -200,7 +200,7 @@ async function deploy(contract, account) {
   } catch (e) {
     console.log(e);
     return {
-      'error_msg': e
+      "error_msg": e
     };
   }
 }
@@ -215,15 +215,15 @@ async function deploy(contract, account) {
  */
 async function getRamrate() {
   const rs = await this.getTableRecords({
-    code: 'ultrainio',
-    scope: 'ultrainio',
-    table: 'rammarket',
+    code: "ultrainio",
+    scope: "ultrainio",
+    table: "rammarket",
     json: true
   });
 
   if (rs.rows) {
-    let quote_balance = rs.rows[0].quote.balance.split(' ')[0];
-    let base_balance = rs.rows[0].base.balance.split(' ')[0];
+    let quote_balance = rs.rows[0].quote.balance.split(" ")[0];
+    let base_balance = rs.rows[0].base.balance.split(" ")[0];
 
     let ramrate = (1 * quote_balance) / (1 + base_balance / 1024);
     return `${ramrate} ${defaultConfig.symbol}/KB`;
@@ -253,8 +253,8 @@ async function createUser(params) {
   let defaults = {
     updateable: 1,//default updateable
     ram_bytes: 8912,
-    stake_net_quantity: '1.0000 ' + defaultConfig.symbol,
-    stake_cpu_quantity: '1.0000 ' + defaultConfig.symbol,
+    stake_net_quantity: "1.0000 " + defaultConfig.symbol,
+    stake_cpu_quantity: "1.0000 " + defaultConfig.symbol,
     transfer: 0
   };
   let data = Object.assign({}, defaults, params);
@@ -264,7 +264,10 @@ async function createUser(params) {
       name: data.name,
       owner: data.owner,
       active: data.active,
-      updateable: data.updateable
+      updateable: data.updateable,
+      uptype: 1,
+      threshold: 3,
+      signers: [{ "account": "bob", "weight": 1 }, { "account": "jack", "weight": 1 }]
     });
     tr.buyrambytes({
       payer: data.creator,
@@ -289,9 +292,9 @@ async function createUser(params) {
  * @param chainId
  * @returns {Promise<*>}
  */
-async function sign(unsigned_transaction, privateKeyOrMnemonic, chainId = 'cf057bbfb72640471fd910bcb67639c22df9f92470936cddc1ade0e2f2e7dc4f') {
-  assert(unsigned_transaction, 'unsigned transaction required');
-  assert(privateKeyOrMnemonic, 'privateKeyOrMnemonic required');
+async function sign(unsigned_transaction, privateKeyOrMnemonic, chainId = "cf057bbfb72640471fd910bcb67639c22df9f92470936cddc1ade0e2f2e7dc4f") {
+  assert(unsigned_transaction, "unsigned transaction required");
+  assert(privateKeyOrMnemonic, "privateKeyOrMnemonic required");
 
   let privateKey = privateKeyOrMnemonic;
   let isValidPrivateKey = ecc.isValidPrivate(privateKeyOrMnemonic);
@@ -305,7 +308,7 @@ async function sign(unsigned_transaction, privateKeyOrMnemonic, chainId = 'cf057
   delete txObject.transaction_extensions;
 
   const buf = Fcbuffer.toBuffer(this.fc.structs.transaction, txObject);
-  const chainIdBuf = new Buffer(chainId, 'hex');
+  const chainIdBuf = new Buffer(chainId, "hex");
   const signBuf = Buffer.concat([chainIdBuf, buf, new Buffer(new Uint8Array(32))]);
 
   return ecc.sign(signBuf, privateKey);
@@ -318,8 +321,8 @@ async function sign(unsigned_transaction, privateKeyOrMnemonic, chainId = 'cf057
  */
 function safeConfig(config) {
   // access control is shallow references only
-  const readOnly = new Set(['httpEndpoint', 'abiCache']);
-  const readWrite = new Set(['verbose', 'debug', 'broadcast', 'logger', 'sign']);
+  const readOnly = new Set(["httpEndpoint", "abiCache"]);
+  const readWrite = new Set(["verbose", "debug", "broadcast", "logger", "sign"]);
   const protectedConfig = {};
 
   Object.keys(config).forEach(key => {
@@ -329,14 +332,14 @@ function safeConfig(config) {
           config[key] = value;
           return;
         }
-        throw new Error('Access denied');
+        throw new Error("Access denied");
       },
 
       get: function() {
         if (readOnly.has(key) || readWrite.has(key)) {
           return config[key];
         }
-        throw new Error('Access denied');
+        throw new Error("Access denied");
       }
     });
   });
@@ -352,7 +355,7 @@ function safeConfig(config) {
  * @private
  */
 function _mergeWriteFunctions(config, api, structs) {
-  assert(config, 'network instance required');
+  assert(config, "network instance required");
   const { network } = config;
 
   // block api
@@ -361,7 +364,7 @@ function _mergeWriteFunctions(config, api, structs) {
   // contract abi
   const writeApi = writeApiGen(api, network, structs, config, schema);
 
-  _throwOnDuplicate(merge, writeApi, 'Conflicting methods in UltrainApi and Transaction Api');
+  _throwOnDuplicate(merge, writeApi, "Conflicting methods in UltrainApi and Transaction Api");
   Object.assign(merge, writeApi);
 
   return merge;
@@ -377,7 +380,7 @@ function _mergeWriteFunctions(config, api, structs) {
 function _throwOnDuplicate(o1, o2, msg) {
   for (const key in o1) {
     if (o2[key]) {
-      throw new TypeError(msg + ': ' + key);
+      throw new TypeError(msg + ": " + key);
     }
   }
 }
@@ -393,7 +396,7 @@ function _checkChainId(api, chainId) {
   api.getChainInfo({}).then(info => {
     if (info.chain_id !== chainId) {
       console.warn(
-        'WARN: chainId mismatch, signatures will not match transaction authority. ' +
+        "WARN: chainId mismatch, signatures will not match transaction authority. " +
         `expected ${chainId} !== actual ${info.chain_id}`
       );
     }
