@@ -1,4 +1,5 @@
-const {Signature, PublicKey} = require('u3-utils/src')
+const {ecc} = require('u3-utils/src')
+const {Signature, PublicKey} = ecc
 const Fcbuffer = require('fcbuffer')
 const ByteBuffer = require('bytebuffer')
 const assert = require('assert')
