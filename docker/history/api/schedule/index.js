@@ -37,7 +37,7 @@ var washHolderBalance = async () => {
 
 iterateResolveToken = (arr) => {
 
-  arr.forEach(async a => {
+  arr && arr.forEach(async a => {
 
     let creator = a.name;
     let tables = a.abi.tables && a.abi.tables.filter(t => {
@@ -81,8 +81,11 @@ iterateResolveToken = (arr) => {
       );
       issueAction = JSON.parse(JSON.stringify(issueAction));
 
-      let issueTx = await Txs.findOne({ "trx_id": issueAction.trx_id }, { createdAt: 1 });
-      issueTx = JSON.parse(JSON.stringify(issueTx));
+      let issueTx = null;
+      if (issueAction) {
+        issueTx = await Txs.findOne({ "trx_id": issueAction.trx_id }, { createdAt: 1 });
+        issueTx = JSON.parse(JSON.stringify(issueTx));
+      }
 
       let response = stats[symbol];
       let max_supply = response.max_supply.replace(" " + symbol, "");
@@ -99,7 +102,7 @@ iterateResolveToken = (arr) => {
           supply: response.supply ? response.supply.replace(" " + symbol, "") : 0,
           max_supply: max_supply,
           issuer: response.issuer,
-          issue_time: issueTx.createdAt
+          issue_time: issueAction ? issueTx.createdAt : ''
         },
         { upsert: true }).catch(function (e) {
           console.error(e.message);
