@@ -24,9 +24,9 @@
   ],
   "author": "ben.yasin80@gmail.com",
   "contributors": [],
-  "engines": [
-    "node >= 8"
-  ],
+  "engines": {
+    "node": ">=8"
+  },
   "dependencies": {
     "axios": "^0.18.0",
     "babel-polyfill": "^6.26.0"
