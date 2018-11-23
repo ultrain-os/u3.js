@@ -1,4 +1,15 @@
 {
+  "acceptheader": {
+    "base": "",
+    "action": {
+      "name": "acceptheader",
+      "account": "ultrainio"
+    },
+    "fields": {
+      "chain_name": "uint64",
+      "header": "block_header"
+    }
+  },
   "account_name": "name",
   "action_name": "name_ex",
   "authority": {
@@ -22,6 +33,20 @@
       "bid": "asset"
     }
   },
+  "block_header": {
+    "base": "",
+    "fields": {
+      "timestamp": "block_timestamp_type",
+      "proposer": "account_name",
+      "version": "uint32",
+      "previous": "checksum256",
+      "transaction_mroot": "checksum256",
+      "action_mroot": "checksum256",
+      "committee_mroot": "checksum256",
+      "header_extensions": "extension[]"
+    }
+  },
+  "block_id_type": "checksum256",
   "blockchain_parameters": {
     "base": "",
     "fields": {
@@ -110,13 +135,26 @@
       "transfer": "bool"
     }
   },
+  "delegatecons": {
+    "base": "",
+    "action": {
+      "name": "delegatecons",
+      "account": "ultrainio"
+    },
+    "fields": {
+      "from": "account_name",
+      "receiver": "account_name",
+      "stake_cons_quantity": "asset"
+    }
+  },
   "delegated_bandwidth": {
     "base": "",
     "fields": {
       "from": "account_name",
       "to": "account_name",
       "net_weight": "asset",
-      "cpu_weight": "asset"
+      "cpu_weight": "asset",
+      "cons_weight": "asset"
     }
   },
   "deleteauth": {
@@ -130,30 +168,19 @@
       "permission": "permission_name"
     }
   },
-  "ultrainio_global_state": {
-    "base": "blockchain_parameters",
-    "fields": {
-      "max_ram_size": "uint64",
-      "total_ram_bytes_reserved": "uint64",
-      "total_ram_stake": "int64",
-      "last_producer_schedule_update": "block_timestamp_type",
-      "last_pervote_bucket_fill": "uint64",
-      "pervote_bucket": "int64",
-      "perblock_bucket": "int64",
-      "total_unpaid_blocks": "uint32",
-      "total_activated_stake": "int64",
-      "thresh_activated_stake_time": "uint64",
-      "last_producer_schedule_size": "uint16",
-      "total_producer_vote_weight": "float64",
-      "last_name_close": "block_timestamp_type"
-    }
-  },
   "exchange_state": {
     "base": "",
     "fields": {
       "supply": "asset",
       "base": "connector",
       "quote": "connector"
+    }
+  },
+  "extension": {
+    "base": "",
+    "fields": {
+      "type": "uint16",
+      "data": "bytes"
     }
   },
   "key_weight": {
@@ -176,6 +203,15 @@
       "requirement": "permission_name"
     }
   },
+  "namebid_info": {
+    "base": "",
+    "fields": {
+      "newname": "account_name",
+      "high_bidder": "account_name",
+      "high_bid": "int64",
+      "last_bid_time": "uint64"
+    }
+  },
   "newaccount": {
     "base": "",
     "action": {
@@ -186,8 +222,7 @@
       "creator": "account_name",
       "name": "account_name",
       "owner": "authority",
-      "active": "authority",
-      "updateable": "uint8"
+      "active": "authority"
     }
   },
   "onerror": {
@@ -217,14 +252,14 @@
   },
   "permission_name": "name",
   "producer_info": {
-    "base": "",
+    "base": "role_base",
     "fields": {
-      "owner": "account_name",
-      "total_votes": "float64",
-      "producer_key": "public_key",
+      "total_cons_staked": "int64",
       "is_active": "bool",
+      "is_enabled": "bool",
+      "hasactived": "bool",
       "url": "string",
-      "unpaid_blocks": "uint32",
+      "unpaid_blocks": "uint64[]",
       "last_claim_time": "uint64",
       "location": "uint16"
     }
@@ -233,7 +268,17 @@
     "base": "",
     "fields": {
       "producer_name": "account_name",
-      "block_signing_key": "public_key"
+      "block_signing_key": "string"
+    }
+  },
+  "proposeminer_info": {
+    "base": "",
+    "fields": {
+      "account": "account_name",
+      "public_key": "string",
+      "url": "string",
+      "location": "uint16",
+      "adddel_miner": "bool"
     }
   },
   "refund": {
@@ -246,6 +291,14 @@
       "owner": "account_name"
     }
   },
+  "refund_cons": {
+    "base": "",
+    "fields": {
+      "owner": "account_name",
+      "request_time": "time_point_sec",
+      "cons_amount": "asset"
+    }
+  },
   "refund_request": {
     "base": "",
     "fields": {
@@ -253,6 +306,28 @@
       "request_time": "time_point_sec",
       "net_amount": "asset",
       "cpu_amount": "asset"
+    }
+  },
+  "refundcons": {
+    "base": "",
+    "action": {
+      "name": "refundcons",
+      "account": "ultrainio"
+    },
+    "fields": {
+      "owner": "account_name"
+    }
+  },
+  "regminer": {
+    "base": "",
+    "action": {
+      "name": "regminer",
+      "account": "ultrainio"
+    },
+    "fields": {
+      "producer": "account_name",
+      "miner_pk": "string",
+      "miner_url": "string"
     }
   },
   "regproducer": {
@@ -263,20 +338,34 @@
     },
     "fields": {
       "producer": "account_name",
-      "producer_key": "public_key",
+      "producer_key": "string",
       "url": "string",
       "location": "uint16"
     }
   },
-  "regproxy": {
+  "regsubchain": {
     "base": "",
     "action": {
-      "name": "regproxy",
+      "name": "regsubchain",
       "account": "ultrainio"
     },
     "fields": {
-      "proxy": "account_name",
-      "isproxy": "bool"
+      "chain_name": "uint64",
+      "root_user_name": "account_name",
+      "root_user_pk": "string",
+      "sub_chain_deposit": "uint32",
+      "node_num": "uint32"
+    }
+  },
+  "reportblocknumber": {
+    "base": "",
+    "action": {
+      "name": "reportblocknumber",
+      "account": "ultrainio"
+    },
+    "fields": {
+      "producer": "account_name",
+      "number": "uint64"
     }
   },
   "require_auth": {
@@ -297,6 +386,13 @@
     },
     "fields": {
       "producer": "account_name"
+    }
+  },
+  "role_base": {
+    "base": "",
+    "fields": {
+      "owner": "account_name",
+      "producer_key": "string"
     }
   },
   "sellram": {
@@ -398,6 +494,31 @@
       "max_ram_size": "uint64"
     }
   },
+  "subchain": {
+    "base": "subchain_base",
+    "fields": {
+      "chain_id": "checksum256",
+      "genesis_info": "string",
+      "network_topology": "string",
+      "relayer_stake_threshold": "uint32",
+      "relayer_candidates": "role_base[]",
+      "relayer_list": "role_base[]"
+    }
+  },
+  "subchain_base": {
+    "base": "",
+    "fields": {
+      "chain_name": "uint64",
+      "min_active_stake": "int64",
+      "min_committee_member_num": "uint32",
+      "root_name": "account_name",
+      "root_pk": "string",
+      "committee_members": "role_base[]",
+      "total_deposit": "uint64",
+      "head_block_id": "block_id_type",
+      "head_block_num": "uint32"
+    }
+  },
   "total_resources": {
     "base": "",
     "fields": {
@@ -408,6 +529,26 @@
     }
   },
   "transaction_id_type": "checksum256",
+  "ultrainio_global_state": {
+    "base": "blockchain_parameters",
+    "fields": {
+      "max_ram_size": "uint64",
+      "min_activated_stake": "int64",
+      "min_committee_member": "uint32",
+      "min_committee_member_number": "uint32",
+      "total_ram_bytes_reserved": "uint64",
+      "total_ram_stake": "int64",
+      "start_blcok": "uint64",
+      "last_pervote_bucket_fill": "uint64",
+      "pervote_bucket": "int64",
+      "perblock_bucket": "int64",
+      "total_unpaid_blocks": "uint64[]",
+      "total_activated_stake": "int64",
+      "thresh_activated_stake_time": "uint64",
+      "total_producer_vote_weight": "float64",
+      "last_name_close": "block_timestamp_type"
+    }
+  },
   "undelegatebw": {
     "base": "",
     "action": {
@@ -419,6 +560,18 @@
       "receiver": "account_name",
       "unstake_net_quantity": "asset",
       "unstake_cpu_quantity": "asset"
+    }
+  },
+  "undelegatecons": {
+    "base": "",
+    "action": {
+      "name": "undelegatecons",
+      "account": "ultrainio"
+    },
+    "fields": {
+      "from": "account_name",
+      "receiver": "account_name",
+      "unstake_cons_quantity": "asset"
     }
   },
   "unlinkauth": {
@@ -443,6 +596,16 @@
       "producer": "account_name"
     }
   },
+  "updateactiveminers": {
+    "base": "",
+    "action": {
+      "name": "updateactiveminers",
+      "account": "ultrainio"
+    },
+    "fields": {
+      "miners": "proposeminer_info[]"
+    }
+  },
   "updateauth": {
     "base": "",
     "action": {
@@ -463,33 +626,6 @@
       "net_weight": "asset",
       "cpu_weight": "asset",
       "ram_bytes": "uint64"
-    }
-  },
-  "voteproducer": {
-    "base": "",
-    "action": {
-      "name": "voteproducer",
-      "account": "ultrainio"
-    },
-    "fields": {
-      "voter": "account_name",
-      "proxy": "account_name",
-      "producers": "account_name[]"
-    }
-  },
-  "voter_info": {
-    "base": "",
-    "fields": {
-      "owner": "account_name",
-      "proxy": "account_name",
-      "producers": "account_name[]",
-      "staked": "int64",
-      "last_vote_weight": "float64",
-      "proxied_vote_weight": "float64",
-      "is_proxy": "bool",
-      "deferred_trx_id": "uint32",
-      "last_unstake_time": "time_point_sec",
-      "unstaking": "asset"
     }
   },
   "wait_weight": {
