@@ -1,10 +1,17 @@
 {
+  "get_subchain_committee": {
+    "brief": "Return committee of subchain",
+    "params": {
+      "chain_name": "account_name"
+    },
+    "results": "asset[]"
+  },
   "get_sourcerate": {
     "brief": "Return net rate and cpu rate",
     "params": {
       "account_name": {
-        "type":"name",
-        "description":"Account name to get sourcerate"
+        "type": "name",
+        "description": "Account name to get sourcerate"
       }
     },
     "results": {
@@ -19,17 +26,17 @@
   },
   "get_currency_balance": {
     "params": {
-      "code":  {
-        "type":"name",
-        "description":"account which deployed the contract"
+      "code": {
+        "type": "name",
+        "description": "account which deployed the contract"
       },
       "account": {
-        "type":"name",
-        "description":"account to get balance of"
+        "type": "name",
+        "description": "account to get balance of"
       },
       "symbol": {
-        "type":"optional<string>",
-        "description":"symbol to query"
+        "type": "optional<string>",
+        "description": "symbol to query"
       }
     },
     "results": "asset[]",
@@ -43,13 +50,13 @@
   },
   "get_currency_stats": {
     "params": {
-      "code":  {
-        "type":"name",
-        "description":"account which deployed the contract"
+      "code": {
+        "type": "name",
+        "description": "account which deployed the contract"
       },
       "symbol": {
-        "type":"string",
-        "description":"currency symbol to get the stats for"
+        "type": "string",
+        "description": "currency symbol to get the stats for"
       }
     },
     "results": {
@@ -127,8 +134,8 @@
     "brief": "Fetch a block from the blockchain.",
     "params": {
       "block_num_or_id": {
-        "type":"string",
-        "description":"Provide a block number or a block id"
+        "type": "string",
+        "description": "Provide a block number or a block id"
       }
     },
     "results": "variant",
@@ -145,8 +152,8 @@
     "brief": "Fetch the minimum state necessary to validate transaction headers.",
     "params": {
       "block_num_or_id": {
-        "type":"string",
-        "description":"Provide a block number or a block id"
+        "type": "string",
+        "description": "Provide a block number or a block id"
       }
     },
     "results": "string",
@@ -164,8 +171,8 @@
     "brief": "Fetch a blockchain account",
     "params": {
       "account_name": {
-        "type":"name",
-        "description":"Provide an account name"
+        "type": "name",
+        "description": "Provide an account name"
       }
     },
     "results": {
@@ -194,8 +201,8 @@
     "brief": "Fetch smart contract code",
     "params": {
       "account_name": {
-        "type":"name",
-        "description":"Provide a smart contract account name"
+        "type": "name",
+        "description": "Provide a smart contract account name"
       },
       "code_as_wasm": {
         "type": "bool",
@@ -445,23 +452,35 @@
           "ref_block_num": "100",
           "ref_block_prefix": "137469861",
           "expiration": "2017-09-25T06:28:49",
-          "scope": ["initb", "initc"],
-          "actions": [{
-            "code": "currency",
-            "type": "transfer",
-            "recipients": ["initb", "initc"],
-            "authorization": [{
-              "account": "initb",
-              "permission": "active"
-            }],
-            "data": "000000000041934b000000008041934be803000000000000"
-          }],
+          "scope": [
+            "initb",
+            "initc"
+          ],
+          "actions": [
+            {
+              "code": "currency",
+              "type": "transfer",
+              "recipients": [
+                "initb",
+                "initc"
+              ],
+              "authorization": [
+                {
+                  "account": "initb",
+                  "permission": "active"
+                }
+              ],
+              "data": "000000000041934b000000008041934be803000000000000"
+            }
+          ],
           "signatures": [],
           "authorizations": []
         },
-        "available_keys": ["EOS4toFS3YXEQCkuuw1aqDLrtHim86Gz9u3hBdcBw5KNPZcursVHq",
+        "available_keys": [
+          "EOS4toFS3YXEQCkuuw1aqDLrtHim86Gz9u3hBdcBw5KNPZcursVHq",
           "EOS7d9A3uLe6As66jzN8j44TXJUqJSK3bFjjEEqR4oTvNAB3iM9SA",
-          "EOS6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV"]
+          "EOS6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV"
+        ]
       }
     }
   },

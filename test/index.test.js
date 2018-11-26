@@ -82,7 +82,7 @@ describe("u3.js", () => {
     };
 
     // 3.1 transactionHeaders
-    it("transactionHeaders callback", async function() {
+    it("transactionHeaders callback", async function () {
       const u3 = createU3({
         keyProvider: wif,
         transactionHeaders
@@ -105,7 +105,7 @@ describe("u3.js", () => {
     });
 
     // 3.2 generate key pair by seed
-    it("generateKeyPairBySeed", function() {
+    it("generateKeyPairBySeed", function () {
       let seed = randomName();
       let keys = ecc.generateKeyPairBySeed(seed);
       assert.equal(ecc.isValidPrivate(keys.private_key), true);
@@ -113,7 +113,7 @@ describe("u3.js", () => {
     });
 
     // 3.3 re-generate key pair by the same seed
-    it("generateKeyPairBySeed(same keys with same seed)", function() {
+    it("generateKeyPairBySeed(same keys with same seed)", function () {
       let seed = randomName();
       let keys1 = ecc.generateKeyPairBySeed(seed);
       let keys2 = ecc.generateKeyPairBySeed(seed);
@@ -122,7 +122,7 @@ describe("u3.js", () => {
     });
 
     // 3.4 generate key pair with mnemonic
-    it("generateKeyPairWithMnemonic", function() {
+    it("generateKeyPairWithMnemonic", function () {
       let result = ecc.generateKeyPairWithMnemonic();
       //console.log(result);
       assert.ok((isString(result.mnemonic) && !isEmpty(result.mnemonic)), true);
@@ -131,7 +131,7 @@ describe("u3.js", () => {
     });
 
     // 3.5 re-generate key pair by the same mnemonic
-    it("generateKeyPairByMnemonic(same mnemonic same key pair)", function() {
+    it("generateKeyPairByMnemonic(same mnemonic same key pair)", function () {
       let result = ecc.generateKeyPairWithMnemonic();
       let result2 = ecc.generateKeyPairByMnemonic(result.mnemonic);
       assert.equal(result.public_key, result2.public_key);
@@ -144,7 +144,7 @@ describe("u3.js", () => {
   describe("Contracts", () => {
 
     // 4.1 deploy contract
-    it("deploy contract", async function() {
+    it("deploy contract", async function () {
       const config = { keyProvider: mockedUsers["bob"].private_key };
       const u3 = createU3(config);
       const trs = await u3.deploy(path.resolve(__dirname, "../contracts/token/token"), "bob");
@@ -209,7 +209,7 @@ describe("u3.js", () => {
       const u3 = createU3(config);
       let account = "bob";
       const tr = await u3.contract(account);
-      const result = await tr.transfer("bob", "ben", "1.0000 "+ customCurrency, "", { authorization: [`bob@active`] });
+      const result = await tr.transfer("bob", "ben", "1.0000 " + customCurrency, "", { authorization: [`bob@active`] });
 
       let tx = await u3.getTxByTxId(result.transaction_id);
       while (!tx.irreversible) {
@@ -569,7 +569,7 @@ describe("u3.js", () => {
       return u3.contract("utrio.token").then(token => {
 
         return token.transfer("ultrainio", "jack", "1.0000 " + defaultConfig.symbol, "")
-        // transaction sent on each command
+          // transaction sent on each command
           .then(tr => {
             assert.equal(1, tr.transaction.transaction.actions.length);
 
@@ -583,7 +583,7 @@ describe("u3.js", () => {
       });
     });
 
-    it("action to contract atomic", async function() {
+    it("action to contract atomic", async function () {
       // keyProvider should return an array of keys
       const keyProvider = () => {
         return [
@@ -611,13 +611,13 @@ describe("u3.js", () => {
 
       //  contracts can be a string or array
       await assertTr(await u3.transaction(["utrio.token"], (ultrainio_token) => {
-          trTest(ultrainio_token);
-        })
+        trTest(ultrainio_token);
+      })
       );
 
       await assertTr(await u3.transaction("utrio.token", (ultrainio_token) => {
-          trTest(ultrainio_token);
-        })
+        trTest(ultrainio_token);
+      })
       );
     });
 
@@ -634,14 +634,14 @@ describe("u3.js", () => {
     });
 
     // query currency's status
-    it("get currency stats", async function() {
+    it("get currency stats", async function () {
       const u3 = createU3({ signProvider });
       await u3.getCurrencyStats("utrio.token", defaultConfig.symbol, (error, result) => {
         console.log(error, result);
       });
     });
 
-    it("action to contract (contract tr nesting)", function() {
+    it("action to contract (contract tr nesting)", function () {
       this.timeout(4000);
       const tn = createU3({ signProvider });
       return tn.contract("utrio.token").then(ultrainio_token => {
@@ -719,7 +719,7 @@ describe("u3.js", () => {
     it("unsubscribe", async () => {
       // just do some biz in the callback
       // the data is the message that ultrain will push to you
-      listener(function(data) {
+      listener(function (data) {
         console.log(data);
       });
 
@@ -731,4 +731,17 @@ describe("u3.js", () => {
 
   });
 
+  // 7 subchain
+  describe("subchain", () => {
+    it("get_subchain_committee", async () => {
+      const config = { keyProvider: mockedUsers["ben"].private_key };
+      const u3 = createU3(config);
+      try {
+        let committee = await u3.getSubchainCommittee({ "chain_name": "0" });
+        console.log(committee);
+      } catch (e) {
+        console.log(e);
+      }
+    });
+  });
 });
