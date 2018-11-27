@@ -29,7 +29,8 @@ module.exports = function (config) {
         getBaseInfo,
         getBalanceByAccount,
         getHoldersBySymbol,
-        getAllBlocksHeader
+        getAllBlocksHeader,
+        getProposerList
     };
 };
 
@@ -929,4 +930,39 @@ function getAllBlocksHeader(page, pageSize, queryParams, sortParams) {
     };
 
     return fetchUrl(`${httpEndPoint}/blocksheader`, data);
+}
+
+/**
+ * get proposer list
+ * @param {Number} page page numbers
+ * @param {Number} pageSize how many records are displayed per page
+ * @memberOf history
+ * @example
+ * import {createU3} from "u3.js/src";
+ * const u3 = createU3(config)
+ * u3.getProposerList({
+    'page': 1,
+    'pageSize': 10
+ * })
+ *
+ * json structure:
+ * {
+    "pageNumber": "1",
+    "total": 1,
+    "pageCount": 1,
+    "results": [
+        {
+            "_id": "genesis",
+            "count": 972
+        }
+    ]
+    }
+ */
+function getProposerList(page, pageSize) {
+    let data = {
+        'page': page || 1,
+        'pageSize': pageSize || 10
+    };
+
+    return fetchUrl(`${httpEndPoint}/proposers`, data);
 }
