@@ -139,4 +139,10 @@ describe('history', async () => {
         console.log(JSON.stringify(rs, null, 2));
         assert.ok(rs);
     })
+
+    it("getProposerList", async () => {
+        let rs = await u3Instance.getProposerList(1, 1);
+        console.log(JSON.stringify(rs, null, 2));
+        assert.ok(rs);
+    })
 })
