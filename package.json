@@ -14,10 +14,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:ultrain-os/nodejs-sdk.git"
+    "url": "git@github.com:ultrain-os/u3.js.git"
   },
   "bugs": {
-    "url": "https://github.com/ultrain-os/nodejs-sdk/issues"
+    "url": "https://github.com/ultrain-os/u3.js/issues"
   },
   "keywords": [
     "web-service"
