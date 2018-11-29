@@ -737,7 +737,24 @@ describe("u3.js", () => {
       const config = { keyProvider: mockedUsers["ben"].private_key };
       const u3 = createU3(config);
       try {
-        let committee = await u3.getSubchainCommittee({ "chain_name": "0" });
+        let committee = await u3.getSubchainCommittee({ "chain_name": "11" });
+        console.log(committee);
+      } catch (e) {
+        console.log(e);
+      }
+    });
+    it("get_subchain_block_num", async () => {
+      const config = { keyProvider: mockedUsers["ben"].private_key };
+      // let config = {
+      //   httpEndpoint: 'http://172.16.10.4:8877',
+      //   httpEndpoint_history: 'http://172.16.10.4:3000',
+      //   keyProvider: ['5HvhChtH919sEgh5YjspCa1wgE7dKP61f7wVmTPsedw6enz6g7H'], // WIF string or array of keys..
+
+      //   chainId: '0eaaff4003d4e08a541332c62827c0ac5d96766c712316afe7ade6f99b8d70fe'
+      // }
+      const u3 = createU3(config);
+      try {
+        let committee = await u3.getSubchainBlockNum({ "chain_name": "11" });
         console.log(committee);
       } catch (e) {
         console.log(e);
