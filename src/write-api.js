@@ -83,7 +83,8 @@ function WriteApi (Network, network, config, Transaction) {
 
       const abiPromises = [];
       // Ultrain contract operations are cached (efficient and offline transactions)
-      const cachedCode = new Set(["ultrainio", "utrio.token", "ultrainio.null"]);
+      //const cachedCode = new Set(["ultrainio", "utrio.token", "ultrainio.null"]);
+      const cachedCode = new Set([]);
       accounts.forEach(account => {
         if (!cachedCode.has(account)) {
           abiPromises.push(config.abiCache.abiAsync(account));

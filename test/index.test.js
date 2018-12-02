@@ -9,7 +9,7 @@ const U3Utils = require("u3-utils/src");
 
 const { createU3, format, ecc, Fcbuffer, listener, version } = require("../src");
 
-const wif = "5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79zkvFD3"; //ultrainio
+const wif = "5JbedY3jGfNK7HcLXcqGqSYrmX2n8wQWqZAuq6K7Gcf4Dj62UfL"; //ultrainio
 const pubkey = "UTR6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV"; //ultrainio
 
 const readKeysFromFiles = () => {
@@ -184,6 +184,8 @@ describe("u3.js", () => {
         token.transfer(account, "ben", "1000.0000 " + customCurrency, "");
       });
 
+      U3Utils.test.wait(3000);
+
       await u3.getCurrencyStats({
         "code": "bob",
         "symbol": customCurrency
@@ -272,8 +274,8 @@ describe("u3.js", () => {
         return [wif];
       };
       const u3 = createU3({ keyProvider });
-      return u3.transfer("ultrainio", "utrio.token", "1.0000 " + defaultConfig.symbol, "").then(tr => {
-        console.log(tr);
+      const tr = await u3.contract('utrio.token');
+      return tr.transfer("ultrainio", "utrio.token", "1.0000 " + defaultConfig.symbol, "").then(tr => {
         assert.equal(tr.transaction.signatures.length, 1);
         assert.equal(typeof tr.transaction.signatures[0], "string");
       });
@@ -317,16 +319,17 @@ describe("u3.js", () => {
       const u3 = createU3({ signProvider });
       const name = randomName();
       let params = {
-        creator: "ultrainio",
+        creator: 'ben',
         name: name,
-        owner: pubkey,
-        active: pubkey,
+        owner: 'UTR6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV',
+        active: 'UTR6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV',
         updateable: 0,
-        ram_bytes: 888912,
-        stake_net_quantity: "1.0000 " + defaultConfig.symbol,
-        stake_cpu_quantity: "1.0000 " + defaultConfig.symbol,
+        ram_bytes: 100000,
+        stake_net_quantity: '1.0000 UGAS',
+        stake_cpu_quantity: '1.0000 UGAS',
         transfer: 0
       };
+
       await u3.createUser(params).then(tr => {
         return u3.getAccountInfo({
           account_name: name
@@ -365,7 +368,8 @@ describe("u3.js", () => {
         account_name: "ben"
       }).then(async before => {
         console.log("\n-----before:", before.ram_quota, "\n");
-        return await u3.buyrambytes({
+        const tr = await u3.contract('ultrainio');
+        return await tr.buyrambytes({
           payer: "ultrainio",
           receiver: "ben",
           bytes: 10000

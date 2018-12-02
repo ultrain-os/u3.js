@@ -3,18 +3,22 @@ const assert = require('assert');
 const Fcbuffer = require('fcbuffer');
 const ByteBuffer = require('bytebuffer');
 
-const Ultrain = require('../src');
+const {createU3} = require('../src');
+const {ecc} = require('u3-utils/src');
+const {PublicKey} = ecc;
 const AssetCache = require('../src/asset-cache');
 const defaultConfig = require("../src/config");
 
 describe('shorthand', () => {
 
   it('authority', () => {
-    const ultrain = Ultrain();
+    const ultrain = createU3();
     const { authority } = ultrain.fc.structs;
 
     const pubkey = 'UTR6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV';
     const auth = { threshold: 1, keys: [{ key: pubkey, weight: 1 }] };
+
+    console.log(PublicKey.fromString(pubkey))
 
     assert.deepEqual(authority.fromObject(pubkey), auth);
     assert.deepEqual(

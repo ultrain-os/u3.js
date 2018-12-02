@@ -81,7 +81,7 @@ function fetchMethod(methodName, url, definition, config) {
 
     var body = JSON.stringify(params);
     if (logger.log) {
-      logger.log('\napi >', url.endsWith('chain/get_chain_info') ? 'get' : 'post', '\t', url, '\n', body);
+      logger.log('\n api >', url.endsWith('chain/get_chain_info') ? 'get' : 'post', '\t', url, '\n', body);
     }
     var fetchConfiguration = { body: body, method: 'POST' };
     Object.assign(fetchConfiguration, config.fetchConfiguration);
@@ -99,13 +99,13 @@ function fetchMethod(methodName, url, definition, config) {
       }
     }).then(function(objectResp) {
       if (logger.log) {
-        logger.log('\napi <', 'response', '\t', url, '\n', JSON.stringify(objectResp), '\n\n');
+        logger.log('\n   res <', '\t', url, '\n', JSON.stringify(objectResp), '\n\n');
       }
       try {
         callback(null, objectResp);
       } catch (callbackError) {
         if (logger.error) {
-          logger.error('api <', 'result callback', ':', callbackError);
+          logger.error('\n   res <', 'result callback', ':', callbackError);
         }
       }
     }).catch(function(error) {
@@ -116,7 +116,7 @@ function fetchMethod(methodName, url, definition, config) {
       }
 
       if (logger.error) {
-        logger.error('api <', 'error', '\t', message, url, body);
+        logger.error('\n   res <', 'error', '\t', message, url, body);
         logger.error(error);
       }
 
@@ -124,7 +124,7 @@ function fetchMethod(methodName, url, definition, config) {
         callback(error);
       } catch (callbackError) {
         if (logger.error) {
-          logger.error('api <', 'error callback', ':', callbackError);
+          logger.error('\n   res <', 'error callback', ':', callbackError);
         }
       }
     });

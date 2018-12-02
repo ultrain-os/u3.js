@@ -1,7 +1,7 @@
 const fs = require('fs');
 const camelCase = require('camel-case');
 const path = require('path');
-const v1 = Object.assign({}, { chain: require('../src/v1/chain.json') }, require('../src/v1/contract'));
+const v1 = Object.assign({}, { chain: require('../src/v1/chain.json') });
 
 function _generateSDK(content) {
   fs.writeFile(path.resolve(__dirname, '../src/apidoc.js'), content, 'utf8', function(err) {
