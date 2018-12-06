@@ -61,7 +61,7 @@ $clultrain push action utrio.token create '[ "ultrainio", "8000000000.0000 UGAS"
 $clultrain push action utrio.token issue '[ "ultrainio", "1000000000.0000 UGAS"]' -p ultrainio
 $clultrain set contract ultrainio $ContractPath/ultrainio.system/ -p ultrainio -x 3600
 
-sleep 30
+sleep 10
 
 for pri in ${test_acc_pri_arr[@]};
 do

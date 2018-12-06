@@ -1,170 +1,167 @@
-require('isomorphic-fetch');
-const camelCase = require('camel-case');
-const processArgs = require('./process-args');
-const configDefaults = require('../config');
-const helpers = require('./exported-helpers');
+require('isomorphic-fetch')
+const camelCase = require('camel-case')
+const processArgs = require('./process-args')
+const configDefaults = require('../config')
+const helpers = require('./exported-helpers')
 
-module.exports = apiGen;
+module.exports = apiGen
 
-function apiGen(version, definitions, config) {
+function apiGen (version, definitions, config) {
   config = Object.assign({
     httpEndpoint: 'http://127.0.0.1:8888',
     verbose: true
-  }, config);
+  }, config)
 
   var defaultLogger = {
     log: config.verbose ? console.log : '',
     error: console.error
-  };
+  }
 
-  config.logger = Object.assign({}, defaultLogger, config.logger);
+  config.logger = Object.assign({}, defaultLogger, config.logger)
 
-  var api = {};
+  var api = {}
   var _config = config,
-    httpEndpoint = _config.httpEndpoint;
-
+    httpEndpoint = _config.httpEndpoint
 
   for (var apiGroup in definitions) {
     for (var apiMethod in definitions[apiGroup]) {
-      var methodName = camelCase(apiMethod);
-      var url = httpEndpoint + '/' + version + '/' + apiGroup + '/' + apiMethod;
-      api[methodName] = fetchMethod(methodName, url, definitions[apiGroup][apiMethod], config);
+      var methodName = camelCase(apiMethod)
+      var url = httpEndpoint + '/' + version + '/' + apiGroup + '/' + apiMethod
+      api[methodName] = fetchMethod(methodName, url, definitions[apiGroup][apiMethod], config)
     }
   }
 
-  var _loop = function _loop(helper) {
+  var _loop = function _loop (helper) {
     // Insert `api` as the first parameter to all API helpers
-    api[helper] = function() {
-      var _helpers$api;
+    api[helper] = function () {
+      var _helpers$api
 
       for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
-        args[_key] = arguments[_key];
+        args[_key] = arguments[_key]
       }
 
-      return (_helpers$api = helpers.api)[helper].apply(_helpers$api, [api].concat(args));
-    };
-  };
+      return (_helpers$api = helpers.api)[helper].apply(_helpers$api, [api].concat(args))
+    }
+  }
 
   for (var helper in helpers.api) {
-    _loop(helper);
+    _loop(helper)
   }
-  return Object.assign(api, helpers);
+  return Object.assign(api, helpers)
 }
 
-function fetchMethod(methodName, url, definition, config) {
-  var logger = config.logger;
+function fetchMethod (methodName, url, definition, config) {
+  var logger = config.logger
 
-
-  return function() {
+  return function () {
     for (var _len2 = arguments.length, args = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
-      args[_key2] = arguments[_key2];
+      args[_key2] = arguments[_key2]
     }
 
     if (args.length === 0) {
-      console.log(usage(methodName, definition));
-      return;
+      console.log(usage(methodName, definition))
+      return
     }
 
-    var optionsFormatter = function optionsFormatter(option) {
+    var optionsFormatter = function optionsFormatter (option) {
       if (typeof option === 'boolean') {
-        return { broadcast: option };
+        return {broadcast: option}
       }
-    };
+    }
 
-    var processedArgs = processArgs(args, Object.keys(definition.params || []), methodName, optionsFormatter);
+    var processedArgs = processArgs(args, Object.keys(definition.params || []), methodName, optionsFormatter)
 
     var params = processedArgs.params,
       options = processedArgs.options,
-      returnPromise = processedArgs.returnPromise;
-    var callback = processedArgs.callback;
+      returnPromise = processedArgs.returnPromise
+    var callback = processedArgs.callback
 
-
-    var body = JSON.stringify(params);
+    var body = JSON.stringify(params)
     if (logger.log) {
-      logger.log('\n api >', url.endsWith('chain/get_chain_info') ? 'get' : 'post', '\t', url, '\n', body);
+      logger.log('[ ' + methodName + ' ]:', url.endsWith('chain/get_chain_info') ? 'GET' : 'POST', url, '\t', body)
     }
-    var fetchConfiguration = { body: body, method: 'POST' };
-    Object.assign(fetchConfiguration, config.fetchConfiguration);
+    var fetchConfiguration = {body: body, method: 'POST'}
+    Object.assign(fetchConfiguration, config.fetchConfiguration)
 
-    fetch(url, fetchConfiguration).then(function(response) {
+    fetch(url, fetchConfiguration).then(function (response) {
       if (response.status >= 200 && response.status < 300) {
-        return response.json();
+        return response.json()
       } else {
-        return response.text().then(function(bodyResp) {
-          var error = new Error(bodyResp);
-          error.status = response.status;
-          error.statusText = response.statusText;
-          throw error;
-        });
+        return response.text().then(function (bodyResp) {
+          var error = new Error(bodyResp)
+          error.status = response.status
+          error.statusText = response.statusText
+          throw error
+        })
       }
-    }).then(function(objectResp) {
+    }).then(function (objectResp) {
       if (logger.log) {
-        logger.log('\n   res <', '\t', url, '\n', JSON.stringify(objectResp), '\n\n');
+        logger.log('\n\t', '[ ' + methodName + ' ]', 'response:', JSON.stringify(objectResp), '\n')
       }
       try {
-        callback(null, objectResp);
+        callback(null, objectResp)
       } catch (callbackError) {
         if (logger.error) {
-          logger.error('\n   res <', 'result callback', ':', callbackError);
+          logger.error('\n\t', '[ ' + methodName + ' ]', 'result callback', ':', callbackError)
         }
       }
-    }).catch(function(error) {
-      var message = '';
+    }).catch(function (error) {
+      var message = ''
       try {
-        message = JSON.parse(error.message).error.details[0];
+        message = JSON.parse(error.message).error.details[0]
       } catch (e2) {
       }
 
       if (logger.error) {
-        logger.error('\n   res <', 'error', '\t', message, url, body);
-        logger.error(error);
+        logger.error('\n\t', '[ ' + methodName + ' ]', 'error', '\t', message, url, body)
+        logger.error(error)
       }
 
       try {
-        callback(error);
+        callback(error)
       } catch (callbackError) {
         if (logger.error) {
-          logger.error('\n   res <', 'error callback', ':', callbackError);
+          logger.error('\n\t', '[ ' + methodName + ' ]', 'error callback', ':', callbackError)
         }
       }
-    });
+    })
 
-    return returnPromise;
-  };
+    return returnPromise
+  }
 }
 
-function usage(methodName, definition) {
-  var usage = '';
-  var out = function out(str) {
-    usage += str + '\n';
-  };
+function usage (methodName, definition) {
+  var usage = ''
+  var out = function out (str) {
+    usage += str + '\n'
+  }
 
-  out('USAGE');
-  out(methodName + ' - ' + definition.brief);
+  out('USAGE')
+  out(methodName + ' - ' + definition.brief)
 
-  out('\nPARAMETERS');
+  out('\nPARAMETERS')
   if (definition.params) {
-    out(JSON.stringify(definition.params, null, 2));
+    out(JSON.stringify(definition.params, null, 2))
   } else {
-    out('none');
+    out('none')
   }
 
-  out('\nRETURNS');
+  out('\nRETURNS')
   if (definition.results) {
-    out('' + JSON.stringify(definition.results, null, 2));
+    out('' + JSON.stringify(definition.results, null, 2))
   } else {
-    out('no data');
+    out('no data')
   }
 
-  out('\nERRORS');
+  out('\nERRORS')
   if (definition.errors) {
     for (var error in definition.errors) {
-      var errorDesc = definition.errors[error];
-      out('' + error + (errorDesc ? ' - ' + errorDesc : ''));
+      var errorDesc = definition.errors[error]
+      out('' + error + (errorDesc ? ' - ' + errorDesc : ''))
     }
   } else {
-    out('nothing special');
+    out('nothing special')
   }
 
-  return usage;
+  return usage
 }

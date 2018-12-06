@@ -1,754 +1,516 @@
 /* eslint-env mocha */
-const assert = require("assert");
-const isEmpty = require("lodash.isempty");
-const isString = require("lodash.isstring");
-const fs = require("fs");
-const path = require("path");
-const defaultConfig = require("../src/config");
-const U3Utils = require("u3-utils/src");
+const assert = require('assert')
+const isEmpty = require('lodash.isempty')
+const isString = require('lodash.isstring')
+const fs = require('fs')
+const path = require('path')
+const defaultConfig = require('../src/config')
+const U3Utils = require('u3-utils/src')
 
-const { createU3, format, ecc, Fcbuffer, listener, version } = require("../src");
-
-const wif = "5JbedY3jGfNK7HcLXcqGqSYrmX2n8wQWqZAuq6K7Gcf4Dj62UfL"; //ultrainio
-const pubkey = "UTR6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV"; //ultrainio
+const {createU3, format, ecc, Fcbuffer, listener, version} = require('../src')
 
 const readKeysFromFiles = () => {
-  let accounts = ["ben", "john", "tony", "jack", "bob", "tom", "jerry", "alice"];
-  let keys = [];
+  let accounts = ['ben', 'john', 'tony', 'jack', 'bob', 'tom', 'jerry', 'alice']
+  let keys = []
   for (let a in accounts) {
-    const data = fs.readFileSync(path.resolve(__dirname, "../src/scratch/" + accounts[a]));
-    keys[accounts[a]] = JSON.parse(data.toString());
+    const data = fs.readFileSync(path.resolve(__dirname, '../src/scratch/' + accounts[a]))
+    keys[accounts[a]] = JSON.parse(data.toString())
   }
-  return keys;
-};
-
-
-function randomString(length = 8, charset = "abcdefghijklmnopqrstuvwxyz") {
-  let text = "";
+  return keys
+}
+function randomString (length = 8, charset = 'abcdefghijklmnopqrstuvwxyz') {
+  let text = ''
   for (let i = 0; i < length; i++)
-    text += charset.charAt(Math.floor(Math.random() * charset.length));
-  return text;
+    text += charset.charAt(Math.floor(Math.random() * charset.length))
+  return text
+}
+const randomName = () => {
+  return randomString(12, '12345abcdefghijklmnopqrstuvwxyz')
+}
+const randomAsset = () => {
+  return randomString().toUpperCase().substring(0, 4)
 }
 
-const randomName = () => {
-  return randomString(12, "12345abcdefghijklmnopqrstuvwxyz");
-};
+const users = readKeysFromFiles()
+const customCurrency = randomAsset()
 
-const randomAsset = () => {
-  return randomString().toUpperCase().substring(0, 4);
-};
+describe('u3.js', () => {
 
-const mockedUsers = readKeysFromFiles();
-const customCurrency = randomAsset();
-
-
-describe("u3.js", () => {
-
-  // 1.print chain info
-  describe("chainInfo", () => {
-    it("chainInfo", async () => {
-      const u3 = createU3();
+  // 1. chain info
+  describe('chainInfo', () => {
+    it('chainInfo', async () => {
+      const u3 = createU3()
       await u3.getChainInfo((err, info) => {
-        if (err) {
-          throw err;
-        }
-        console.log(info);
-      });
-    });
-  });
+        if (err) throw err
+      })
+    })
+  })
 
-  // 2.print version info
-  describe("version", () => {
-    it("exposes a version number", () => {
-      assert.ok(version);
-    });
-  });
+  // 2. version info
+  describe('version', () => {
+    it('exposes a version number', () => {
+      console.info(version)
+    })
+  })
 
-  // 3. offline(broadcast: false)
-  describe("offline", () => {
-    const headers = {
-      expiration: new Date().toISOString().split(".")[0], // Don't use `new Date` in production
-      ref_block_num: 1,
-      ref_block_prefix: 452435776,
-      net_usage_words: 0,
-      max_cpu_usage_ms: 0,
-      delay_sec: 0,
-      context_free_actions: [],
-      transaction_extensions: []
-    };
+  // 3. ecc utils
+  describe('offline', () => {
 
-    const transactionHeaders = (expireInSeconds, callback) => {
-      callback(null, headers);
-    };
+    // 3.1 generate key pair by seed
+    it('generateKeyPairBySeed', function () {
+      let seed = randomName()
+      let keys = ecc.generateKeyPairBySeed(seed)
+      assert.equal(ecc.isValidPrivate(keys.private_key), true)
+      assert.equal(ecc.isValidPublic(keys.public_key), true)
+    })
 
-    // 3.1 transactionHeaders
-    it("transactionHeaders callback", async function () {
-      const u3 = createU3({
-        keyProvider: wif,
-        transactionHeaders
-      });
+    // 3.2 re-generate key pair by the same seed
+    it('generateKeyPairBySeed(same keys with same seed)', function () {
+      let seed = randomName()
+      let keys1 = ecc.generateKeyPairBySeed(seed)
+      let keys2 = ecc.generateKeyPairBySeed(seed)
+      assert.equal(keys1.public_key, keys2.public_key)
+      assert.equal(keys1.private_key, keys2.private_key)
+    })
 
-      return u3.transfer("ultrainio", "alice", "1.0000 " + defaultConfig.symbol, "", false).then(trx => {
-        assert.deepEqual({
-          expiration: trx.transaction.transaction.expiration,
-          ref_block_num: trx.transaction.transaction.ref_block_num,
-          ref_block_prefix: trx.transaction.transaction.ref_block_prefix,
-          net_usage_words: 0,
-          max_cpu_usage_ms: 0,
-          delay_sec: 0,
-          context_free_actions: [],
-          transaction_extensions: []
-        }, headers);
-
-        assert.equal(trx.transaction.signatures.length, 1, "signature count");
-      });
-    });
-
-    // 3.2 generate key pair by seed
-    it("generateKeyPairBySeed", function () {
-      let seed = randomName();
-      let keys = ecc.generateKeyPairBySeed(seed);
-      assert.equal(ecc.isValidPrivate(keys.private_key), true);
-      assert.equal(ecc.isValidPublic(keys.public_key), true);
-    });
-
-    // 3.3 re-generate key pair by the same seed
-    it("generateKeyPairBySeed(same keys with same seed)", function () {
-      let seed = randomName();
-      let keys1 = ecc.generateKeyPairBySeed(seed);
-      let keys2 = ecc.generateKeyPairBySeed(seed);
-      assert.equal(keys1.public_key, keys2.public_key);
-      assert.equal(keys1.private_key, keys2.private_key);
-    });
-
-    // 3.4 generate key pair with mnemonic
-    it("generateKeyPairWithMnemonic", function () {
-      let result = ecc.generateKeyPairWithMnemonic();
+    // 3.3 generate key pair with mnemonic
+    it('generateKeyPairWithMnemonic', function () {
+      let result = ecc.generateKeyPairWithMnemonic()
       //console.log(result);
-      assert.ok((isString(result.mnemonic) && !isEmpty(result.mnemonic)), true);
-      assert.equal(ecc.isValidPrivate(result.private_key), true);
-      assert.equal(ecc.isValidPublic(result.public_key), true);
-    });
+      assert.ok((isString(result.mnemonic) && !isEmpty(result.mnemonic)), true)
+      assert.equal(ecc.isValidPrivate(result.private_key), true)
+      assert.equal(ecc.isValidPublic(result.public_key), true)
+    })
 
-    // 3.5 re-generate key pair by the same mnemonic
-    it("generateKeyPairByMnemonic(same mnemonic same key pair)", function () {
-      let result = ecc.generateKeyPairWithMnemonic();
-      let result2 = ecc.generateKeyPairByMnemonic(result.mnemonic);
-      assert.equal(result.public_key, result2.public_key);
-      assert.equal(result.private_key, result2.private_key);
-    });
+    // 3.4 re-generate key pair by the same mnemonic
+    it('generateKeyPairByMnemonic(same mnemonic same key pair)', function () {
+      let result = ecc.generateKeyPairWithMnemonic()
+      let result2 = ecc.generateKeyPairByMnemonic(result.mnemonic)
+      assert.equal(result.public_key, result2.public_key)
+      assert.equal(result.private_key, result2.private_key)
+    })
 
-  });
+    // 3.5 generate publicKey by privateKey
+    it('generatePublicKeyByPrivateKey', function () {
+      let result = ecc.generateKeyPairWithMnemonic()
+      let publicKey = ecc.privateToPublic(result.private_key)
+      assert.equal(publicKey, result.public_key)
+    })
 
-  // 4 contract relative
-  describe("Contracts", () => {
+  })
+
+  // 4. contract relative
+  describe('contracts', () => {
 
     // 4.1 deploy contract
-    it("deploy contract", async function () {
-      const config = { keyProvider: mockedUsers["bob"].private_key };
-      const u3 = createU3(config);
-      const trs = await u3.deploy(path.resolve(__dirname, "../contracts/token/token"), "bob");
-      assert.equal(trs.length, 2);
-    });
+    it('deploy contract', async function () {
+      const config = {keyProvider: users['bob'].private_key}
+      const u3 = createU3(config)
+      const trs = await u3.deploy(path.resolve(__dirname, '../contracts/token/token'), 'bob')
+      assert.equal(trs.length, 2)
+    })
 
     //4.2 get contract detail (wast,abi)
-    it("getContract", async () => {
-      const config = { keyProvider: mockedUsers["bob"].private_key };
-      const u3 = createU3(config);
-      let account = "bob";
-      const contract = await u3.getContract(account);
-      console.log(contract);
-      assert.ok(!isEmpty(contract.abi));
-    });
+    it('getContract', async () => {
+      const config = {keyProvider: users['bob'].private_key}
+      const u3 = createU3(config)
+      let account = 'bob'
+      const contract = await u3.getContract(account)
+      assert.ok(!isEmpty(contract.abi))
+    })
 
     //4.3 get abi
-    it("getAbi", async () => {
-      const config = { keyProvider: mockedUsers["bob"].private_key };
-      const u3 = createU3(config);
-      let account = "bob";
-      const abi = await u3.getAbi(account);
-      console.log(abi);
-      assert.ok(!isEmpty(abi));
-    });
+    it('getAbi', async () => {
+      const config = {keyProvider: users['bob'].private_key}
+      const u3 = createU3(config)
+      let account = 'bob'
+      const abi = await u3.getAbi(account)
+      assert.ok(!isEmpty(abi))
+    })
 
-    // 4.4 create custom token(This example is uip06)
-    it("create custom token", async () => {
-      const config = { keyProvider: mockedUsers["bob"].private_key };
-      const u3 = createU3(config);
-      let account = "bob";
-      //const options = { authorization: [`ben@active`] };
-      console.log("created token named: " + customCurrency);
+    // 4.4 create custom token (uip06)
+    it('create custom token', async () => {
+      const config = {keyProvider: users['bob'].private_key}
+      const u3 = createU3(config)
+      let account = 'bob'
+      console.log('created token named: ' + customCurrency)
+
+      //these three method can ben called separately or together
       await u3.transaction(account, token => {
-        token.create(account, "10000000.0000 " + customCurrency);
-        token.issue(account, "10000000.0000 " + customCurrency, "issue");
-        token.transfer(account, "ben", "1000.0000 " + customCurrency, "");
-      });
+        token.create(account, '10000000.0000 ' + customCurrency)
+        token.issue(account, '10000000.0000 ' + customCurrency, 'issue')
+        token.transfer(account, 'ben', '1000.0000 ' + customCurrency, '')
+      })
 
-      U3Utils.test.wait(3000);
+      U3Utils.test.wait(3000)
 
+      //query currency stats
       await u3.getCurrencyStats({
-        "code": "bob",
-        "symbol": customCurrency
-      });
+        'code': 'bob',
+        'symbol': customCurrency
+      })
 
+      //before transfer
       await u3.getCurrencyBalance({
-        code: "bob",
+        code: 'bob',
         symbol: customCurrency,
-        account: "bob"
-      });
-
+        account: 'bob'
+      })
       await u3.getCurrencyBalance({
-        code: "bob",
+        code: 'bob',
         symbol: customCurrency,
-        account: "ben"
-      });
-    });
+        account: 'ben'
+      })
 
+      //do transfer (this is the UIP standard for transfer token)
+      const tr = await u3.contract(account)
+      await tr.transfer('bob', 'ben', '1.0000 ' + customCurrency, '', {authorization: [`bob@active`]})
 
-    // 4.5 load contract with function
-    it("contract(load)", async () => {
-      const config = { keyProvider: mockedUsers["bob"].private_key };
-      const u3 = createU3(config);
-      let account = "bob";
-      const tr = await u3.contract(account);
-      const result = await tr.transfer("bob", "ben", "1.0000 " + customCurrency, "", { authorization: [`bob@active`] });
+      //after transfer
+      await u3.getCurrencyBalance({
+        code: 'bob',
+        symbol: customCurrency,
+        account: 'bob'
+      })
+      await u3.getCurrencyBalance({
+        code: 'bob',
+        symbol: customCurrency,
+        account: 'ben'
+      })
 
-      let tx = await u3.getTxByTxId(result.transaction_id);
-      while (!tx.irreversible) {
-        await U3Utils.test.wait(1000);
-        tx = await u3.getTxByTxId(result.transaction_id);
-        if (tx.irreversible) {
-          console.log(tx);
-          break;
-        }
-      }
-    });
+    })
 
-    // 4.6 query token holder and token symbol when issued
-    it("get table by scope", async () => {
-      const config = { keyProvider: mockedUsers["bob"].private_key };
-      const u3 = createU3(config);
-      let account = "bob";
+    // 4.5 query token holder and token symbol when issued
+    it('get table by scope', async () => {
+      const config = {keyProvider: users['bob'].private_key}
+      const u3 = createU3(config)
+      let account = 'bob'
 
       //all holder accounts which held tokens created by the creator
       const holders_arr = await u3.getTableByScope({
         code: account,//token creator
-        table: "accounts" //token table name
-      });
-      //console.log('token holders: ', holders_arr)
+        table: 'accounts' //token table name
+      })
       for (let h in holders_arr.rows) {
-        let holder_account = format.decodeName(holders_arr.rows[h].scope, false);
-        console.log(holder_account);
+        let holder_account = format.decodeName(holders_arr.rows[h].scope, false)
+        console.log(holder_account)
       }
 
       //all token symbols created by the creator
       const symbols_arr = await u3.getTableByScope({
         code: account,//token creator
-        table: "stat"//token table scope
-      });
-      //console.log('token symbols :', symbols_arr)
+        table: 'stat'//token table scope
+      })
       for (let s in symbols_arr.rows) {
-        let symbol = format.decodeSymbolName(symbols_arr.rows[s].scope);
-        console.log(symbol);
+        let symbol = format.decodeSymbolName(symbols_arr.rows[s].scope)
+        console.log(symbol)
       }
-    });
+    })
 
-  });
+  })
 
-  // 5 transactions
-  describe("transactions", () => {
-
-    const signProvider = ({ sign, buf }) => sign(buf, wif);
-
-    const promiseSigner = (args) => Promise.resolve(signProvider(args));
-
-    // 5.1 usage
-    it("usage", () => {
-      const u3 = createU3({ signProvider });
-      u3.transfer();
-    });
-
-    // 5.2 keyProvider
-    it("keyProvider private key", async () => {
+  // 5. transfer UGAS
+  describe('transfer', () => {
+    it('transfer UGAS', async () => {
       const keyProvider = () => {
-        return [wif];
-      };
-      const u3 = createU3({ keyProvider });
-      const tr = await u3.contract('utrio.token');
-      return tr.transfer("ultrainio", "utrio.token", "1.0000 " + defaultConfig.symbol, "").then(tr => {
-        assert.equal(tr.transaction.signatures.length, 1);
-        assert.equal(typeof tr.transaction.signatures[0], "string");
-      });
-    });
+        return [users['ben'].private_key]
+      }
+      const u3 = createU3({keyProvider})
+      const tr = await u3.contract('utrio.token')
+      return tr.transfer('ben', 'bob', '1.0000 ' + defaultConfig.symbol, '').then(tr => {
+        assert.equal(tr.transaction.signatures.length, 1)
+        assert.equal(typeof tr.transaction.signatures[0], 'string')
+      })
+    })
+  })
 
-    // 5.3 signProvider
-    it("signProvider", () => {
-      const customSignProvider = ({ buf, sign, transaction }) => {
-        const pubkeys = [pubkey];
+  // 6. blocks (10s per block)
+  describe('blocks', () => {
+    it('transaction confirm', async () => {
+      const keyProvider = () => {
+        return [users['ben'].private_key]
+      }
+      const u3 = createU3({keyProvider})
+      const tr = await u3.contract('utrio.token')
+      const result = await tr.transfer('ben', 'bob', '1.0000 ' + defaultConfig.symbol, '')
 
-        return u3.getRequiredKeys(transaction, pubkeys).then(res => {
-          // Just the required_keys need to sign
-          assert.deepEqual(res.required_keys, pubkeys);
-          return sign(buf, wif); // return hex string signature or array of signatures
-        });
-      };
-      const u3 = createU3({ signProvider: customSignProvider });
-      return u3.transfer("ultrainio", "alice", "2.0000 " + defaultConfig.symbol, "remark");
-    });
+      //wait until block confirm
+      let tx = await u3.getTxByTxId(result.transaction_id)
+      while (!tx.irreversible) {
+        await U3Utils.test.wait(1000)
+        tx = await u3.getTxByTxId(result.transaction_id)
+        if (tx.irreversible) {
+          console.log(tx)
+          break
+        }
+      }
+    })
+  })
 
-    // 5.4 offline sign and push transaction later
-    it("offline sign for custom contract", async () => {
-      //----------------client---------------------//
-      //using { sign: false, broadcast: false } to create a U3 instance and call some function
-      const u3_offline = createU3({ sign: false, broadcast: false });
-      let account = "bob";
-      const tr = await u3_offline.contract(account);
-      const unsigned_transaction = await tr.transfer("bob", "alice", "1.0000 VHOZ", "", { authorization: [`bob@active`] });
-      let signature = await u3_offline.sign(unsigned_transaction, mockedUsers["bob"].private_key, defaultConfig.chainId);
-      let signedTransaction = Object.assign({}, unsigned_transaction.transaction, { signatures: [signature] });
+  // 7. sign (sign separately)
+  describe('sign', () => {
+    it('offline sign', async () => {
+      const config = {keyProvider: users['bob'].private_key}
+      const u3 = createU3(config)
+      const u3_offline = createU3({sign: false, broadcast: false})
+      let account = 'bob'
+
+      // precaution (If there is a token contract)
+      await u3.transaction(account, token => {
+        token.create(account, '10000000.0000 ' + customCurrency)
+        token.issue(account, '10000000.0000 ' + customCurrency, 'issue')
+      })
+      U3Utils.test.wait(3000)
+
+      //using { sign: false, broadcast: false } to create a offline U3 instance and call some function
+      const tr = await u3_offline.contract(account)
+      const unsigned_transaction = await tr.transfer('bob', 'alice', '1.0000 ' + customCurrency, '', {authorization: [`bob@active`]})
+      let signature = await u3_offline.sign(unsigned_transaction, users['bob'].private_key, defaultConfig.chainId)
+      let signedTransaction = Object.assign({}, unsigned_transaction.transaction, {signatures: [signature]})
       //console.log(signedTransaction);
 
-      //---------------chain-----------------------//
-      const u3_online = createU3();
-      let processedTransaction = await u3_online.pushTx(signedTransaction);
-      assert.equal(processedTransaction.transaction_id, unsigned_transaction.transaction_id);
-    });
+      //using {sign: true, broadcast: true} to create a online U3 instance and pushTx to chain
+      let processedTransaction = await u3.pushTx(signedTransaction)
+      assert.equal(processedTransaction.transaction_id, unsigned_transaction.transaction_id)
+    })
+  })
 
-    // 5.5 create user account
-    it("createUser", async () => {
-      const u3 = createU3({ signProvider });
-      const name = randomName();
+  // 8. create user
+  describe('createUser', () => {
+    it('createUser', async () => {
+      const u3 = createU3({keyProvider: users['ben'].private_key})
+      const name = randomName()
+      const ppm = ecc.generateKeyPairWithMnemonic()
       let params = {
         creator: 'ben',
         name: name,
-        owner: 'UTR6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV',
-        active: 'UTR6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV',
-        updateable: 0,
+        owner: ppm.public_key,
+        active: ppm.public_key,
+        updateable: 1,
         ram_bytes: 100000,
         stake_net_quantity: '1.0000 UGAS',
         stake_cpu_quantity: '1.0000 UGAS',
         transfer: 0
-      };
+      }
 
       await u3.createUser(params).then(tr => {
         return u3.getAccountInfo({
           account_name: name
         }).then(result => {
-          assert.equal(result.account_name, name);
-        });
-      });
-    });
-
-    // 5.6 buyram
-    it("buyram", async () => {
-      const u3 = createU3({ signProvider });
-      await u3.getAccountInfo({
-        account_name: "ben"
-      }).then(async before => {
-        console.log("\n-----before:", before.ram_quota);
-        return await u3.buyram({
-          payer: "ultrainio",
-          receiver: "ben",
-          quant: "1.0000 " + defaultConfig.symbol
-        }).then(async tr => {
-          return await u3.getAccountInfo({
-            account_name: "ben"
-          }).then(after => {
-            console.log("\n-----after:", after.ram_quota);
-            assert.ok(after.ram_quota - before.ram_quota > 0);
-          });
-        });
-      });
-    });
-
-    // 5.7 buyrambytes
-    it("buyrambytes", async () => {
-      const u3 = createU3({ signProvider });
-      await u3.getAccountInfo({
-        account_name: "ben"
-      }).then(async before => {
-        console.log("\n-----before:", before.ram_quota, "\n");
-        const tr = await u3.contract('ultrainio');
-        return await tr.buyrambytes({
-          payer: "ultrainio",
-          receiver: "ben",
-          bytes: 10000
-        }).then(async tr => {
-          return await u3.getAccountInfo({
-            account_name: "ben"
-          }).then(after => {
-            console.log("\n-----after:", after.ram_quota, "\n");
-            assert.ok(after.ram_quota - before.ram_quota > 0);
-          });
-        });
-      });
-    });
-
-    // 5.8 sellram
-    it("sellram", async () => {
-      const signProvider = ({ sign, buf }) => sign(buf, mockedUsers["ben"].private_key);
-      const u3 = createU3({ signProvider });
-      await u3.getAccountInfo({
-        account_name: "ben"
-      }).then(async before => {
-        console.log("\n-----before:", before.ram_quota, "\n");
-        return await u3.sellram({
-          account: "ben",
-          bytes: 10000
-        }).then(async tr => {
-          return await u3.getAccountInfo({
-            account_name: "ben"
-          }).then(after => {
-            console.log("\n-----after:", after.ram_quota, "\n");
-            assert.ok(after.ram_quota - before.ram_quota < 0);
-          });
-        });
-      });
-    });
-
-    // 5.9 delegatebw
-    it("delegatebw", async () => {
-      const u3 = createU3({ signProvider });
-      await u3.getAccountInfo({
-        account_name: "ben"
-      }).then(async before => {
-        console.log("\n-----before:", before.net_weight, before.cpu_weight, "\n");
-        return await u3.delegatebw({
-          from: "ultrainio",
-          receiver: "ben",
-          stake_net_quantity: "1.0000 " + defaultConfig.symbol,
-          stake_cpu_quantity: "1.0000 " + defaultConfig.symbol,
-          transfer: 0
-        }).then(async tr => {
-          return await u3.getAccountInfo({
-            account_name: "ben"
-          }).then(after => {
-            console.log("\n-----after:", after.net_weight, after.cpu_weight, "\n");
-            assert.ok(after.net_weight - before.net_weight > 0);
-            assert.ok(after.cpu_weight - before.cpu_weight > 0);
-          });
-        });
-      });
-    });
-
-    // 5.10 undelegatebw
-    //cannot undelegate bandwidth until the chain is activated (at least 15% of all tokens participate in voting)
-    //need to be under a real consensus network
-    it("undelegatebw", async () => {
-      const u3 = createU3({ signProvider });
-      await u3.getAccountInfo({
-        account_name: "ben"
-      }).then(async before => {
-        console.log("\n-----before:", before.net_weight, before.cpu_weight);
-        return await u3.undelegatebw({
-          from: "ultrainio",
-          receiver: "ben",
-          unstake_net_quantity: "0.0010 " + defaultConfig.symbol,
-          unstake_cpu_quantity: "0.0010 " + defaultConfig.symbol
-        }).then(async tr => {
-          return await u3.getAccountInfo({
-            account_name: "ben"
-          }).then(after => {
-            console.log("\n-----after:", after.net_weight, after.cpu_weight);
-            assert.ok(after.net_weight - before.net_weight < 0);
-            assert.ok(after.cpu_weight - before.cpu_weight < 0);
-          });
-        });
-      });
-    });
-
-    // 5.11 get cpu_net/token exchange rate
-    it("cpu net rate", async () => {
-      const u3 = createU3({ signProvider });
-      let rate = await u3.getSourcerate({
-        account_name: "ultrainio"
-      });
-      console.log(rate);
-      assert.ok(rate !== "");
-    });
-
-    // 5.12 get ram/token exchange rate
-    it("ram rate", async () => {
-      const u3 = createU3({ signProvider, logger: { log: false } });
-      let rate = await u3.getRamrate();
-      console.log(rate);
-      assert.ok(rate !== "");
-    });
-
-
-    // 5.13 Returns an object containing rows from the specified table.
-    it("get table records", async () => {
-      const keyProvider = () => {
-        return [wif];
-      };
-      const u3 = createU3({ keyProvider });
-      const balance = await u3.getTableRecords({
-        code: "utrio.token",//smart contract name
-        scope: "bob",//account name
-        table: "accounts",//table name
-        json: true
-      });
-      assert.ok(balance !== "");
-    });
-
-
-    // get accounts array by public key
-    it("getKeyAccounts", async () => {
-      const u3 = createU3({ signProvider });
-      await u3.getKeyAccounts(mockedUsers["ben"].public_key).then(accounts => {
-        assert.ok(accounts.account_names.includes("ben"));
-      });
-    });
-
-    it("mockTransactions pass", () => {
-      const u3 = createU3({ signProvider, mockTransactions: "pass" });
-      return u3.transfer("ultrainio", "alice", "1.0000 " + defaultConfig.symbol, "").then(transfer => {
-        console.log(transfer);
-        assert(transfer.mockTransaction, "transfer.mockTransaction");
-      });
-    });
-
-    it("mockTransactions fail", () => {
-      const logger = { error: null };
-      const u3 = createU3({ signProvider, mockTransactions: "fail", logger });
-      return u3.transfer("ultrainio", "alice", "1.0000 " + defaultConfig.symbol, "").catch(error => {
-        console.log(error);
-        assert(error.indexOf("fake error") !== -1, "expecting: fake error");
-      });
-    });
-
-    it("transfer custom authorization (broadcast)", () => {
-      const u3 = createU3({ signProvider });
-      return u3.transfer("ultrainio", "alice", "1.0000 " + defaultConfig.symbol, "", { authorization: "ultrainio@owner" });
-    });
-
-    it("transfer custom authorization sorting (no broadcast)", () => {
-      const u3 = createU3({ signProvider });
-      return u3.transfer("ultrainio", "alice", "1.0000 " + defaultConfig.symbol, "",
-        { authorization: ["alice@owner", "ultrainio@owner"], broadcast: false }
-      ).then(({ transaction }) => {
-        const ans = [
-          { actor: "alice", permission: "owner" },
-          { actor: "ultrainio", permission: "owner" }
-        ];
-        assert.deepEqual(transaction.transaction.actions[0].authorization, ans);
-      });
-    });
-
-    it("transfer (no broadcast)", () => {
-      const u3 = createU3({ signProvider });
-      return u3.transfer("ultrainio", "alice", "1.0000 " + defaultConfig.symbol, "", { broadcast: false });
-    });
-
-    it("transfer (no broadcast, no sign)", () => {
-      const u3 = createU3({ signProvider });
-      const opts = { broadcast: false, sign: false };
-      return u3.transfer("ultrainio", "alice", "1.0000 " + defaultConfig.symbol, "", opts).then(tr =>
-        assert.deepEqual(tr.transaction.signatures, [])
-      );
-    });
-
-    it("transfer sign promise (no broadcast)", () => {
-      const u3 = createU3({ signProvider: promiseSigner });
-      return u3.transfer("ultrainio", "alice", "1.0000 " + defaultConfig.symbol, "", false);
-    });
-
-    it("action to unknown contract", () => {
-      const logger = { error: null };
-      return createU3({ signProvider, logger }).contract("unknown432")
-        .then(() => {
-          throw "expecting error";
+          assert.equal(result.account_name, name)
         })
-        .catch(error => {
-          assert(error);
-        });
-    });
-
-    it("action to contract", () => {
-      const keyProvider = () => {
-        return [wif];
-      };
-      const u3 = createU3({ keyProvider });
-
-      return u3.contract("utrio.token").then(token => {
-
-        return token.transfer("ultrainio", "jack", "1.0000 " + defaultConfig.symbol, "")
-          // transaction sent on each command
-          .then(tr => {
-            assert.equal(1, tr.transaction.transaction.actions.length);
-
-            return token.transfer("ultrainio", "tony", "1.0000 " + defaultConfig.symbol, "")
-              .then(tr => {
-                assert.equal(1, tr.transaction.transaction.actions.length);
-              });
-          });
-      }).then(r => {
-        assert(r === undefined);
-      });
-    });
-
-    it("action to contract atomic", async function () {
-      // keyProvider should return an array of keys
-      const keyProvider = () => {
-        return [
-          wif,
-          mockedUsers["ben"].private_key
-        ];
-      };
-      const u3 = createU3({ keyProvider });
-
-      let amt = 1; // for unique transactions
-      const trTest = (ultrainio_token) => {
-        if (ultrainio_token.transfer) {
-          assert(ultrainio_token.transfer("ultrainio", "ben", amt + ".0000 " + defaultConfig.symbol, "") == null);
-          assert(ultrainio_token.transfer("ben", "ultrainio", (amt++) + ".0000 " + defaultConfig.symbol, "") == null);
-        } else {
-          let token = ultrainio_token["utrio_token"];
-          assert(token.transfer("ultrainio", "ben", amt + ".0000 " + defaultConfig.symbol, "") == null);
-          assert(token.transfer("ben", "ultrainio", (amt++) + ".0000 " + defaultConfig.symbol, "") == null);
-        }
-      };
-
-      const assertTr = tr => {
-        assert.equal(2, tr.transaction.transaction.actions.length);
-      };
-
-      //  contracts can be a string or array
-      await assertTr(await u3.transaction(["utrio.token"], (ultrainio_token) => {
-        trTest(ultrainio_token);
       })
-      );
+    })
+  })
 
-      await assertTr(await u3.transaction("utrio.token", (ultrainio_token) => {
-        trTest(ultrainio_token);
+  // 9. transactions
+  describe('transactions', () => {
+
+    const keyProvider = () => users['bob'].private_key
+
+    // 9.1 buyram
+    it('buyram', async () => {
+      const u3 = createU3({keyProvider})
+      const c = await u3.contract('ultrainio')
+      let before = await u3.getAccountInfo({
+        account_name: 'ben'
       })
-      );
-    });
+
+      await c.buyram({
+        payer: 'bob',
+        receiver: 'ben',
+        quant: '1.0000 ' + defaultConfig.symbol
+      })
+
+      let after = await u3.getAccountInfo({
+        account_name: 'ben'
+      })
+
+      assert.ok(after.ram_quota - before.ram_quota > 0)
+    })
+
+    // 9.2 buyrambytes
+    it('buyrambytes', async () => {
+      const u3 = createU3({keyProvider})
+      const c = await u3.contract('ultrainio')
+      let before = await u3.getAccountInfo({
+        account_name: 'ben'
+      })
+
+      return await c.buyrambytes({
+        payer: 'bob',
+        receiver: 'ben',
+        bytes: 10000
+      })
+
+      let after = await u3.getAccountInfo({
+        account_name: 'ben'
+      })
+
+      assert.ok(after.ram_quota - before.ram_quota > 0)
+    })
+
+    // 9.3 sellram
+    it('sellram', async () => {
+      const keyProvider = () => users['ben'].private_key
+      const u3 = createU3({keyProvider})
+      const c = await u3.contract('ultrainio')
+
+      let before = await u3.getAccountInfo({
+        account_name: 'ben'
+      })
+
+      await c.sellram({
+        account: 'ben',
+        bytes: 10000
+      })
+
+      let after = await u3.getAccountInfo({
+        account_name: 'ben'
+      })
+      assert.ok(after.ram_quota - before.ram_quota < 0)
+    })
+
+    // 9.4 delegatebw
+    it('delegatebw', async () => {
+      const u3 = createU3({keyProvider})
+      const c = await u3.contract('ultrainio')
+      let before = await u3.getAccountInfo({
+        account_name: 'ben'
+      })
+
+      await c.delegatebw({
+        from: 'bob',
+        receiver: 'ben',
+        stake_net_quantity: '1.0000 ' + defaultConfig.symbol,
+        stake_cpu_quantity: '1.0000 ' + defaultConfig.symbol,
+        transfer: 0
+      })
+
+      let after = await u3.getAccountInfo({
+        account_name: 'ben'
+      })
+      assert.ok(after.net_weight - before.net_weight > 0)
+      assert.ok(after.cpu_weight - before.cpu_weight > 0)
+    })
+
+    // 9.5 get cpu_net/token exchange rate
+    it('cpu net rate', async () => {
+      const u3 = createU3({keyProvider})
+      let rate = await u3.getSourcerate({
+        account_name: 'bob'
+      })
+      assert.ok(rate !== '')
+    })
+
+    // 9.6 get ram/token exchange rate
+    it('ram rate', async () => {
+      const u3 = createU3({keyProvider})
+      let rate = await u3.getRamrate()
+      assert.ok(rate !== '')
+    })
+
+    // 9.7 get accounts array by public key
+    it('getKeyAccounts', async () => {
+      const u3 = createU3({keyProvider})
+      await u3.getKeyAccounts(users['ben'].public_key).then(accounts => {
+        assert.ok(accounts.account_names.includes('ben'))
+      })
+    })
+
+  })
+
+  // 10 database query
+  describe('database', () => {
+    //Returns an object containing rows from the specified table.
+    //before using it, you should know table and scope defined in the contract
+    it('get table records', async () => {
+      const u3 = createU3({keyProvider})
+      const balance = await u3.getTableRecords({
+        code: 'utrio.token',//smart contract name
+        scope: 'bob',//account name
+        table: 'accounts',//table name
+        json: true
+      })
+      assert.ok(balance !== '')
+    })
 
     // query account's current balance
-    it("get currency balance", async () => {
-      const u3 = createU3({ signProvider });
+    it('get currency balance', async () => {
+      const u3 = createU3({keyProvider})
       await u3.getCurrencyBalance({
-        code: "utrio.token",
-        account: "ultrainio",
+        code: 'utrio.token',
+        account: 'ultrainio',
         symbol: defaultConfig.symbol
       }).then(result => {
-        console.log(result);
-      });
-    });
+        console.log(result)
+      })
+    })
 
     // query currency's status
-    it("get currency stats", async function () {
-      const u3 = createU3({ signProvider });
-      await u3.getCurrencyStats("utrio.token", defaultConfig.symbol, (error, result) => {
-        console.log(error, result);
-      });
-    });
+    it('get currency stats', async function () {
+      const u3 = createU3({keyProvider})
+      await u3.getCurrencyStats('utrio.token', defaultConfig.symbol, (error, result) => {
+        console.log(error, result)
+      })
+    })
+  })
 
-    it("action to contract (contract tr nesting)", function () {
-      this.timeout(4000);
-      const tn = createU3({ signProvider });
-      return tn.contract("utrio.token").then(ultrainio_token => {
-        return ultrainio_token.transaction(tr => {
-          tr.transfer("ultrainio", "jack", "1.0000 " + defaultConfig.symbol, "");
-          tr.transfer("ultrainio", "bob", "2.0000 " + defaultConfig.symbol, "");
-        }).then(() => {
-          return ultrainio_token.transfer("ultrainio", "alice", "3.0000 " + defaultConfig.symbol, "");
-        });
-      });
-    });
-
-    it("multi-action transaction (broadcast)", () => {
-      const u3 = createU3({ signProvider });
-
-      return u3.transaction(tr => {
-        assert(tr.transfer("ultrainio", "jack", "1.0000 " + defaultConfig.symbol, "") == null);
-        assert(tr.transfer("ultrainio", "bob", "1.0000 " + defaultConfig.symbol, "") == null);
-      }).then(tr => {
-        assert.equal(2, tr.transaction.transaction.actions.length);
-      });
-    });
-
-    it("custom transfer", () => {
-      const u3 = createU3({ signProvider });
-      return u3.transaction(
-        {
-          actions: [
-            {
-              account: "utrio.token",
-              name: "transfer",
-              data: {
-                from: "ultrainio",
-                to: "alice",
-                quantity: "13.0000 " + defaultConfig.symbol,
-                memo: ""
-              },
-              authorization: [{
-                actor: "ultrainio",
-                permission: "active"
-              }]
-            }
-          ]
-        },
-        { broadcast: false }
-      );
-    });
-
-  });
-
-  // 6 event
-  describe("subscribe", () => {
+  // 11 event
+  describe('subscribe', () => {
 
     //make sure '192.168.1.5' is your local IP
     //and 'http://192.168.1.5:3002' is an accessible service form docker
 
-    // 6.1 subscribe event
-    it("subscribe", async () => {
-      const config = { keyProvider: mockedUsers["ben"].private_key };
-      const u3 = createU3(config);
-      const sub = await u3.registerEvent("ben", "http://192.168.1.5:3002");
-      console.log(sub);
-    });
+    // 11.1 subscribe event
+    it('subscribe', async () => {
+      const config = {keyProvider: users['ben'].private_key}
+      const u3 = createU3(config)
+      const sub = await u3.registerEvent('ben', 'http://192.168.1.5:3002')
+      console.log(sub)
+    })
 
-    // 6.2 unsubscribe event
-    it("unsubscribe", async () => {
-      const config = { keyProvider: mockedUsers["ben"].private_key };
-      const u3 = createU3(config);
-      const unSub = await u3.unregisterEvent("ben", "http://192.168.1.5:3002");
-      console.log(unSub);
-    });
+    // 11.2 unsubscribe event
+    it('unsubscribe', async () => {
+      const config = {keyProvider: users['ben'].private_key}
+      const u3 = createU3(config)
+      const unSub = await u3.unregisterEvent('ben', 'http://192.168.1.5:3002')
+      console.log(unSub)
+    })
 
-
-    // 6.3 event listener
-    it("unsubscribe", async () => {
+    // 11.3 event listener
+    it('unsubscribe', async () => {
       // just do some biz in the callback
       // the data is the message that ultrain will push to you
       listener(function (data) {
-        console.log(data);
-      });
+        console.log(data)
+      })
 
-      U3Utils.test.wait(2000);
+      U3Utils.test.wait(2000)
 
       //emit event defined  in the contract action
       //...
-    });
+    })
 
-  });
+  })
 
-  // 7 subchain
-  describe("subchain", () => {
-    it("get_subchain_committee", async () => {
-      const config = { keyProvider: mockedUsers["ben"].private_key };
-      const u3 = createU3(config);
+  // 12 subchain
+  // TODO to add the future
+  /*describe('subchain', () => {
+
+    it('get_subchain_committee', async () => {
+      const config = {keyProvider: users['ben'].private_key}
+      const u3 = createU3(config)
       try {
-        let committee = await u3.getSubchainCommittee({ "chain_name": "11" });
-        console.log(committee);
+        let committee = await u3.getSubchainCommittee({'chain_name': '11'})
+        console.log(committee)
       } catch (e) {
-        console.log(e);
+        console.log(e)
       }
-    });
-    it("get_subchain_block_num", async () => {
-      const config = { keyProvider: mockedUsers["ben"].private_key };
+    })
+
+    it('get_subchain_block_num', async () => {
+      const config = {keyProvider: users['ben'].private_key}
       // let config = {
       //   httpEndpoint: 'http://172.16.10.4:8877',
       //   httpEndpoint_history: 'http://172.16.10.4:3000',
@@ -756,13 +518,13 @@ describe("u3.js", () => {
 
       //   chainId: '0eaaff4003d4e08a541332c62827c0ac5d96766c712316afe7ade6f99b8d70fe'
       // }
-      const u3 = createU3(config);
+      const u3 = createU3(config)
       try {
-        let committee = await u3.getSubchainBlockNum({ "chain_name": "11" });
-        console.log(committee);
+        let committee = await u3.getSubchainBlockNum({'chain_name': '11'})
+        console.log(committee)
       } catch (e) {
-        console.log(e);
+        console.log(e)
       }
-    });
-  });
-});
+    })
+  })*/
+})

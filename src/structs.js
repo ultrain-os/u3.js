@@ -18,8 +18,8 @@ module.exports = (config = {}, extendedSchema) => {
 
   const structLookup = (lookupName, account) => {
 
-    //const cachedCode = new Set([])
-    const cachedCode = new Set(['ultrainio', 'utrio.token', 'utrio.null'])
+    const cachedCode = new Set([])
+    //const cachedCode = new Set(['ultrainio', 'utrio.token', 'utrio.null'])
     if (cachedCode.has(account)) {
       return structs[lookupName]
     }
