@@ -554,5 +554,19 @@
         "post_url": "http://10.10.10.114:3002"
       }
     }
-  }
+  },
+  "get_producer_info": {
+    "brief": "Return producer info",
+    "params": {
+      "owner": {
+        "type": "account_name",
+        "description": "account of producer"
+      }
+    },
+    "results": {
+      "from_location": "uint64",
+      "location": "uint64",
+      "quit_before_num": "uint32"
+    }
+  },
 }

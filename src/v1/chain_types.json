@@ -210,5 +210,19 @@
     "fields": {
       "value": "string"
     }
+  },
+  "permission_level": {
+    "base": "",
+    "fields": {
+      "actor": "account_name",
+      "permission": "permission_name"
+    }
+  },
+  "permission_level_weight": {
+    "base": "",
+    "fields": {
+      "permission": "permission_level",
+      "weight": "weight_type"
+    }
   }
 }

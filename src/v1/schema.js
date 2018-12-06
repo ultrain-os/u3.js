@@ -1,7 +1,2 @@
-const schema = Object.assign(
-  {},
-  require('./chain_types.json'),
-  require('./ultrainio_system.json')
-)
-
+const schema = Object.assign({}, require('./chain_types.json'))
 module.exports = schema
