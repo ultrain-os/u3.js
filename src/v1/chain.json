@@ -568,5 +568,5 @@
       "location": "uint64",
       "quit_before_num": "uint32"
     }
-  },
+  }
 }
