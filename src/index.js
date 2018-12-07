@@ -26,22 +26,25 @@ const defaultConfig = require('../src/config')
 
 const version = pkg.version
 
-const defaultSignProvider = (u3, config) => async function ({sign, buf, transaction}) {
-  const {keyProvider} = config
+const defaultSignProvider = (u3, config) => async function({
+                                                              sign, buf, transaction, optionsKeyProvider
+                                                            }) {
+  // optionsKeyProvider is a per-action key: await eos.someAction('user2' .., {keyProvider: privateKey2})
+  const keyProvider = optionsKeyProvider ? optionsKeyProvider : config.keyProvider
 
-  if (!keyProvider) {
-    throw new TypeError('This transaction requires a config.keyProvider for signing')
+  if(!keyProvider) {
+    throw new TypeError('This transaction requires a keyProvider for signing')
   }
 
   let keys = keyProvider
-  if (typeof keyProvider === 'function') {
+  if(typeof keyProvider === 'function') {
     keys = keyProvider({transaction})
   }
 
   // keyProvider may return keys or Promise<keys>
   keys = await Promise.resolve(keys)
 
-  if (!Array.isArray(keys)) {
+  if(!Array.isArray(keys)) {
     keys = [keys]
   }
 
@@ -49,31 +52,40 @@ const defaultSignProvider = (u3, config) => async function ({sign, buf, transact
     try {
       // normalize format (WIF => PVT_K1_base58privateKey)
       return {private: ecc.PrivateKey(key).toString()}
-    } catch (e) {
-      // normalize format (UTRKey => PUB_K1_base58publicKey)
+    } catch(e) {
+      // normalize format (EOSKey => PUB_K1_base58publicKey)
       return {public: ecc.PublicKey(key).toString()}
     }
     assert(false, 'expecting public or private keys from keyProvider')
   })
 
-  if (!keys.length) {
+  if(!keys.length) {
     throw new Error('missing key, check your keyProvider')
   }
 
   // simplify default signing #17
-  if (keys.length === 1 && keys[0].private) {
+  if(keys.length === 1 && keys[0].private) {
     const pvt = keys[0].private
     return sign(buf, pvt)
+  }
+
+  // offline signing assumes all keys provided need to sign
+  if(config.httpEndpoint == null) {
+    const sigs = []
+    for(const key of keys) {
+      sigs.push(sign(buf, key.private))
+    }
+    return sigs
   }
 
   const keyMap = new Map()
 
   // keys are either public or private keys
-  for (const key of keys) {
+  for(const key of keys) {
     const isPrivate = key.private != null
     const isPublic = key.public != null
 
-    if (isPrivate) {
+    if(isPrivate) {
       keyMap.set(ecc.privateToPublic(key.private), key.private)
     } else {
       keyMap.set(key.public, null)
@@ -83,37 +95,35 @@ const defaultSignProvider = (u3, config) => async function ({sign, buf, transact
   const pubkeys = Array.from(keyMap.keys())
 
   return u3.getRequiredKeys(transaction, pubkeys).then(({required_keys}) => {
-    if (!required_keys.length) {
+    if(!required_keys.length) {
       throw new Error('missing required keys for ' + JSON.stringify(transaction))
     }
 
     const pvts = [], missingKeys = []
 
-    for (let requiredKey of required_keys) {
-      // normalize (UTRKey.. => PUB_K1_Key..)
+    for(let requiredKey of required_keys) {
+      // normalize (EOSKey.. => PUB_K1_Key..)
       requiredKey = ecc.PublicKey(requiredKey).toString()
 
       const wif = keyMap.get(requiredKey)
-      if (wif) {
+      if(wif) {
         pvts.push(wif)
       } else {
         missingKeys.push(requiredKey)
       }
     }
 
-    if (missingKeys.length !== 0) {
+    if(missingKeys.length !== 0) {
       assert(typeof keyProvider === 'function',
         'keyProvider function is needed for private key lookup')
 
       // const pubkeys = missingKeys.map(key => ecc.PublicKey(key).toStringLegacy())
       keyProvider({pubkeys: missingKeys})
-        .forEach(pvt => {
-          pvts.push(pvt)
-        })
+        .forEach(pvt => { pvts.push(pvt) })
     }
 
     const sigs = []
-    for (const pvt of pvts) {
+    for(const pvt of pvts) {
       sigs.push(sign(buf, pvt))
     }
 

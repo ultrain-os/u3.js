@@ -18,12 +18,14 @@ const readKeysFromFiles = () => {
   }
   return keys
 }
+
 function randomString (length = 8, charset = 'abcdefghijklmnopqrstuvwxyz') {
   let text = ''
   for (let i = 0; i < length; i++)
     text += charset.charAt(Math.floor(Math.random() * charset.length))
   return text
 }
+
 const randomName = () => {
   return randomString(12, '12345abcdefghijklmnopqrstuvwxyz')
 }
@@ -215,9 +217,9 @@ describe('u3.js', () => {
       const keyProvider = () => {
         return [users['ben'].private_key]
       }
-      const u3 = createU3({keyProvider})
+      const u3 = createU3()
       const tr = await u3.contract('utrio.token')
-      return tr.transfer('ben', 'bob', '1.0000 ' + defaultConfig.symbol, '').then(tr => {
+      return tr.transfer('ben', 'bob', '1.0000 ' + defaultConfig.symbol, '',{keyProvider}).then(tr => {
         assert.equal(tr.transaction.signatures.length, 1)
         assert.equal(typeof tr.transaction.signatures[0], 'string')
       })

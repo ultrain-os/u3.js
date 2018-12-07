@@ -308,54 +308,54 @@ function WriteApi (Network, network, config, Transaction) {
     );
   }
 
-  function transaction (arg, options, callback) {
-    const defaultExpiration = config.expireInSeconds ? config.expireInSeconds : 60*60;
-    const optionDefault = { expireInSeconds: defaultExpiration, broadcast: true, sign: true };
-    options = Object.assign({}/*clone*/, optionDefault, options);
+  async function transaction(arg, options, callback) {
+    const defaultExpiration = config.expireInSeconds ? config.expireInSeconds : 60
+    const optionDefault = {expireInSeconds: defaultExpiration, broadcast: true, sign: true}
+    options = Object.assign({}/*clone*/, optionDefault, options)
 
-    let returnPromise;
-    if (typeof callback !== "function") {
+    let returnPromise
+    if(typeof callback !== 'function') {
       returnPromise = new Promise((resolve, reject) => {
         callback = (err, result) => {
-          if (err) {
-            reject(err);
+          if(err) {
+            reject(err)
           } else {
-            resolve(result);
+            resolve(result)
           }
-        };
-      });
+        }
+      })
     }
 
-    if (typeof arg !== "object") {
-      throw new TypeError("First transaction argument should be an object or function");
+    if(typeof arg !== 'object') {
+      throw new TypeError('First transaction argument should be an object or function')
     }
 
-    if (!Array.isArray(arg.actions)) {
-      throw new TypeError("Expecting actions array");
+    if(!Array.isArray(arg.actions)) {
+      throw new TypeError('Expecting actions array')
     }
 
-    if (config.logger.log || config.logger.error) {
+    if(config.logger.log || config.logger.error) {
       // wrap the callback with the logger
-      const superCallback = callback;
+      const superCallback = callback
       callback = (error, tr) => {
-        if (error && config.logger.error) {
-          config.logger.error(error);
+        if(error && config.logger.error) {
+          config.logger.error(error)
         }
-        if (config.logger.log) {
-          config.logger.log(JSON.stringify(tr));
+        if(config.logger.log){
+          config.logger.log(JSON.stringify(tr))
         }
-        superCallback(error, tr);
-      };
+        superCallback(error, tr)
+      }
     }
 
     arg.actions.forEach(action => {
-      if (!Array.isArray(action.authorization)) {
-        throw new TypeError("Expecting action.authorization array", action);
+      if(!Array.isArray(action.authorization)) {
+        throw new TypeError('Expecting action.authorization array', action)
       }
-    });
+    })
 
-    if (options.sign && typeof config.signProvider !== "function") {
-      throw new TypeError("Expecting config.signProvider function (disable using {sign: false})");
+    if(options.sign && typeof config.signProvider !== 'function') {
+      throw new TypeError('Expecting config.signProvider function (disable using {sign: false})')
     }
 
     let argHeaders = null;
@@ -420,56 +420,60 @@ function WriteApi (Network, network, config, Transaction) {
 
       const transactionId = createHash("sha256").update(buf).digest().toString("hex");
 
-      let sigs = [];
-      if (options.sign) {
-        const chainIdBuf = new Buffer(config.chainId, "hex");
-        const signBuf = Buffer.concat([chainIdBuf, buf, new Buffer(new Uint8Array(32))]);
-        sigs = config.signProvider({ transaction: tr, buf: signBuf, sign });
-        if (!Array.isArray(sigs)) {
-          sigs = [sigs];
+    let sigs = []
+    if(options.sign){
+      const chainIdBuf = Buffer.from(config.chainId, 'hex')
+      const packedContextFreeData = Buffer.from(new Uint8Array(32)) // TODO
+      const signBuf = Buffer.concat([chainIdBuf, buf, packedContextFreeData])
+
+      sigs = config.signProvider({transaction: tr, buf: signBuf, sign,
+        optionsKeyProvider: options.keyProvider})
+
+      if(!Array.isArray(sigs)) {
+        sigs = [sigs]
+      }
+    }
+
+    // sigs can be strings or Promises
+    Promise.all(sigs).then(sigs => {
+      sigs = [].concat.apply([], sigs) // flatten arrays in array
+
+      for(let i = 0; i < sigs.length; i++) {
+        const sig = sigs[i]
+        // normalize (hex to base58 format for example)
+        if(typeof sig === 'string' && sig.length === 130) {
+          sigs[i] = ecc.Signature.from(sig).toString()
         }
       }
 
-      // sigs can be strings or Promises
-      Promise.all(sigs).then(sigs => {
-        sigs = [].concat.apply([], sigs); // flatten arrays in array
+      const packedTr = {
+        compression: 'none',
+        transaction: tr,
+        signatures: sigs
+      }
 
-        for (let i = 0; i < sigs.length; i++) {
-          const sig = sigs[i];
-          // normalize (hex to base58 format for example)
-          if (typeof sig === "string" && sig.length === 130) {
-            sigs[i] = ecc.Signature.from(sig).toString();
-          }
+      const mock = config.mockTransactions ? config.mockTransactions() : null
+      if(mock != null) {
+        assert(/pass|fail/.test(mock), 'mockTransactions should return a string: pass or fail')
+        if(mock === 'pass') {
+          callback(null, {
+            transaction_id: transactionId,
+            mockTransaction: true,
+            broadcast: false,
+            transaction: packedTr
+          })
         }
+        if(mock === 'fail') {
+          const error = `[push_transaction mock error] 'fake error', digest '${buf.toString('hex')}'`
 
-        const packedTr = {
-          compression: "none",
-          transaction: tr,
-          signatures: sigs
-        };
-
-        const mock = config.mockTransactions ? config.mockTransactions() : null;
-        if (mock != null) {
-          assert(/pass|fail/.test(mock), "mockTransactions should return a string: pass or fail");
-          if (mock === "pass") {
-            callback(null, {
-              transaction_id: transactionId,
-              mockTransaction: true,
-              broadcast: false,
-              transaction: packedTr
-            });
+          if(config.logger.error) {
+            config.logger.error(error)
           }
-          if (mock === "fail") {
-            const error = `[push_transaction mock error] 'fake error', digest '${buf.toString("hex")}'`;
 
-            if (config.logger.error) {
-              config.logger.error(error);
-            }
-
-            callback(error);
-          }
-          return;
+          callback(error)
         }
+        return
+      }
 
         if (!options.broadcast || !network) {
           callback(null, {
@@ -512,7 +516,7 @@ function WriteApi (Network, network, config, Transaction) {
     genTransaction,
     genContractActions,
     genMethod
-  };
+  }
 }
 
 const isStringArray = o => Array.isArray(o) && o.length > 0 &&
