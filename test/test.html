@@ -12,11 +12,17 @@
       });
 
       u3.getChainInfo((err, info) => {
-        if (err) {
-          throw err;
-        }
+        if (err) {throw err;}
         console.log(info);
       });
+
+      const keyProvider = () => {
+        return ['5JbedY3jGfNK7HcLXcqGqSYrmX2n8wQWqZAuq6K7Gcf4Dj62UfL']
+      }
+      u3.contract('utrio.token').then(c=>{
+        c.transfer('ben', 'bob', '1.0000 UGAS', '',{keyProvider})
+      })
+
     </script>
 </head>
 <body>

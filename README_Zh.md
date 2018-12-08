@@ -30,7 +30,7 @@ Javascript封装的负责与链交互的通用库
                       error: console.error,
                       debug: console.log
                     },
-                    chainId:'2616bfbc21e11d60d10cb798f00893c2befba10e2338b7277bb3865d2e658f58',
+                    chainId:'0eaaff4003d4e08a541332c62827c0ac5d96766c712316afe7ade6f99b8d70fe',
                     symbol: 'UGAS'
                   });
             

@@ -1,96 +1,97 @@
 <img src="https://user-images.githubusercontent.com/1866848/46092827-535d5880-c1e8-11e8-8a65-f5d9d74df96e.png" width="250" align=center />
 
-sets of sdk wrapped in javascript for common purpose.
+A general library wrapped in javascript for interacting with Ultrain.
 
-## Precondition
-
-* Install docker first on your machine. Download docker from [docker center](https://docs.docker.com/docker-for-mac/install/): 
-
-* Click the Docker for mac app icon in the taskbar -> Perferences... -> Daemon -> Registry mirrors. Fill in the accelerator address https://registry.docker-cn.com in the list. Once the modification is complete, click the Apply & Restart button and Docker will restart and apply the configured mirror address.
-
-<img src="https://user-images.githubusercontent.com/1866848/46121838-3d7f8000-c248-11e8-933a-fbcf30cfc443.png" width="500" hegiht="700" align=center />
-              
-    
-* Start building a local ultrain-chain consensus net
-
-        > cd u3.js/docker-testnet && ./start.sh
- 
+### 中文文档看[这里](https://github.com/ultrain-os/u3.js/blob/master/README_Zh.md)
 
 
+## Apply Environment
 
-Note: 
-
->  u3.js will interactive with api service using the default configuration on the below and you can custom them. 
-
->  httpEndpoint is the realtime data rest service serving by the ultrain-chain node. httpEndpoint_history is express api service just for history data query which you can launch it by yourself. the source code is here: `https://github.com/ultrain-os/ultrain-rest-api.git`
-
-> * httpEndpoint: "http://127.0.0.1:8888",
-> * httpEndpoint_history: "http://127.0.0.1:3000"
-
-## Install
-
-install width `npm install u3.js` or `yarn add u3.js`
-
-## Enviroment
-
-NodeJS or ES6 for browser
+Browser（ES6）or NodeJS
 
 ## Usage
 
-if you use u3.js in browser environment, reference the example below.
-
         <!DOCTYPE html>
         <html lang="en">
-        <head>
-            <meta charset="UTF-8">
-            <title>test</title>
-            <script src="../dist/u3.js"></script>
-            <script>
-        
-              let u3 = U3.createU3({
-                httpEndpoint: 'http://127.0.0.1:8888',
-                httpEndpoint_history: 'http://127.0.0.1:3000',
-                broadcast: true,
-                debug: false,
-                sign: true,
-                logger: {
-                  log: console.log,
-                  error: console.error,
-                  debug: console.log
-                },
-                chainId:'2616bfbc21e11d60d10cb798f00893c2befba10e2338b7277bb3865d2e658f58',
-                symbol: 'UGAS'
-              });
-        
-              u3.getChainInfo((err, info) => {
-                if (err) {
-                  throw err;
-                }
-                console.log(info);
-              });
-            </script>
-        </head>
-        <body>
-        </body>
+            <head>
+                <meta charset="UTF-8">
+                <title>test</title>
+                <script src="../dist/u3.js"></script>
+                <script>
+            
+                  let u3 = U3.createU3({
+                    httpEndpoint: 'http://127.0.0.1:8888',
+                    httpEndpoint_history: 'http://127.0.0.1:3000',
+                    broadcast: true,
+                    debug: false,
+                    sign: true,
+                    logger: {
+                      log: console.log,
+                      error: console.error,
+                      debug: console.log
+                    },
+                    chainId:'0eaaff4003d4e08a541332c62827c0ac5d96766c712316afe7ade6f99b8d70fe',
+                    symbol: 'UGAS'
+                  });
+            
+                  u3.getChainInfo((err, info) => {
+                    if (err) {throw err;}
+                    console.log(info);
+                  });
+                </script>
+            </head>
+            <body>
+            </body>
         </html>
 
-## Configuration
+
+
+* #### Installation
+
+ `npm install u3.js` 或 `yarn add u3.js`
+
+* #### Initialization
 
 ```
-const { createU3 } = require('u3.js');
+const { createU3 } = require('u3.js/src');
 let config = {
   httpEndpoint: 'http://127.0.0.1:8888',
-  chainId: null, // 32 byte (64 char) hex string
-  keyProvider: ['PrivateKeys...'], // WIF string or array of keys..
-  expireInSeconds: 60,
+  httpEndpoint_history: 'http://127.0.0.1:3000',
+  chainId: '0eaaff4003d4e08a541332c62827c0ac5d96766c712316afe7ade6f99b8d70fe',
+  keyProvider: ['PrivateKeys...'],
   broadcast: true,
   sign: true
 }
 let u3 = createU3(config);
 
+u3.getChainInfo((err, info) => {
+  if (err) {throw err;}
+  console.log(info);
+});
+
 ```
 
-* <b>httpEndpoint</b> string - http or https location of a ultrain-chain providing a chain API. When using u3.js from a browser remember to configure the same origin policy in nodultrain or proxy server. For testing, nodultrain configuration access-control-allow-origin = * could be used.
+
+* #### Local environment running
+
+Running u3 locally requires relying on docker. 
+
+1.Download docker [from here](https://docs.docker.com/docker-for-mac/install/) and install it;
+
+2.Then add the Chinese mirror address：https://registry.docker-cn.com;
+
+3.Click on "Apply & Restart";
+
+<img src="https://user-images.githubusercontent.com/1866848/46121838-3d7f8000-c248-11e8-933a-fbcf30cfc443.png" width="500" hegiht="700" align=center />            
+    
+4.Go to u3.js/docker && ./start.sh
+
+## Configuration
+
+#### Global configuration
+
+* <b>httpEndpoint</b> string - http or https location of a ultrain providing a chain API. When using u3.js from a browser remember to configure the same origin policy in nodultrain or proxy server. For testing, nodultrain configuration access-control-allow-origin = * could be used.
+* <b>httpEndpoint_history</b> string - http or https location of a ultrain providing a chain history API. When using u3.js from a browser remember to configure the same origin policy in nodultrain or proxy server. .
 * <b>chainId</b> Unique ID for the blockchain you're connecting to. This is required for valid transaction signing. The chainId is provided via the get_chain_info API call.
 * <b>keyProvider</b> [array<string>|string|function] - Provides private keys used to sign transactions. If multiple private keys are found, the API get_required_keys is called to discover which signing keys to use. If a function is provided, this function is called for each transaction.
 If a keyProvider is not provided here, you should provided on a per-action or per-transaction basis in Options.
@@ -107,16 +108,7 @@ logger: {
 }
 ```
 
-
-For example, redirect error logs: config.logger = {error: (...args) => ..}
-* <b>authorization</b> - replace the default u3.js authorization on actions. An authorization provided here may still be over-written by specifying an authorization for each individual action.
-
-For example, if most actions in an dapp are based on the posting key, this would replace the default active authorization with a posting authorization:
-
-{authorization: 'xxx@active'}
-
-
-#### Options
+#### Options configuration
 
 Options may be provided after parameters. Authorization is for individual actions.eg:
 ```
@@ -148,13 +140,13 @@ await u3.transaction(tr => { tr.anyAction() }, {keyProvider})
    
   ```
  const u3 = createU3(config);
- const name = 'abc';
+ const name = 'abcdefg12345'; //common account should satisfy rule: Must be 12 bit in 12345abcdefghijklmnopqrstuvwxyz
  let params = {
-     creator: 'ultrainio',
+     creator: 'ben',
      name: name,
      owner: pubkey,
      active: pubkey,
-     updateable: 0,
+     updateable: 1,//whether the account can be updated( update contract)
      ram_bytes: 6666,
      stake_net_quantity: '1.0000 UGAS',
      stake_cpu_quantity: '1.0000 UGAS',
@@ -165,7 +157,7 @@ await u3.transaction(tr => { tr.anyAction() }, {keyProvider})
   ```
  
  
-## Transfer
+## Transfer(UGAS)
 
 transfer functions are used more frequently. 
 
@@ -173,11 +165,12 @@ transfer functions are used more frequently.
 
 ```
 const u3 = createU3(config);
+const c = await u3.contract('utrio.token')
 
 // with positional parameters
-await u3.transfer('ben', 'bob', '1.2000 UGAS', '')
+await c.transfer('ben', 'bob', '1.2000 UGAS', '')
 // or with named parameters
-await u3.transfer({from: 'bob', to: 'ben', quantity: '1.3000 UGAS', memo: ''})
+await c.transfer({from: 'bob', to: 'ben', quantity: '1.3000 UGAS', memo: ''})
 ```
   
 ## Sign
@@ -190,8 +183,8 @@ And Then send the unsigned_transaction object to the ultrain-chain wallet.
   
 ```
   const u3_offline = createU3({ sign: false, broadcast: false });
-     
-  let unsigned_transaction = await u3_offline.transfer('ultrainio', 'ben', '1 UGAS', 'uu');
+  const c = u3_offline.contract('utrio.token');
+  let unsigned_transaction = await c.transfer('ultrainio', 'ben', '1 UGAS', 'uu');
 ```
            
 #### sign and push signed_transaction
@@ -289,7 +282,7 @@ listener(function(data) {
    console.log(data);
 });
 
-U3Utils.wait(2000);
+U3Utils.test.wait(2000);
 
 //must call listener function before emit event
 const contract = await u3.contract(account);
