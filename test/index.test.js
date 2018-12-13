@@ -141,7 +141,6 @@ describe('u3.js', () => {
       await u3.transaction(account, token => {
         token.create(account, '10000000.0000 ' + customCurrency)
         token.issue(account, '10000000.0000 ' + customCurrency, 'issue')
-        token.transfer(account, 'ben', '1000.0000 ' + customCurrency, '')
       })
 
       U3Utils.test.wait(3000)
