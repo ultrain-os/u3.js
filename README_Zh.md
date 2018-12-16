@@ -7,6 +7,8 @@ Javascript封装的负责与链交互的通用库
 
 浏览器（ES6）或 NodeJS
 
+如果你想集成u3.js到react native环境中，有一个可行的方法,借助rn-nodeify实现，参考示例[U3RNDemo](https://github.com/benyasin/U3RNDemo)
+
 ## 使用方法
 
 一、如果是在浏览器中使用u3，请参考以下用法：
