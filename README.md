@@ -9,7 +9,7 @@ A general library wrapped in javascript for interacting with Ultrain.
 
 Browser（ES6）or NodeJS
 
-If you want to integrate u3.js into a react native environment, there is a workable way to do this with rn-nodeify, see the example [U3RNDemo] (https://github.com/benyasin/U3RNDemo)
+If you want to integrate u3.js into a react native environment, there is a workable way to do this with rn-nodeify, see the example [U3RNDemo](https://github.com/benyasin/U3RNDemo)
 
 ## Usage
 
