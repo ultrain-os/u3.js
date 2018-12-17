@@ -913,13 +913,17 @@ function getAllBlocksHeader(page, pageSize, queryParams, sortParams) {
  * get proposer list
  * @param {Number} page page numbers
  * @param {Number} pageSize how many records are displayed per page
+ * @param {Object} queryParams query parameter for transactions
+ * @param {Object} sortParams sorting parameter
  * @memberOf history
  * @example
  * import {createU3} from "u3.js/src";
  * const u3 = createU3(config)
  * u3.getProposerList({
     'page': 1,
-    'pageSize': 10
+    'pageSize': 10,
+    'queryParams': {},
+    'sortParams': {}
  * })
  *
  * json structure:
@@ -935,7 +939,7 @@ function getAllBlocksHeader(page, pageSize, queryParams, sortParams) {
     ]
     }
  */
-function getProposerList(page, pageSize) {
+function getProposerList(page, pageSize, queryParams, sortParams) {
     let data = {
         'page': page || 1,
         'pageSize': pageSize || 10,

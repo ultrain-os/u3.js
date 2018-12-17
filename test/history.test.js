@@ -2,13 +2,13 @@
 const assert = require('assert');
 const { U3 } = require('../index');
 const u3Instance = U3.createU3({
-    httpEndpoint_history: 'http://127.0.0.1:3000'
+    httpEndpoint_history: 'http://127.0.0.1:3001'
 });
 
 describe('history', async () => {
 
     it("getAllBlocks", async () => {
-        const rs = await u3Instance.getAllBlocks(1, 10, {}, { _id: -1 });
+        const rs = await u3Instance.getAllBlocks(1, 10, { "block.proposer": "genesis" }, { _id: -1 });
         assert.ok(rs);
     });
 
@@ -141,7 +141,7 @@ describe('history', async () => {
     })
 
     it("getProposerList", async () => {
-        let rs = await u3Instance.getProposerList(1, 1);
+        let rs = await u3Instance.getProposerList(1, 1, { owner: "user.141" });
         console.log(JSON.stringify(rs, null, 2));
         assert.ok(rs);
     })
