@@ -203,30 +203,7 @@ async function getAllAccounts(page, pageSize, queryParams, sortParams) {
         'queryParams': queryParams || {},
         'sortParams': sortParams || { _id: -1 }
     };
-    let response = await fetchUrl(`${httpEndPoint}/accounts`, data);
-    if (response.error_msg) {
-        return response.error_msg;
-    }
-
-    let pageInfo = Object.assign({}, response);
-    let accounts = pageInfo.results;
-    const { createU3 } = require('./index');
-    const u3 = createU3(U3Config);
-
-    for (let i in accounts) {
-        // find tx count by name
-        // let count = await Txs.getTxCountByName(accounts[i].name);
-        // accounts[i].tx_count = count;
-        let balance = await u3.getCurrencyBalance({
-            code: 'utrio.token',
-            account: accounts[i].name,
-            symbol: defaultConfig.symbol
-        });
-
-        accounts[i].balance = balance[0];
-    }
-
-    return pageInfo;
+    return fetchUrl(`${httpEndPoint}/accounts`, data);
 }
 
 /**
@@ -961,7 +938,9 @@ function getAllBlocksHeader(page, pageSize, queryParams, sortParams) {
 function getProposerList(page, pageSize) {
     let data = {
         'page': page || 1,
-        'pageSize': pageSize || 10
+        'pageSize': pageSize || 10,
+        'queryParams': queryParams || {},
+        'sortParams': sortParams || { total_produce_block: -1 }
     };
 
     return fetchUrl(`${httpEndPoint}/proposers`, data);
