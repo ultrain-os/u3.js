@@ -1,4 +1,29 @@
 {
+  "get_producers": {
+    "brief": "Return all producers",
+    "params": {
+      "json": {
+        "type": "bool",
+        "description": "Provide true or false",
+        "default": true
+      },
+      "lower_bound": {
+        "type": "string",
+        "description": ""
+      },
+      "limit": {
+        "type": "uint32",
+        "description": "",
+        "default": "1000"
+      }
+    },
+    "results": {
+      "rows": {
+        "type": "vector",
+        "doc": "One row per item, either encoded as hex String or JSON object"
+      }
+    }
+  },
   "get_subchain_block_num": {
     "brief": "Return committee of subchain",
     "params": {

@@ -7,7 +7,7 @@ const path = require('path')
 const defaultConfig = require('../src/config')
 const U3Utils = require('u3-utils/src')
 
-const {createU3, format, ecc, Fcbuffer, listener, version} = require('../src')
+const { createU3, format, ecc, Fcbuffer, listener, version } = require('../src')
 
 const readKeysFromFiles = () => {
   let accounts = ['ben', 'john', 'tony', 'jack', 'bob', 'tom', 'jerry', 'alice']
@@ -19,7 +19,7 @@ const readKeysFromFiles = () => {
   return keys
 }
 
-function randomString (length = 8, charset = 'abcdefghijklmnopqrstuvwxyz') {
+function randomString(length = 8, charset = 'abcdefghijklmnopqrstuvwxyz') {
   let text = ''
   for (let i = 0; i < length; i++)
     text += charset.charAt(Math.floor(Math.random() * charset.length))
@@ -106,7 +106,7 @@ describe('u3.js', () => {
 
     // 4.1 deploy contract
     it('deploy contract', async function () {
-      const config = {keyProvider: users['bob'].private_key}
+      const config = { keyProvider: users['bob'].private_key }
       const u3 = createU3(config)
       const trs = await u3.deploy(path.resolve(__dirname, '../contracts/token/token'), 'bob')
       assert.equal(trs.length, 2)
@@ -114,7 +114,7 @@ describe('u3.js', () => {
 
     //4.2 get contract detail (wast,abi)
     it('getContract', async () => {
-      const config = {keyProvider: users['bob'].private_key}
+      const config = { keyProvider: users['bob'].private_key }
       const u3 = createU3(config)
       let account = 'bob'
       const contract = await u3.getContract(account)
@@ -123,7 +123,7 @@ describe('u3.js', () => {
 
     //4.3 get abi
     it('getAbi', async () => {
-      const config = {keyProvider: users['bob'].private_key}
+      const config = { keyProvider: users['bob'].private_key }
       const u3 = createU3(config)
       let account = 'bob'
       const abi = await u3.getAbi(account)
@@ -132,7 +132,7 @@ describe('u3.js', () => {
 
     // 4.4 create custom token (uip06)
     it('create custom token', async () => {
-      const config = {keyProvider: users['bob'].private_key}
+      const config = { keyProvider: users['bob'].private_key }
       const u3 = createU3(config)
       let account = 'bob'
       console.log('created token named: ' + customCurrency)
@@ -165,7 +165,7 @@ describe('u3.js', () => {
 
       //do transfer (this is the UIP standard for transfer token)
       const tr = await u3.contract(account)
-      await tr.transfer('bob', 'ben', '1.0000 ' + customCurrency, '', {authorization: [`bob@active`]})
+      await tr.transfer('bob', 'ben', '1.0000 ' + customCurrency, '', { authorization: [`bob@active`] })
 
       //after transfer
       await u3.getCurrencyBalance({
@@ -183,7 +183,7 @@ describe('u3.js', () => {
 
     // 4.5 query token holder and token symbol when issued
     it('get table by scope', async () => {
-      const config = {keyProvider: users['bob'].private_key}
+      const config = { keyProvider: users['bob'].private_key }
       const u3 = createU3(config)
       let account = 'bob'
 
@@ -218,7 +218,7 @@ describe('u3.js', () => {
       }
       const u3 = createU3()
       const tr = await u3.contract('utrio.token')
-      return tr.transfer('ben', 'bob', '1.0000 ' + defaultConfig.symbol, '',{keyProvider}).then(tr => {
+      return tr.transfer('ben', 'bob', '1.0000 ' + defaultConfig.symbol, '', { keyProvider }).then(tr => {
         assert.equal(tr.transaction.signatures.length, 1)
         assert.equal(typeof tr.transaction.signatures[0], 'string')
       })
@@ -231,7 +231,7 @@ describe('u3.js', () => {
       const keyProvider = () => {
         return [users['ben'].private_key]
       }
-      const u3 = createU3({keyProvider})
+      const u3 = createU3({ keyProvider })
       const tr = await u3.contract('utrio.token')
       const result = await tr.transfer('ben', 'bob', '1.0000 ' + defaultConfig.symbol, '')
 
@@ -251,9 +251,9 @@ describe('u3.js', () => {
   // 7. sign (sign separately)
   describe('sign', () => {
     it('offline sign', async () => {
-      const config = {keyProvider: users['bob'].private_key}
+      const config = { keyProvider: users['bob'].private_key }
       const u3 = createU3(config)
-      const u3_offline = createU3({sign: false, broadcast: false})
+      const u3_offline = createU3({ sign: false, broadcast: false })
       let account = 'bob'
 
       // precaution (If there is a token contract)
@@ -265,9 +265,9 @@ describe('u3.js', () => {
 
       //using { sign: false, broadcast: false } to create a offline U3 instance and call some function
       const tr = await u3_offline.contract(account)
-      const unsigned_transaction = await tr.transfer('bob', 'alice', '1.0000 ' + customCurrency, '', {authorization: [`bob@active`]})
+      const unsigned_transaction = await tr.transfer('bob', 'alice', '1.0000 ' + customCurrency, '', { authorization: [`bob@active`] })
       let signature = await u3_offline.sign(unsigned_transaction, users['bob'].private_key, defaultConfig.chainId)
-      let signedTransaction = Object.assign({}, unsigned_transaction.transaction, {signatures: [signature]})
+      let signedTransaction = Object.assign({}, unsigned_transaction.transaction, { signatures: [signature] })
       //console.log(signedTransaction);
 
       //using {sign: true, broadcast: true} to create a online U3 instance and pushTx to chain
@@ -279,7 +279,7 @@ describe('u3.js', () => {
   // 8. create user
   describe('createUser', () => {
     it('createUser', async () => {
-      const u3 = createU3({keyProvider: users['ben'].private_key})
+      const u3 = createU3({ keyProvider: users['ben'].private_key })
       const name = randomName()
       const ppm = ecc.generateKeyPairWithMnemonic()
       let params = {
@@ -311,7 +311,7 @@ describe('u3.js', () => {
 
     // 9.1 buyram
     it('buyram', async () => {
-      const u3 = createU3({keyProvider})
+      const u3 = createU3({ keyProvider })
       const c = await u3.contract('ultrainio')
       let before = await u3.getAccountInfo({
         account_name: 'ben'
@@ -332,7 +332,7 @@ describe('u3.js', () => {
 
     // 9.2 buyrambytes
     it('buyrambytes', async () => {
-      const u3 = createU3({keyProvider})
+      const u3 = createU3({ keyProvider })
       const c = await u3.contract('ultrainio')
       let before = await u3.getAccountInfo({
         account_name: 'ben'
@@ -354,7 +354,7 @@ describe('u3.js', () => {
     // 9.3 sellram
     it('sellram', async () => {
       const keyProvider = () => users['ben'].private_key
-      const u3 = createU3({keyProvider})
+      const u3 = createU3({ keyProvider })
       const c = await u3.contract('ultrainio')
 
       let before = await u3.getAccountInfo({
@@ -374,7 +374,7 @@ describe('u3.js', () => {
 
     // 9.4 delegatebw
     it('delegatebw', async () => {
-      const u3 = createU3({keyProvider})
+      const u3 = createU3({ keyProvider })
       const c = await u3.contract('ultrainio')
       let before = await u3.getAccountInfo({
         account_name: 'ben'
@@ -397,7 +397,7 @@ describe('u3.js', () => {
 
     // 9.5 get cpu_net/token exchange rate
     it('cpu net rate', async () => {
-      const u3 = createU3({keyProvider})
+      const u3 = createU3({ keyProvider })
       let rate = await u3.getSourcerate({
         account_name: 'bob'
       })
@@ -406,14 +406,14 @@ describe('u3.js', () => {
 
     // 9.6 get ram/token exchange rate
     it('ram rate', async () => {
-      const u3 = createU3({keyProvider})
+      const u3 = createU3({ keyProvider })
       let rate = await u3.getRamrate()
       assert.ok(rate !== '')
     })
 
     // 9.7 get accounts array by public key
     it('getKeyAccounts', async () => {
-      const u3 = createU3({keyProvider})
+      const u3 = createU3({ keyProvider })
       await u3.getKeyAccounts(users['ben'].public_key).then(accounts => {
         assert.ok(accounts.account_names.includes('ben'))
       })
@@ -426,7 +426,7 @@ describe('u3.js', () => {
     //Returns an object containing rows from the specified table.
     //before using it, you should know table and scope defined in the contract
     it('get table records', async () => {
-      const u3 = createU3({keyProvider})
+      const u3 = createU3({ keyProvider })
       const balance = await u3.getTableRecords({
         code: 'utrio.token',//smart contract name
         scope: 'bob',//account name
@@ -438,7 +438,7 @@ describe('u3.js', () => {
 
     // query account's current balance
     it('get currency balance', async () => {
-      const u3 = createU3({keyProvider})
+      const u3 = createU3({ keyProvider })
       await u3.getCurrencyBalance({
         code: 'utrio.token',
         account: 'ultrainio',
@@ -450,7 +450,7 @@ describe('u3.js', () => {
 
     // query currency's status
     it('get currency stats', async function () {
-      const u3 = createU3({keyProvider})
+      const u3 = createU3({ keyProvider })
       await u3.getCurrencyStats('utrio.token', defaultConfig.symbol, (error, result) => {
         console.log(error, result)
       })
@@ -465,7 +465,7 @@ describe('u3.js', () => {
 
     // 11.1 subscribe event
     it('subscribe', async () => {
-      const config = {keyProvider: users['ben'].private_key}
+      const config = { keyProvider: users['ben'].private_key }
       const u3 = createU3(config)
       const sub = await u3.registerEvent('ben', 'http://192.168.1.5:3002')
       console.log(sub)
@@ -473,7 +473,7 @@ describe('u3.js', () => {
 
     // 11.2 unsubscribe event
     it('unsubscribe', async () => {
-      const config = {keyProvider: users['ben'].private_key}
+      const config = { keyProvider: users['ben'].private_key }
       const u3 = createU3(config)
       const unSub = await u3.unregisterEvent('ben', 'http://192.168.1.5:3002')
       console.log(unSub)
@@ -491,6 +491,23 @@ describe('u3.js', () => {
 
       //emit event defined  in the contract action
       //...
+    })
+
+  })
+
+  describe('chain rpc', () => {
+
+    it('get_producers', async () => {
+      // const config = { keyProvider: users['ben'].private_key }
+      const u3 = createU3({
+        httpEndpoint: 'http://40.76.66.113:8888'
+      })
+
+      let producers = await u3.getProducers(true, "", 1000);
+
+      console.log(producers);
+
+      assert.ok(producers.rows);
     })
 
   })
