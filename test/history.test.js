@@ -111,6 +111,7 @@ describe("history", async () => {
 
   it("getTxByData", async () => {
     //let rs = await u3.getAllTxs(1, 1, { "actions.0.data.from": "ben" } }, { _id: -1 });
+    //same as below
     let rs = await u3.getAllTxs(1, 1, { "actions.0.data.from": { "$eq": "ben" } }, { _id: -1 });
     console.log(rs);
     assert.ok(rs);

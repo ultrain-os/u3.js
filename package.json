@@ -1,6 +1,6 @@
 {
   "name": "u3.js",
-  "version": "0.2.8",
+  "version": "0.2.11",
   "description": "Node wrapper for Ultrain API",
   "main": "index.js",
   "directories": {
@@ -30,7 +30,7 @@
   "dependencies": {
     "axios": "^0.18.0",
     "babel-polyfill": "^6.26.0",
-    "u3-utils": "^0.0.2"
+    "u3-utils": "^0.0.4"
   },
   "devDependencies": {
     "@types/node": "^8.0.3",

@@ -1,18 +1,4 @@
 {
-  "get_subchain_block_num": {
-    "brief": "Return committee of subchain",
-    "params": {
-      "chain_name": "account_name"
-    },
-    "results": "asset[]"
-  },
-  "get_subchain_committee": {
-    "brief": "Return committee of subchain",
-    "params": {
-      "chain_name": "account_name"
-    },
-    "results": "asset[]"
-  },
   "get_sourcerate": {
     "brief": "Return net rate and cpu rate",
     "params": {
