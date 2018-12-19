@@ -30,7 +30,8 @@ module.exports = function (config) {
         getBalanceByAccount,
         getHoldersBySymbol,
         getAllBlocksHeader,
-        getProposerList
+        getProposerList,
+        getReward
     };
 };
 
@@ -948,4 +949,22 @@ function getProposerList(page, pageSize, queryParams, sortParams) {
     };
 
     return fetchUrl(`${httpEndPoint}/proposers`, data);
+}
+
+/**
+ * get block reward
+ * @memberOf history
+ * @example
+ * import {createU3} from "u3.js/src";
+ * const u3 = createU3(config);
+ * await u3.getReward({));
+ * 
+ * * json structure:
+ *  {
+        current: 100,
+        total: 1000
+    }
+ */
+function getReward() {
+    return fetchUrl(`${httpEndPoint}/award`);
 }

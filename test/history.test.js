@@ -145,4 +145,10 @@ describe('history', async () => {
         console.log(JSON.stringify(rs, null, 2));
         assert.ok(rs);
     })
+
+    it("getReward", async () => {
+        let rs = await u3Instance.getReward();
+        console.log(JSON.stringify(rs, null, 2));
+        assert.ok(rs);
+    })
 })
