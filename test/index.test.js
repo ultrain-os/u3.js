@@ -366,7 +366,7 @@ describe("u3.js", () => {
   // 11 resource
   describe("resource", () => {
 
-    // 11.1 resource lease
+    // 11.1 buy resource
     it("lease", async () => {
       const config = { keyProvider: users["ben"].private_key };
       const u3 = createU3(config);
@@ -384,7 +384,7 @@ describe("u3.js", () => {
       await c.resourcelease("ben", name, 1, 10); // 1 slot for 10 days
     });
 
-    // 11.2 resource query
+    // 11.2 query resource
     it("query", async () => {
       const config = { keyProvider: users["ben"].private_key };
       const u3 = createU3(config);
