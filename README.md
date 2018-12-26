@@ -210,7 +210,7 @@ a contract, buy some resource before.
 const u3 = createU3(config);
 const c = await u3.contract('ultrainio')
 
-await c.transfer('ben', 'bob', 1, 10);// 1 slot for 10 days
+await c.resourcelease('ben', 'bob', 1, 10);// 1 slot for 10 days
 
 ```
 
