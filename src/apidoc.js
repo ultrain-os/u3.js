@@ -180,6 +180,27 @@ function getRawCodeAndAbi(){}
 function getTableRecords(){}
 
 /**
+* Fetch smart contract data from an account.
+* @param {name} code Provide the smart contract name 
+* @param {name} table Provide the table name 
+* @param {string} lower_bound  
+* @param {string} upper_bound  
+* @param {uint32} limit  
+* @memberOf chain
+* @example
+        * import {getTableByScope} from "u3.js/src";
+        * const u3 = createU3(config)
+          * u3.getTableByScope({
+  "code": "account1",
+  "table": "table",
+  "lower_bound": "0",
+  "upper_bound": "-1",
+  "limit": "10"
+})
+          */
+function getTableByScope(){}
+
+/**
 * Manually serialize json into binary hex.  The binayargs is usually stored in Action.data.
 * @param {name} code Provide the account name. 
 * @param {name} action Provide the action arguments 
@@ -312,3 +333,10 @@ function registerEvent(){}
 })
           */
 function unregisterEvent(){}
+
+/**
+* Return producer info
+* @param {account_name} owner account of producer 
+* @memberOf chain
+*/
+function getProducerInfo(){}

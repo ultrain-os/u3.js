@@ -1,8 +1,6 @@
 const assert = require("assert");
-const { U3 } = require("../index");
-const u3 = U3.createU3({
-  httpEndpoint_history: "http://127.0.0.1:3000"
-});
+const { createU3 } = require("../src");
+const u3 = createU3();
 
 describe("history", async () => {
 
@@ -33,7 +31,7 @@ describe("history", async () => {
 
   it("getTxByTxId", async () => {
     const txs = await u3.getAllTxs(1, 1, {}, { _id: -1 });
-    const rs = await u3.getTxByTxId(txs.results[0].trx_id);
+    const rs = await u3.getTxByTxId("670486eaa77994f818564ffbb5409889c27962b30d7ebbfed1947c118b1e16f5");
     assert.ok(rs);
   });
 
@@ -112,8 +110,8 @@ describe("history", async () => {
   it("getTxByData", async () => {
     //let rs = await u3.getAllTxs(1, 1, { "actions.0.data.from": "ben" } }, { _id: -1 });
     //same as below
-    let rs = await u3.getAllTxs(1, 1, { "actions.0.data.from": { "$eq": "ben" } }, { _id: -1 });
-    console.log(rs);
+    let query = { $and: [{ "actions.0.account": "ufotrackuser" }, { $or: [{ "actions.0.data.id": 1257 }, { "actions.0.data.id": "1257" }] }] };
+    let rs = await u3.getAllTxs(1, 2, query, { _id: -1 });
     assert.ok(rs);
   });
 

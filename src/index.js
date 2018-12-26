@@ -179,7 +179,6 @@ const createU3 = (config = {}) => {
       , deploy
       , createUser
       , sign
-      , getRamrate
     },
     history
   )
@@ -216,33 +215,6 @@ async function deploy (contract, account) {
 }
 
 /**
- * get ram rate
- * 计算出需要nKB的RAM的价格：
- * 如果是1KB，下面的n=1,得到的价格为uGas/KB
- * 如果需要换成uGas/byte，结果在除以1024即可
- * RAM价格 = (n * quote.balance) / (n + base.balance / 1024)
- * @returns {Promise<*>}
- */
-async function getRamrate () {
-  const rs = await this.getTableRecords({
-    code: 'ultrainio',
-    scope: 'ultrainio',
-    table: 'rammarket',
-    json: true
-  })
-
-  if (rs.rows) {
-    let quote_balance = rs.rows[0].quote.balance.split(' ')[0]
-    let base_balance = rs.rows[0].base.balance.split(' ')[0]
-
-    let ramrate = (1 * quote_balance) / (1 + base_balance / 1024)
-    return `${ramrate} ${defaultConfig.symbol}/KB`
-  } else {
-    return rs
-  }
-}
-
-/**
  * create a new user account by chain, and buy some ram, net, cpu
  * @param params
  * eg format:
@@ -251,21 +223,13 @@ async function getRamrate () {
     name: "test123",
     owner: "UTR6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV",
     active: "UTR6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV",
-    updateable: 0,
-    ram_bytes: 8912,
-    stake_net_quantity: "1.0000 " + defaultConfig.symbol,
-    stake_cpu_quantity: "1.0000 " + defaultConfig.symbol,
-    transfer: 0
+    updateable: 0
   }
  * @returns {Promise<*>}
  */
 async function createUser (params) {
   let defaults = {
-    updateable: 1,//default updateable
-    ram_bytes: 8912,
-    stake_net_quantity: '1.0000 ' + defaultConfig.symbol,
-    stake_cpu_quantity: '1.0000 ' + defaultConfig.symbol,
-    transfer: 0
+    updateable: 1,//default is updateable
   }
   let data = Object.assign({}, defaults, params)
 
@@ -277,19 +241,6 @@ async function createUser (params) {
       owner: data.owner,
       active: data.active,
       updateable: data.updateable
-    });
-    tr.buyrambytes({
-      payer: data.creator,
-      receiver: data.name,
-      bytes: data.ram_bytes
-    });
-    //optional
-    tr.delegatebw({
-      from: data.creator,
-      receiver: data.name,
-      stake_net_quantity: data.stake_net_quantity,
-      stake_cpu_quantity: data.stake_cpu_quantity,
-      transfer: data.transfer
     });
   })
 }
