@@ -149,11 +149,7 @@ await u3.transaction(tr => { tr.anyAction() }, {keyProvider})
      name: name,
      owner: pubkey,
      active: pubkey,
-     updateable: 1,//账号是否可以更新（更新合约）
-     ram_bytes: 6666,
-     stake_net_quantity: '1.0000 UGAS',
-     stake_cpu_quantity: '1.0000 UGAS',
-     transfer: 0
+     updateable: 1,//可选，账号是否可以更新（更新合约）
   };
   await u3.createUser(params);
    
@@ -192,6 +188,33 @@ await c.transfer({from: 'bob', to: 'ben', quantity: '1.3000 UGAS', memo: ''})
      let signedTransaction = Object.assign({}, unsigned_transaction.transaction, { signatures: [signature] });
      let processedTransaction = await u3_online.pushTx(signedTransaction);
   }
+
+```
+  
+## 资源
+
+调用合约只会消耗合约Owner的资源，所以如果你想部署一个合约，请先购买一些资源. 
+
+* resourcelease(payer,receiver,slot,days) 
+
+```
+const u3 = createU3(config);
+const c = await u3.contract('ultrainio')
+
+await c.transfer('ben', 'bob', 1, 10);// 1 slot for 10 days
+
+```
+
+通过以下方法查询资源详情.
+
+```
+const resource = await u3.getTableRecords({
+  code: "ultrainio",//smart contract name
+  scope: "bob",//account name
+  table: "reslease",//table name
+  json: true
+});
+console.log(resource)
 
 ```
     

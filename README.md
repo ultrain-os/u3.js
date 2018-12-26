@@ -148,11 +148,7 @@ await u3.transaction(tr => { tr.anyAction() }, {keyProvider})
      name: name,
      owner: pubkey,
      active: pubkey,
-     updateable: 1,//whether the account can be updated( update contract)
-     ram_bytes: 6666,
-     stake_net_quantity: '1.0000 UGAS',
-     stake_cpu_quantity: '1.0000 UGAS',
-     transfer: 0
+     updateable: 1,//[optional]whether the account can be updated( update contract)
   };
   await u3.createUser(params);
    
@@ -202,6 +198,35 @@ And then push the signedTransaction to the ultrain-chain.
   }
 
 ```
+
+## Resource
+
+Calling a contract will only spend the contract owner's resource. So if your want to deploy
+a contract, buy some resource before. 
+
+* resourcelease(payer,receiver,slot,days) 
+
+```
+const u3 = createU3(config);
+const c = await u3.contract('ultrainio')
+
+await c.transfer('ben', 'bob', 1, 10);// 1 slot for 10 days
+
+```
+
+And querying resource detail through the method below.
+
+```
+const resource = await u3.getTableRecords({
+    code: "ultrainio",//smart contract name
+    scope: "bob",//account name
+    table: "reslease",//table name
+    json: true
+});
+console.log(resource)
+
+```
+
     
 ## Contracts
 
