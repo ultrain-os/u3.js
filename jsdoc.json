@@ -11,6 +11,9 @@
       "src/apidoc.js",
       "src/history.js",
       "src/format.js",
+
+      "node_modules/u3-utils/src/ecc/api_common.js",
+
       "src/module/src/account.js",
       "src/module/src/action.js",
       "src/module/src/asset.js",
@@ -32,7 +35,7 @@
       "src/module/src/utils.js"
     ],
     "includePattern": ".js$",
-    "excludePattern": "(node_modules/|docs)"
+    "excludePattern": "(docs)"
   },
   "plugins": [
     "plugins/markdown"
