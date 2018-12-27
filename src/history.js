@@ -1,44 +1,44 @@
 /** @namespace history*/
 
 
-const defaultConfig = require('../src/config');
-let httpEndPoint = require('./config').httpEndpoint_history;
-const { fetchUrl } = require('../src/utils/dbHelper');
+const defaultConfig = require("../src/config");
+let httpEndPoint = require("./config").httpEndpoint_history;
+const { fetchUrl } = require("../src/utils/dbHelper");
 let U3Config = {};
 
-module.exports = function (config) {
-    U3Config = config;
-    httpEndPoint = config.httpEndpoint_history;
-    return {
-        getAllBlocks,
-        getContracts,
-        getContractByName,
-        getAllAccounts,
-        getAllTxs,
-        getTxByTxId,
-        getActionsByTxid,
-        getActionsByAccount,
-        getTxsByBlockNum,
-        getExistAccount,
-        getBlocksByContract,
-        getTxTraceByTxid,
-        search,
-        getCreateAccountByName,
-        getAllTokens,
-        getTokenBySymbol,
-        getBaseInfo,
-        getBalanceByAccount,
-        getHoldersBySymbol,
-        getAllBlocksHeader,
-        getProposerList
-    };
+module.exports = function(config) {
+  U3Config = config;
+  httpEndPoint = config.httpEndpoint_history;
+  return {
+    getAllBlocks,
+    getContracts,
+    getContractByName,
+    getAllAccounts,
+    getAllTxs,
+    getTxByTxId,
+    getActionsByTxid,
+    getActionsByAccount,
+    getTxsByBlockNum,
+    getExistAccount,
+    getBlocksByContract,
+    getTxTraceByTxid,
+    search,
+    getCreateAccountByName,
+    getAllTokens,
+    getTokenBySymbol,
+    getBaseInfo,
+    getBalanceByAccount,
+    getHoldersBySymbol,
+    getAllBlocksHeader,
+    getProposerList
+  };
 };
 
 /**
  * fetch all blocks
  * @param {Number} page page numbers
  * @param {Number} pageSize how many records are displayed per page
- * @param {Object} queryParams query parameter for Blocks
+ * @param {Object} queryParams query parameter for Blocks. Mongodb find({}) query condition
  * @param {Object} sortParams sorting parameter
  * @memberOf history
  * @example
@@ -47,7 +47,7 @@ module.exports = function (config) {
  * u3.getAllBlocks({
     'page': 1,
     'pageSize': 10,
-    'queryParams': {},
+    'queryParams': {"block.producer":"ultrainio"},
     'sortParams': { _id: -1 }
  * })
  *
@@ -80,25 +80,25 @@ module.exports = function (config) {
     "irreversible" : false
 }
  */
-function getAllBlocks(page, pageSize, queryParams, sortParams) {
-    let data = {
-        'page': page || 1,
-        'pageSize': pageSize || 10,
-        'queryParams': queryParams || {},
-        'sortParams': sortParams || { _id: -1 }
-    };
+function getAllBlocks (page, pageSize, queryParams, sortParams) {
+  let data = {
+    "page": page || 1,
+    "pageSize": pageSize || 10,
+    "queryParams": queryParams || {},
+    "sortParams": sortParams || { _id: -1 }
+  };
 
-    return fetchUrl(`${httpEndPoint}/blocks`, data);
+  return fetchUrl(`${httpEndPoint}/blocks`, data);
 }
 
 /**
  * get all contracts
  * @param {Number} page page numbers
  * @param {Number} pageSize how many records are displayed per page
- * @param {Object} queryParams query parameter for Contracts
+ * @param {Object} queryParams query parameter for Contracts. Mongodb find({}) query condition
  * @param {Object} sortParams sorting parameter
  * @memberOf history
- * 
+ *
  * @example
  * import {getContracts} from "u3.js/src";
  * const u3 = createU3(config)
@@ -127,22 +127,22 @@ function getAllBlocks(page, pageSize, queryParams, sortParams) {
     "updatedAt" : ISODate("2018-10-26T10:11:49.162+0000")
 }
  */
-function getContracts(page, pageSize, queryParams, sortParams) {
-    let data = {
-        'page': page || 1,
-        'pageSize': pageSize || 10,
-        'queryParams': queryParams || {},
-        'sortParams': sortParams || { _id: -1 }
-    };
+function getContracts (page, pageSize, queryParams, sortParams) {
+  let data = {
+    "page": page || 1,
+    "pageSize": pageSize || 10,
+    "queryParams": queryParams || {},
+    "sortParams": sortParams || { _id: -1 }
+  };
 
-    return fetchUrl(`${httpEndPoint}/contracts`, data);
+  return fetchUrl(`${httpEndPoint}/contracts`, data);
 }
 
 /**
  * get contract by name
  * @param {String} name contract name eg. onblock
  * @memberOf history
- * 
+ *
  * @example
  * import {getContractByName} from "u3.js/src";
  * const u3 = createU3(config)
@@ -168,15 +168,15 @@ function getContracts(page, pageSize, queryParams, sortParams) {
     "updatedAt" : ISODate("2018-10-26T10:11:49.162+0000")
 }
  */
-function getContractByName(name) {
-    return fetchUrl(`${httpEndPoint}/contracts/${name}`);
+function getContractByName (name) {
+  return fetchUrl(`${httpEndPoint}/contracts/${name}`);
 }
 
 /**
  * get all accounts
  * @param {Number} page page numbers
  * @param {Number} pageSize how many records are displayed per page
- * @param {Object} queryParams query parameter for Accounts
+ * @param {Object} queryParams query parameter for Accounts. Mongodb find({}) query condition
  * @param {Object} sortParams sorting parameter
  * @memberOf history
  * @example
@@ -193,56 +193,59 @@ function getContractByName(name) {
  *{ 
     "_id" : ObjectId("5b7d11cc59bd97fab30ba86b"), 
     "name" : "utrio.code", 
+    "owner" : "UTR6uHKWW5tvmw6eQpbv92cVmkpDFhQ9q7xsee5Da2X2pVeYUNy4D",
+    "active" : "UTR8uHKWW5tvmw6eQpbv92cVmkpDFhQ9q7xsee5Da2X2pVeYUNy4D",
     "createdAt" : ISODate("2018-08-22T07:33:32.092+0000")
 }
  */
-async function getAllAccounts(page, pageSize, queryParams, sortParams) {
-    let data = {
-        'page': page || 1,
-        'pageSize': pageSize || 10,
-        'queryParams': queryParams || {},
-        'sortParams': sortParams || { _id: -1 }
-    };
-    let response = await fetchUrl(`${httpEndPoint}/accounts`, data);
-    if (response.error_msg) {
-        return response.error_msg;
-    }
+async function getAllAccounts (page, pageSize, queryParams, sortParams) {
+  let data = {
+    "page": page || 1,
+    "pageSize": pageSize || 10,
+    "queryParams": queryParams || {},
+    "sortParams": sortParams || { _id: -1 }
+  };
+  let response = await fetchUrl(`${httpEndPoint}/accounts`, data);
+  if (response.error_msg) {
+    return response.error_msg;
+  }
 
-    let pageInfo = Object.assign({}, response);
-    let accounts = pageInfo.results;
-    const { createU3 } = require('./index');
-    const u3 = createU3(U3Config);
+  let pageInfo = Object.assign({}, response);
+  let accounts = pageInfo.results;
+  const { createU3 } = require("./index");
+  const u3 = createU3(U3Config);
 
-    for (let i in accounts) {
-        // find tx count by name
-        // let count = await Txs.getTxCountByName(accounts[i].name);
-        // accounts[i].tx_count = count;
-        let balance = await u3.getCurrencyBalance({
-            code: 'utrio.token',
-            account: accounts[i].name,
-            symbol: defaultConfig.symbol
-        });
+  for (let i in accounts) {
+    // find tx count by name
+    // let count = await Txs.getTxCountByName(accounts[i].name);
+    // accounts[i].tx_count = count;
+    let balance = await u3.getCurrencyBalance({
+      code: "utrio.token",
+      account: accounts[i].name,
+      symbol: defaultConfig.symbol
+    });
 
-        accounts[i].balance = balance[0];
-    }
+    accounts[i].balance = balance[0];
+  }
 
-    return pageInfo;
+  return pageInfo;
 }
 
 /**
  * get all transactions
  * @param {Number} page page numbers
  * @param {Number} pageSize how many records are displayed per page
- * @param {Object} queryParams query parameter for transactions
+ * @param {Object} queryParams query parameter for transactions. Mongodb find({}) query condition
  * @param {Object} sortParams sorting parameter
  * @memberOf history
  * @example
  * import {getAllTxs} from "u3.js/src";
  * const u3 = createU3(config)
+ * let query = { $and: [{ "actions.0.account": "ben" }, { $or: [{ "actions.0.data.id": 1257 }, { "actions.0.data.id": "1257" }] }] };
  * u3.getAllTxs({
     'page': 1,
     'pageSize': 10,
-    'queryParams': {},
+    'queryParams': query,
     'sortParams': { _id: -1 }
  * })
  *
@@ -272,7 +275,8 @@ async function getAllAccounts(page, pageSize, queryParams, sortParams) {
                     "permission" : "active"
                 }
             ], 
-            "hex_data" : "80e34745000000000000000001000000000000000000000000000..."
+            "hex_data" : "80e34745000000000000000001000000000000000000000000000...",
+            "data":{"id":1257}
         }
     ], 
     "transaction_extensions" : {
@@ -287,15 +291,15 @@ async function getAllAccounts(page, pageSize, queryParams, sortParams) {
     "createdAt" : ISODate("2018-08-22T07:33:12.469+0000")
 }
  */
-function getAllTxs(page, pageSize, queryParams, sortParams) {
-    let data = {
-        'page': page || 1,
-        'pageSize': pageSize || 10,
-        'queryParams': queryParams || {},
-        'sortParams': sortParams || { _id: -1 }
-    };
+function getAllTxs (page, pageSize, queryParams, sortParams) {
+  let data = {
+    "page": page || 1,
+    "pageSize": pageSize || 10,
+    "queryParams": queryParams || {},
+    "sortParams": sortParams || { _id: -1 }
+  };
 
-    return fetchUrl(`${httpEndPoint}/txs`, data);
+  return fetchUrl(`${httpEndPoint}/txs`, data);
 }
 
 /**
@@ -350,8 +354,8 @@ function getAllTxs(page, pageSize, queryParams, sortParams) {
     "createdAt" : ISODate("2018-08-22T07:33:12.469+0000")
 }
  */
-function getTxByTxId(id) {
-    return fetchUrl(`${httpEndPoint}/txs/${id}`);
+function getTxByTxId (id) {
+  return fetchUrl(`${httpEndPoint}/txs/${id}`);
 }
 
 /**
@@ -382,8 +386,8 @@ function getTxByTxId(id) {
     "hex_data" : "80e3474500000000000000000100000000000..."
 }
  */
-function getActionsByTxid(id) {
-    return fetchUrl(`${httpEndPoint}/actions/tx/${id}`);
+function getActionsByTxid (id) {
+  return fetchUrl(`${httpEndPoint}/actions/tx/${id}`);
 }
 
 /**
@@ -420,21 +424,21 @@ function getActionsByTxid(id) {
     "hex_data" : "80e34745000000000000000001000000000000..."
 }
  */
-function getActionsByAccount(page, pageSize, queryParams, sortParams) {
-    let data = {
-        'page': page || 1,
-        'pageSize': pageSize || 10,
-        'queryParams': queryParams || {},
-        'sortParams': sortParams || { _id: -1 }
-    };
-    return fetchUrl(`${httpEndPoint}/actions/by/account`, data);
+function getActionsByAccount (page, pageSize, queryParams, sortParams) {
+  let data = {
+    "page": page || 1,
+    "pageSize": pageSize || 10,
+    "queryParams": queryParams || {},
+    "sortParams": sortParams || { _id: -1 }
+  };
+  return fetchUrl(`${httpEndPoint}/actions/by/account`, data);
 }
 
 /**
  * get transactions by block_num
  * @param {Number} page page numbers
  * @param {Number} pageSize how many records are displayed per page
- * @param {Object} queryParams query parameter for Blocks
+ * @param {Object} queryParams query parameter for Blocks. Mongodb find({}) query condition
  * @param {Object} sortParams sorting parameter
  * @memberOf history
  * @example
@@ -490,14 +494,14 @@ function getActionsByAccount(page, pageSize, queryParams, sortParams) {
     "createdAt" : ISODate("2018-08-22T07:33:12.469+0000")
 }
  */
-function getTxsByBlockNum(page, pageSize, queryParams, sortParams) {
-    let data = {
-        'page': page || 1,
-        'pageSize': pageSize || 10,
-        'queryParams': queryParams || {},
-        'sortParams': sortParams || { _id: -1 }
-    };
-    return fetchUrl(`${httpEndPoint}/txs/by/blocknum`, data);
+function getTxsByBlockNum (page, pageSize, queryParams, sortParams) {
+  let data = {
+    "page": page || 1,
+    "pageSize": pageSize || 10,
+    "queryParams": queryParams || {},
+    "sortParams": sortParams || { _id: -1 }
+  };
+  return fetchUrl(`${httpEndPoint}/txs/by/blocknum`, data);
 }
 
 /**
@@ -519,8 +523,8 @@ function getTxsByBlockNum(page, pageSize, queryParams, sortParams) {
     "createdAt" : ISODate("2018-08-22T07:33:32.092+0000")
 }
  */
-function getExistAccount(name) {
-    return fetchUrl(`${httpEndPoint}/accounts/${name}`);
+function getExistAccount (name) {
+  return fetchUrl(`${httpEndPoint}/accounts/${name}`);
 }
 
 /**
@@ -569,21 +573,21 @@ function getExistAccount(name) {
     "irreversible" : false
 }
  */
-function getBlocksByContract(block_num, account, contract, contract_method) {
-    const data = {
-        block_num,
-        account,
-        contract,
-        contract_method
-    };
-    return fetchUrl(`${httpEndPoint}/blocks/contract`, data);
+function getBlocksByContract (block_num, account, contract, contract_method) {
+  const data = {
+    block_num,
+    account,
+    contract,
+    contract_method
+  };
+  return fetchUrl(`${httpEndPoint}/blocks/contract`, data);
 }
 
 /**
  * get transaction trace by transaction's id
  * @param { String } id transaction's id
  * @memberOf history
- * 
+ *
  * @example
  * import {getTxTraceByTxid} from "u3.js/src";
  * const u3 = createU3(config)
@@ -592,20 +596,20 @@ function getBlocksByContract(block_num, account, contract, contract_method) {
  * })
  *
  * json structure:
- *  
-    "_id" : ObjectId("5b7d11b859bd97fab30ba7f4"), 
-    "trx_id" : "40ed51618da80804373fd84015548c8343da8c7ade8af00548ada4952d3e38b9", 
-    "irreversible" : false, 
-    "transaction_header" : {
+ *
+ "_id" : ObjectId("5b7d11b859bd97fab30ba7f4"),
+ "trx_id" : "40ed51618da80804373fd84015548c8343da8c7ade8af00548ada4952d3e38b9",
+ "irreversible" : false,
+ "transaction_header" : {
         "expiration" : "2018-08-22T07:33:13", 
         "ref_block_num" : NumberInt(1), 
         "ref_block_prefix" : NumberLong(2517196066), 
         "max_net_usage_words" : NumberInt(0), 
         "max_cpu_usage_ms" : NumberInt(0), 
         "delay_sec" : NumberInt(0)
-    }, 
-    "actions" : [
-        {
+    },
+ "actions" : [
+ {
             "action_num" : NumberInt(0), 
             "trx_id" : "40ed51618da80804373fd84015548c8343da8c7ade8af00548ada4952d3e38b9", 
             "cfa" : false, 
@@ -619,60 +623,60 @@ function getBlocksByContract(block_num, account, contract, contract_method) {
             ], 
             "hex_data" : "80e347450000000000000000010000000000000000000000..."
         }
-    ], 
-    "transaction_extensions" : {
+ ],
+ "transaction_extensions" : {
 
-    }, 
-    "signatures" : {
+    },
+ "signatures" : {
 
-    }, 
-    "context_free_data" : {
+    },
+ "context_free_data" : {
 
-    }, 
-    "createdAt" : ISODate("2018-08-22T07:33:12.469+0000")
-}
+    },
+ "createdAt" : ISODate("2018-08-22T07:33:12.469+0000")
+ }
  */
-function getTxTraceByTxid(id) {
-    return fetchUrl(`${httpEndPoint}/txtraces/${id}`);
+function getTxTraceByTxid (id) {
+  return fetchUrl(`${httpEndPoint}/txtraces/${id}`);
 }
 
 /**
  * search block/transaction/account by a query string
  * @param { String } param Account/Block Height/Txhash/Contract account
  * @memberOf history
- * 
+ *
  * @example
  * import {search} from "u3.js/src";
  * const u3 = createU3(config)
  * u3.search(5b7d11b859bd97fab30ba7f5)
  */
-async function search(param) {
-    let rs = await fetchUrl(`${httpEndPoint}/search/${param}`);
-    console.log(rs);
-    if (rs.type === 'account' && rs.data.name) {
-        const { createU3 } = require('./index');
-        const u3 = createU3(U3Config);
+async function search (param) {
+  let rs = await fetchUrl(`${httpEndPoint}/search/${param}`);
+  console.log(rs);
+  if (rs.type === "account" && rs.data.name) {
+    const { createU3 } = require("./index");
+    const u3 = createU3(U3Config);
 
-        let balance = await u3.getCurrencyBalance({
-            code: 'utrio.token',
-            account: param,
-            symbol: defaultConfig.symbol
-        });
+    let balance = await u3.getCurrencyBalance({
+      code: "utrio.token",
+      account: param,
+      symbol: defaultConfig.symbol
+    });
 
-        // get net_weight cpu_weight ram_bytes
-        let accountInfo = await u3.getAccountInfo({
-            account_name: param
-        });
+    // get net_weight cpu_weight ram_bytes
+    let accountInfo = await u3.getAccountInfo({
+      account_name: param
+    });
 
-        rs.data.balance = balance;
-        rs.data.total_resources = accountInfo.total_resources;
-    }
+    rs.data.balance = balance;
+    rs.data.total_resources = accountInfo.total_resources;
+  }
 
-    return rs;
+  return rs;
 }
 
 /**
- * get createaccountbyname 
+ * get createaccountbyname
  * @param {String} name account name
  * @memberOf history
  * @example
@@ -689,15 +693,15 @@ async function search(param) {
     "createdAt" : ISODate("2018-08-22T07:33:32.092+0000")
 }
  */
-function getCreateAccountByName(name) {
-    return fetchUrl(`${httpEndPoint}/getcreateaccount`, { name });
+function getCreateAccountByName (name) {
+  return fetchUrl(`${httpEndPoint}/getcreateaccount`, { name });
 }
 
 /**
  * get all tokens
  * @param {Number} page page numbers
  * @param {Number} pageSize how many records are displayed per page
- * @param {Object} queryParams query parameter for transactions
+ * @param {Object} queryParams query parameter for transactions. Mongodb find({}) query condition
  * @param {Object} sortParams sorting parameter
  * @memberOf history
  * @example
@@ -712,37 +716,30 @@ function getCreateAccountByName(name) {
  *
  * json structure:
  * {
-    "pageNumber": 1,
-    "total": 3,
-    "pageCount": 3,
-    "results": [
-        {
-        "_id": "5be2ccfe44ed468a4c33150c",
-        "account": "ben",
-        "symbol": "BJMZ",
-        "__v": 0,
-        "createdAt": "2018-11-07T11:31:10.065Z",
-        "decimals": 4,
-        "issue_time": "2018-11-07T11:30:57.654Z",
-        "issuer": "ben",
-        "max_supply": "10000000.0000",
-        "supply": "10000000.0000",
-        "updatedAt": "2018-11-08T01:51:10.074Z",
-        "id": "5be2ccfe44ed468a4c33150c",
-        "holders": 2
-        }
-    ]
+      "_id": "5be2ccfe44ed468a4c33150c",
+      "account": "ben",
+      "symbol": "BJMZ",
+      "__v": 0,
+      "createdAt": "2018-11-07T11:31:10.065Z",
+      "decimals": 4,
+      "issue_time": "2018-11-07T11:30:57.654Z",
+      "issuer": "ben",
+      "max_supply": "10000000.0000",
+      "supply": "10000000.0000",
+      "updatedAt": "2018-11-08T01:51:10.074Z",
+      "id": "5be2ccfe44ed468a4c33150c",
+      "holders": 2
    }
  */
-function getAllTokens(page, pageSize, queryParams, sortParams) {
-    let data = {
-        'page': page || 1,
-        'pageSize': pageSize || 10,
-        'queryParams': queryParams || {},
-        'sortParams': sortParams || { _id: -1 }
-    };
+function getAllTokens (page, pageSize, queryParams, sortParams) {
+  let data = {
+    "page": page || 1,
+    "pageSize": pageSize || 10,
+    "queryParams": queryParams || {},
+    "sortParams": sortParams || { _id: -1 }
+  };
 
-    return fetchUrl(`${httpEndPoint}/tokens`, data);
+  return fetchUrl(`${httpEndPoint}/tokens`, data);
 }
 
 /**
@@ -754,7 +751,7 @@ function getAllTokens(page, pageSize, queryParams, sortParams) {
  * import {createU3} from "u3.js/src";
  * const u3 = createU3(config)
  * u3.getTokenBySymbol("ZTPJ","ben")
- * 
+ *
  * json structure:
  * {
     "_id": "5be2ccc244ed468a4c331487",
@@ -771,8 +768,8 @@ function getAllTokens(page, pageSize, queryParams, sortParams) {
     "id": "5be2ccc244ed468a4c331487"
     }
  */
-function getTokenBySymbol(symbol, creator) {
-    return fetchUrl(`${httpEndPoint}/token/${symbol}/${creator}`);
+function getTokenBySymbol (symbol, creator) {
+  return fetchUrl(`${httpEndPoint}/token/${symbol}/${creator}`);
 }
 
 /**
@@ -783,7 +780,7 @@ function getTokenBySymbol(symbol, creator) {
  * import {createU3} from "u3.js/src";
  * const u3 = createU3(config)
  * u3.getBaseInfo()
- * 
+ *
  * json structure:
  * {
     "head_block_num": 1559,
@@ -794,22 +791,22 @@ function getTokenBySymbol(symbol, creator) {
     "contract_num": 3
     }
  */
-function getBaseInfo() {
-    return fetchUrl(`${httpEndPoint}/base`);
+function getBaseInfo () {
+  return fetchUrl(`${httpEndPoint}/base`);
 }
 
 /**
  * get balance by account
- * @param {String} account 
+ * @param {String} account
  * @memberOf history
  * @example
  * import {createU3} from "u3.js/src";
  * const u3 = createU3(config)
  * u3.getBalanceByAccount()
- * 
+ *
  * json structure:
  * [
-    {
+ {
         "_id": "5be2ccfe44ed468a4c331510",
         "holder_account": "ben",
         "token_account": "ben",
@@ -819,11 +816,11 @@ function getBaseInfo() {
         "current_balance": "9999998.0000",
         "updatedAt": "2018-11-08T01:51:10.080Z",
         "id": "5be2ccfe44ed468a4c331510"
-    }
+      }
  * ]
  */
-function getBalanceByAccount(account) {
-    return fetchUrl(`${httpEndPoint}/balance/${account}`);
+function getBalanceByAccount (account) {
+  return fetchUrl(`${httpEndPoint}/balance/${account}`);
 }
 
 /**
@@ -845,33 +842,26 @@ function getBalanceByAccount(account) {
  *
  * json structure:
  * {
-    "pageNumber": 1,
-    "total": 4,
-    "pageCount": 4,
-    "results": [
-        {
-        "_id": "5be2ccfe44ed468a4c331510",
-        "holder_account": "ben",
-        "token_account": "ben",
-        "token_symbol": "BJMZ",
-        "__v": 0,
-        "createdAt": "2018-11-07T11:31:10.070Z",
-        "current_balance": "9999998.0000",
-        "updatedAt": "2018-11-08T01:51:10.080Z",
-        "id": "5be2ccfe44ed468a4c331510"
-        }
-    ]
+      "_id": "5be2ccfe44ed468a4c331510",
+      "holder_account": "ben",
+      "token_account": "ben",
+      "token_symbol": "BJMZ",
+      "__v": 0,
+      "createdAt": "2018-11-07T11:31:10.070Z",
+      "current_balance": "9999998.0000",
+      "updatedAt": "2018-11-08T01:51:10.080Z",
+      "id": "5be2ccfe44ed468a4c331510"
     }
  */
-function getHoldersBySymbol(page, pageSize, queryParams, sortParams) {
-    let data = {
-        'page': page || 1,
-        'pageSize': pageSize || 10,
-        'queryParams': queryParams || {},
-        'sortParams': sortParams || { current_balance: -1 }
-    };
+function getHoldersBySymbol (page, pageSize, queryParams, sortParams) {
+  let data = {
+    "page": page || 1,
+    "pageSize": pageSize || 10,
+    "queryParams": queryParams || {},
+    "sortParams": sortParams || { current_balance: -1 }
+  };
 
-    return fetchUrl(`${httpEndPoint}/holders/by/symbol`, data);
+  return fetchUrl(`${httpEndPoint}/holders/by/symbol`, data);
 }
 
 /**
@@ -893,43 +883,36 @@ function getHoldersBySymbol(page, pageSize, queryParams, sortParams) {
  *
  * json structure:
  * {
-  "pageNumber": 1,
-  "total": 10856,
-  "pageCount": 10856,
-  "results": [
-    {
-        "_id": "5be8fb7144ed468a4c348078",
-        "block_id": "00002a69fd784315971f971571684d01dffd612efb791dabf12dff8b56dc2eb1",
-        "block": {
-            "timestamp": "2018-11-12T04:31:20.000",
-            "proposer": "genesis",
-            "proposerProof": "28bd727f9b9771cda08241fefab6426500e4d99a3083defef26d6860d02230abb2788a8a94aa009c05cee3fa05e82d57953008880de9fb74e31b31970a0c1c03",
-            "version": 0,
-            "previous": "00002a684784f9c27c0c22b749ec396aee458db7d4bb4aae9b2547ca1bfa6d22",
-            "transaction_mroot": "0000000000000000000000000000000000000000000000000000000000000000",
-            "action_mroot": "bfc55c5a4cbf78b7bd5cfb3ab67dde8f3c048d1a95ad85e1e869fb8a5f6d5ad5",
-            "committee_mroot": "0000000000000000000000000000000000000000000000000000000000000000",
-            "header_extensions": [],
-            "signature": "",
-            "block_extensions": []
-        },
-        "block_num": 10857,
-        "createdAt": "2018-11-12T04:02:58.011Z",
-        "irreversible": false,
-        "id": "5be8fb7144ed468a4c348078"
-        }
-    ]
+      "_id": "5be8fb7144ed468a4c348078",
+      "block_id": "00002a69fd784315971f971571684d01dffd612efb791dabf12dff8b56dc2eb1",
+      "block": {
+          "timestamp": "2018-11-12T04:31:20.000",
+          "proposer": "genesis",
+          "proposerProof": "28bd727f9b9771cda08241fefab6426500e4d99a3083defef26d6860d02230abb2788a8a94aa009c05cee3fa05e82d57953008880de9fb74e31b31970a0c1c03",
+          "version": 0,
+          "previous": "00002a684784f9c27c0c22b749ec396aee458db7d4bb4aae9b2547ca1bfa6d22",
+          "transaction_mroot": "0000000000000000000000000000000000000000000000000000000000000000",
+          "action_mroot": "bfc55c5a4cbf78b7bd5cfb3ab67dde8f3c048d1a95ad85e1e869fb8a5f6d5ad5",
+          "committee_mroot": "0000000000000000000000000000000000000000000000000000000000000000",
+          "header_extensions": [],
+          "signature": "",
+          "block_extensions": []
+      },
+      "block_num": 10857,
+      "createdAt": "2018-11-12T04:02:58.011Z",
+      "irreversible": false,
+      "id": "5be8fb7144ed468a4c348078"
     }
  */
-function getAllBlocksHeader(page, pageSize, queryParams, sortParams) {
-    let data = {
-        'page': page || 1,
-        'pageSize': pageSize || 10,
-        'queryParams': queryParams || {},
-        'sortParams': sortParams || { _id: -1 }
-    };
+function getAllBlocksHeader (page, pageSize, queryParams, sortParams) {
+  let data = {
+    "page": page || 1,
+    "pageSize": pageSize || 10,
+    "queryParams": queryParams || {},
+    "sortParams": sortParams || { _id: -1 }
+  };
 
-    return fetchUrl(`${httpEndPoint}/blocksheader`, data);
+  return fetchUrl(`${httpEndPoint}/blocksheader`, data);
 }
 
 /**
@@ -947,22 +930,15 @@ function getAllBlocksHeader(page, pageSize, queryParams, sortParams) {
  *
  * json structure:
  * {
-    "pageNumber": "1",
-    "total": 1,
-    "pageCount": 1,
-    "results": [
-        {
-            "_id": "genesis",
-            "count": 972
-        }
-    ]
+      "_id": "genesis",
+      "count": 972
     }
  */
-function getProposerList(page, pageSize) {
-    let data = {
-        'page': page || 1,
-        'pageSize': pageSize || 10
-    };
+function getProposerList (page, pageSize) {
+  let data = {
+    "page": page || 1,
+    "pageSize": pageSize || 10
+  };
 
-    return fetchUrl(`${httpEndPoint}/proposers`, data);
+  return fetchUrl(`${httpEndPoint}/proposers`, data);
 }

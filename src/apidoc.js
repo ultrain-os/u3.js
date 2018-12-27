@@ -2,32 +2,19 @@
 
 
 /**
-* Return net rate and cpu rate
-* @param {name} account_name Account name to get sourcerate 
-* @memberOf chain
-* @example
-        * import {getSourcerate} from "u3.js/src";
-        * const u3 = createU3(config)
-          * u3.getSourcerate({
-  "account_name": "account"
-})
-          */
-function getSourcerate(){}
-
-/**
 * @param {name} code account which deployed the contract 
 * @param {name} account account to get balance of 
 * @param {optional<string>} symbol symbol to query 
 * @memberOf chain
 * @example
         * import {getCurrencyBalance} from "u3.js/src";
-        * const u3 = createU3(config)
-          * u3.getCurrencyBalance({
+        * const u3 = createU3(config);
+                        * await u3.getCurrencyBalance({
   "code": "account",
   "account": "account",
   "symbol": "UGAS"
-})
-          */
+});
+                        */
 function getCurrencyBalance(){}
 
 /**
@@ -36,18 +23,13 @@ function getCurrencyBalance(){}
 * @memberOf chain
 * @example
         * import {getCurrencyStats} from "u3.js/src";
-        * const u3 = createU3(config)
-          * u3.getCurrencyStats({
+        * const u3 = createU3(config);
+                        * await u3.getCurrencyStats({
   "code": "account",
   "symbol": "UGAS"
-})
-          */
+});
+                        */
 function getCurrencyStats(){}
-
-/**
-* @memberOf chain
-*/
-function getProducerSchedule(){}
 
 /**
 * @param {bool} json Provide true or false 
@@ -56,13 +38,13 @@ function getProducerSchedule(){}
 * @memberOf chain
 * @example
         * import {getScheduledTransactions} from "u3.js/src";
-        * const u3 = createU3(config)
-          * u3.getScheduledTransactions({
+        * const u3 = createU3(config);
+                        * await u3.getScheduledTransactions({
   "json": false,
   "lower_bound": "2a57d0f636625abc9f63656e3b8ada8b8b7a4fdf7a7663e4db27bc88be730b51",
   "limit": "50"
-})
-          */
+});
+                        */
 function getScheduledTransactions(){}
 
 /**
@@ -77,11 +59,11 @@ function getChainInfo(){}
 * @memberOf chain
 * @example
         * import {getBlockInfo} from "u3.js/src";
-        * const u3 = createU3(config)
-          * u3.getBlockInfo({
+        * const u3 = createU3(config);
+                        * await u3.getBlockInfo({
   "block_id": "0000000280155952392ddaa5c4fb6611e74e3c93f61852c50f67f47c9c8b90ba"
-})
-          */
+});
+                        */
 function getBlockInfo(){}
 
 /**
@@ -90,11 +72,11 @@ function getBlockInfo(){}
 * @memberOf chain
 * @example
         * import {getBlockHeaderState} from "u3.js/src";
-        * const u3 = createU3(config)
-          * u3.getBlockHeaderState({
+        * const u3 = createU3(config);
+                        * await u3.getBlockHeaderState({
   "block_id": "0000000280155952392ddaa5c4fb6611e74e3c93f61852c50f67f47c9c8b90ba"
-})
-          */
+});
+                        */
 function getBlockHeaderState(){}
 
 /**
@@ -103,11 +85,11 @@ function getBlockHeaderState(){}
 * @memberOf chain
 * @example
         * import {getAccountInfo} from "u3.js/src";
-        * const u3 = createU3(config)
-          * u3.getAccountInfo({
+        * const u3 = createU3(config);
+                        * await u3.getAccountInfo({
   "account_name": "account"
-})
-          */
+});
+                        */
 function getAccountInfo(){}
 
 /**
@@ -117,11 +99,11 @@ function getAccountInfo(){}
 * @memberOf chain
 * @example
         * import {getContract} from "u3.js/src";
-        * const u3 = createU3(config)
-          * u3.getContract({
+        * const u3 = createU3(config);
+                        * await u3.getContract({
   "account_name": "account"
-})
-          */
+});
+                        */
 function getContract(){}
 
 /**
@@ -129,11 +111,11 @@ function getContract(){}
 * @memberOf chain
 * @example
         * import {getAbi} from "u3.js/src";
-        * const u3 = createU3(config)
-          * u3.getAbi({
+        * const u3 = createU3(config);
+                        * await u3.getAbi({
   "account_name": "account"
-})
-          */
+});
+                        */
 function getAbi(){}
 
 /**
@@ -141,11 +123,11 @@ function getAbi(){}
 * @memberOf chain
 * @example
         * import {getRawCodeAndAbi} from "u3.js/src";
-        * const u3 = createU3(config)
-          * u3.getRawCodeAndAbi({
+        * const u3 = createU3(config);
+                        * await u3.getRawCodeAndAbi({
   "account_name": "account"
-})
-          */
+});
+                        */
 function getRawCodeAndAbi(){}
 
 /**
@@ -163,8 +145,8 @@ function getRawCodeAndAbi(){}
 * @memberOf chain
 * @example
         * import {getTableRecords} from "u3.js/src";
-        * const u3 = createU3(config)
-          * u3.getTableRecords({
+        * const u3 = createU3(config);
+                        * await u3.getTableRecords({
   "json": false,
   "code": "account1",
   "scope": "account2",
@@ -175,8 +157,8 @@ function getRawCodeAndAbi(){}
   "limit": "10",
   "key_type": "i64",
   "index_position": ""
-})
-          */
+});
+                        */
 function getTableRecords(){}
 
 /**
@@ -189,15 +171,15 @@ function getTableRecords(){}
 * @memberOf chain
 * @example
         * import {getTableByScope} from "u3.js/src";
-        * const u3 = createU3(config)
-          * u3.getTableByScope({
+        * const u3 = createU3(config);
+                        * await u3.getTableByScope({
   "code": "account1",
   "table": "table",
   "lower_bound": "0",
   "upper_bound": "-1",
   "limit": "10"
-})
-          */
+});
+                        */
 function getTableByScope(){}
 
 /**
@@ -208,8 +190,8 @@ function getTableByScope(){}
 * @memberOf chain
 * @example
         * import {abiJson2bin} from "u3.js/src";
-        * const u3 = createU3(config)
-          * u3.abiJson2bin({
+        * const u3 = createU3(config);
+                        * await u3.abiJson2bin({
   "code": "account1",
   "action": "account2",
   "args": {
@@ -217,8 +199,8 @@ function getTableByScope(){}
     "to": "initc",
     "quantity": 1000
   }
-})
-          */
+});
+                        */
 function abiJson2bin(){}
 
 /**
@@ -229,13 +211,13 @@ function abiJson2bin(){}
 * @memberOf chain
 * @example
         * import {abiBin2json} from "u3.js/src";
-        * const u3 = createU3(config)
-          * u3.abiBin2json({
+        * const u3 = createU3(config);
+                        * await u3.abiBin2json({
   "code": "account1",
   "action": "account2",
   "binargs": "000000008093dd74000000000094dd74e803000000000000"
-})
-          */
+});
+                        */
 function abiBin2json(){}
 
 /**
@@ -244,8 +226,8 @@ function abiBin2json(){}
 * @memberOf chain
 * @example
         * import {getRequiredKeys} from "u3.js/src";
-        * const u3 = createU3(config)
-          * u3.getRequiredKeys({
+        * const u3 = createU3(config);
+                        * await u3.getRequiredKeys({
   "transaction": {
     "ref_block_num": "100",
     "ref_block_prefix": "137469861",
@@ -279,8 +261,8 @@ function abiBin2json(){}
     "EOS7d9A3uLe6As66jzN8j44TXJUqJSK3bFjjEEqR4oTvNAB3iM9SA",
     "EOS6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV"
   ]
-})
-          */
+});
+                        */
 function getRequiredKeys(){}
 
 /**
@@ -311,12 +293,12 @@ function pushTxs(){}
 * @memberOf chain
 * @example
         * import {registerEvent} from "u3.js/src";
-        * const u3 = createU3(config)
-          * u3.registerEvent({
+        * const u3 = createU3(config);
+                        * await u3.registerEvent({
   "account": "name",
   "post_url": "http://10.10.10.114:3002"
-})
-          */
+});
+                        */
 function registerEvent(){}
 
 /**
@@ -326,12 +308,12 @@ function registerEvent(){}
 * @memberOf chain
 * @example
         * import {unregisterEvent} from "u3.js/src";
-        * const u3 = createU3(config)
-          * u3.unregisterEvent({
+        * const u3 = createU3(config);
+                        * await u3.unregisterEvent({
   "account": "name",
   "post_url": "http://10.10.10.114:3002"
-})
-          */
+});
+                        */
 function unregisterEvent(){}
 
 /**
@@ -340,3 +322,66 @@ function unregisterEvent(){}
 * @memberOf chain
 */
 function getProducerInfo(){}
+
+/**
+* create an account
+* @param {account_name} creator account of creator 
+* @param {account_name} name account to be created 
+* @param {string} owner owner public key to be bind 
+* @param {string} active active public key to be bind 
+* @param {uint32?} updateable whether the account can be updated 
+* @memberOf chain
+* @example
+        * import {createUser} from "u3.js/src";
+        * const u3 = createU3(config);
+                        * await u3.createUser({
+  "creator": "ben",
+  "name": "abcdefg12345",
+  "owner": "UTR1uHKWW5tvmw6eQpbv92cVmkpDFhQ9q7xsee5Da2X2pVeYUNy4D",
+  "active": "UTR1uHKWW5tvmw6eQpbv92cVmkpDFhQ9q7xsee5Da2X2pVeYUNy4D",
+  "updateable": 1
+});
+                        */
+function createUser(){}
+
+/**
+* deploy a contract to ultrain
+* @param {string} contract contract file name 
+* @param {account_name} account contract owner account 
+* @memberOf chain
+* @example
+        * import {deploy} from "u3.js/src";
+        * const u3 = createU3(config);
+                        * await u3.deploy({
+  "contract": "MyContract",
+  "account": "ben"
+});
+                        */
+function deploy(){}
+
+/**
+* sign an unsigned transaction offline and in a separate
+* @param {object} unsigned_transaction an unsigned transaction returned when an action called by a offline u3 instance 
+* @param {string} privateKeyOrMnemonic private key or mnemonic 
+* @param {string} chainId chainId 
+* @memberOf chain
+* @example
+        * import {sign} from "u3.js/src";
+        * const u3_offline = createU3({ sign: false, broadcast: false });
+                        * const unsigned_transaction = await u3_offline.anyAction('args', {keyProvider});
+                        * let signature = await u3_offline.sign(unsigned_transaction, '5KWW3MQbqibqmC...','baf8bb9d3636...');
+                        */
+function sign(){}
+
+/**
+* Return resource detail of an account
+* @param {account_name} name account to query 
+* @memberOf chain
+* @example
+        * import {queryResource} from "u3.js/src";
+        * const u3 = createU3(config);
+                        * await u3.queryResource({
+  "name": "du3kwow2bkay"
+});
+                        */
+function queryResource(){}

@@ -143,7 +143,7 @@ describe("u3.js", () => {
         token.issue(account, "10000000.0000 " + customCurrency, "issue");
       });
 
-      U3Utils.test.wait(3000);
+      U3Utils.test.wait(10000);
 
       //query currency stats
       await u3.getCurrencyStats({
@@ -366,8 +366,8 @@ describe("u3.js", () => {
   // 11 resource
   describe("resource", () => {
 
-    // 11.1 buy resource
-    it("lease", async () => {
+    // 11.1 buy resource and query resource
+    it("lease_and_query", async () => {
       const config = { keyProvider: users["ben"].private_key };
       const u3 = createU3(config);
       const name = randomName();
@@ -382,22 +382,14 @@ describe("u3.js", () => {
 
       const c = await u3.contract("ultrainio");
       await c.resourcelease("ben", name, 1, 10); // 1 slot for 10 days
-    });
+      console.log(name);
 
-    // 11.2 query resource
-    it("query", async () => {
-      const config = { keyProvider: users["ben"].private_key };
-      const u3 = createU3(config);
-      const balance = await u3.getTableRecords({
-        code: "ultrainio",//smart contract name
-        scope: "bob",//account name
-        table: "reslease",//table name
-        json: true
-      });
+      U3Utils.test.wait(1000);
+
+      const balance = await u3.queryResource(name)
       console.log(balance);
     });
   });
-
 
   // 12 event
   describe("subscribe", () => {

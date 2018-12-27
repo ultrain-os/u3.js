@@ -372,8 +372,8 @@ function UDecimalPad(num, precision) {
 }
 
 /**
- * @function
  * Ensures proper trailing zeros then removes decimal place
+ * @function
  * @memberOf utils
  * @param value
  * @param precision
