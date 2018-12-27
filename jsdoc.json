@@ -10,24 +10,32 @@
       "README.md",
       "src/apidoc.js",
       "src/history.js",
-      "src/utils/api_common.js",
       "src/format.js",
+
+      "node_modules/u3-utils/src/ecc/api_common.js",
+
       "src/module/src/account.js",
       "src/module/src/action.js",
       "src/module/src/asset.js",
+      "src/module/src/big_number.js",
+
       "src/module/src/block.js",
       "src/module/src/contract.js",
       "src/module/src/crypto.js",
-      "src/module/src/dbmanager.js",
       "src/module/src/events.js",
+
       "src/module/src/log.js",
+      "src/module/src/permission-level.js",
+
       "src/module/src/return.js",
       "src/module/src/safemath.js",
       "src/module/src/time.js",
+
+      "src/module/src/tx.js",
       "src/module/src/utils.js"
     ],
     "includePattern": ".js$",
-    "excludePattern": "(node_modules/|docs)"
+    "excludePattern": "(docs)"
   },
   "plugins": [
     "plugins/markdown"

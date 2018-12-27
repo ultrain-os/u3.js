@@ -103,15 +103,6 @@
       }
     }
   },
-  "get_producer_schedule": {
-    "brief": "",
-    "params": {},
-    "results": {
-      "vector": "active",
-      "vector": "pending",
-      "vector": "proposed"
-    }
-  },
   "get_scheduled_transactions": {
     "brief": "",
     "params": {
@@ -592,6 +583,138 @@
       "from_location": "uint64",
       "location": "uint64",
       "quit_before_num": "uint32"
+    }
+  },
+  "create_user": {
+    "brief": "create an account",
+    "params": {
+      "creator": {
+        "type": "account_name",
+        "description": "account of creator"
+      },
+      "name": {
+        "type": "account_name",
+        "description": "account to be created"
+      },
+      "owner": {
+        "type": "string",
+        "description": "owner public key to be bind"
+      },
+      "active": {
+        "type": "string",
+        "description": "active public key to be bind"
+      },
+      "updateable": {
+        "type": "uint32?",
+        "description": "whether the account can be updated"
+      }
+    },
+    "example": {
+      "func_parameter": {
+        "creator": "ben",
+        "name": "abcdefg12345",
+        "owner": "UTR1uHKWW5tvmw6eQpbv92cVmkpDFhQ9q7xsee5Da2X2pVeYUNy4D",
+        "active": "UTR1uHKWW5tvmw6eQpbv92cVmkpDFhQ9q7xsee5Da2X2pVeYUNy4D",
+        "updateable": 1
+      }
+    }
+  },
+  "deploy": {
+    "brief": "deploy a contract to ultrain",
+    "params": {
+      "contract": {
+        "type": "string",
+        "description": "contract file path"
+      },
+      "account": {
+        "type": "account_name",
+        "description": "contract owner account"
+      }
+    },
+    "example": {
+      "func_parameter": {
+        "contract": "/Users/benyasin/demo/contracts/token/token",
+        "account": "ben"
+      }
+    }
+  },
+  "sign": {
+    "brief": "sign an unsigned transaction offline and in a separate",
+    "params": {
+      "unsigned_transaction": {
+        "type": "object",
+        "description": "an unsigned transaction returned when an action called by a offline u3 instance"
+      },
+      "privateKeyOrMnemonic": {
+        "type": "string",
+        "description": "private key or mnemonic"
+      },
+      "chainId": {
+        "type": "string",
+        "description": "chainId"
+      }
+    },
+    "results": {
+      "signature": "string"
+    },
+    "example": {
+      "func_parameter": {
+        "unsigned_transaction": {
+          "transaction_id": "79a571b56ad6ff39c517caf13532ff6d981518a8c3c8aa24f296c6ec7d12beb2",
+          "broadcast": false,
+          "transaction": {
+            "compression": "none",
+            "transaction": {
+              "expiration": "2018-12-27T03:45:32",
+              "ref_block_num": 4021,
+              "ref_block_prefix": 2905809499,
+              "net_usage_words": 0,
+              "max_cpu_usage_ms": 0,
+              "delay_sec": 0,
+              "actions": [
+                {
+                  "account": "bob",
+                  "name": "transfer",
+                  "authorization": [
+                    {
+                      "actor": "bob",
+                      "permission": "active"
+                    }
+                  ],
+                  "data": "0000000000000e3d0000000000855c341027000000000000044b524f5700000000"
+                }
+              ]
+            },
+            "signatures": []
+          }
+        },
+        "privateKeyOrMnemonic": "5KWW4MQbqibqmCihzTpYAck3EMntdiurjaXirHHhaTe7V5x1JQ5",
+        "chainId": "baf8bb9d3636379e3cd6779d2a72e693494670f1040d45154bb61dc8852c8971"
+      }
+    }
+  },
+  "query_resource": {
+    "brief": "Return resource detail of an account",
+    "params": {
+      "name": {
+        "type": "account_name",
+        "description": "account to query"
+      }
+    },
+    "results": {
+      "rows": {
+        "type": "vector",
+        "doc": "One row per item, either encoded as hex String or JSON object"
+      },
+      "more": {
+        "type": "bool",
+        "doc": "True if last element in data is not the end and sizeof data() < limit"
+      }
+    },
+    "example": {
+      "func_parameter": {
+        "name": "du3kwow2bkay"
+      }
     }
   }
 }

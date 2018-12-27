@@ -10,7 +10,7 @@ module.exports = {
     error: console.error,
     debug: console.log
   },
-  chainId:'0eaaff4003d4e08a541332c62827c0ac5d96766c712316afe7ade6f99b8d70fe',
+  chainId:'baf8bb9d3636379e3cd6779d2a72e693494670f1040d45154bb61dc8852c8971',
   binaryen: require('binaryen'),
   symbol: 'UGAS'
 };

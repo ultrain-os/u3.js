@@ -9,6 +9,9 @@ if [ -e $DWallet ]; then
 fi
 # create default wallet
 WalletPwd=$($clultrain wallet create | tail -n 1 | sed 's/\"//g')
+
+$clultrain wallet import --private-key '5KJLpYUt5VuNUKWpAVNzmvbB95WtLP7GhdLQxAotU2cC8BcoPGT'
+
 if test -z $WalletPwd
 then
    echo "Wallet password is empty, quit."
@@ -18,7 +21,7 @@ fi
 ContractPath=/contracts
 
 # The system and user account
-sys_acc_arr=(utrio.code ultrio.bpay utrio.msig utrio.names utrio.ram utrio.ramfee utrio.saving utrio.stake utrio.token utrio.vpay exchange)
+sys_acc_arr=(utrio.code ultrio.bpay utrio.msig utrio.names utrio.ram utrio.ramfee utrio.saving utrio.stake utrio.token utrio.vpay utrio.fee  exchange)
 
 # Create the system accounts
 for account in ${sys_acc_arr[@]};
@@ -55,14 +58,6 @@ UTR8Mz4buVKZiUXVxAhr4Bm4qM3V7bPJLWwqQ1eN4BxxcFJ3LosY9
 UTR7zsqi7QUAjTAdyynd6DVe8uv4K8gCTRHnAoMN9w9CA1xLCTDVv
 )
 
-# Deploy the system contract
-$clultrain set contract utrio.token $ContractPath/ultrainio.token/ -p utrio.token
-$clultrain push action utrio.token create '[ "ultrainio", "8000000000.0000 UGAS"]' -p utrio.token
-$clultrain push action utrio.token issue '[ "ultrainio", "1000000000.0000 UGAS"]' -p ultrainio
-$clultrain set contract ultrainio $ContractPath/ultrainio.system/ -p ultrainio -x 3600
-
-sleep 10
-
 for pri in ${test_acc_pri_arr[@]};
 do
 	$clultrain wallet import --private-key $pri
@@ -71,6 +66,22 @@ done
 accounts_l=${#test_acc_arr[*]}
 for ((i=0;i<$accounts_l;i++))
 do
-	$clultrain system newaccount ultrainio ${test_acc_arr[$i]} -u ${test_acc_pub_arr[$i]} ${test_acc_pub_arr[$i]} --stake-net "1000.0000 UGAS" --stake-cpu "1000.0000 UGAS" --buy-ram-kbytes 1024
-	$clultrain transfer -f ultrainio ${test_acc_arr[$i]} "1000.0000 UGAS"
+    echo ${test_acc_arr[$i]}
+	$clultrain create account ultrainio ${test_acc_arr[$i]} ${test_acc_pub_arr[$i]} ${test_acc_pub_arr[$i]}
+done
+
+sleep 15
+
+# Deploy the system contract
+$clultrain set contract utrio.token $ContractPath/ultrainio.token/ -p utrio.token
+$clultrain push action utrio.token create '[ "ultrainio", "8000000000.0000 UGAS"]' -p utrio.token
+$clultrain push action utrio.token issue '[ "ultrainio", "1000000000.0000 UGAS"]' -p ultrainio
+$clultrain set contract ultrainio $ContractPath/ultrainio.system/ -p ultrainio -x 3600
+
+sleep 15
+
+for ((i=0;i<$accounts_l;i++))
+do
+    echo ${test_acc_arr[$i]}
+    $clultrain transfer -f ultrainio ${test_acc_arr[$i]} "1000.0000 UGAS"
 done

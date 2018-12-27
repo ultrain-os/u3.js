@@ -7,6 +7,8 @@ Javascript封装的负责与链交互的通用库
 
 浏览器（ES6）或 NodeJS
 
+如果你想集成u3.js到react native环境中，有一个可行的方法,借助rn-nodeify实现，参考示例[U3RNDemo](https://github.com/benyasin/U3RNDemo)
+
 ## 使用方法
 
 一、如果是在浏览器中使用u3，请参考以下用法：
@@ -147,11 +149,7 @@ await u3.transaction(tr => { tr.anyAction() }, {keyProvider})
      name: name,
      owner: pubkey,
      active: pubkey,
-     updateable: 1,//账号是否可以更新（更新合约）
-     ram_bytes: 6666,
-     stake_net_quantity: '1.0000 UGAS',
-     stake_cpu_quantity: '1.0000 UGAS',
-     transfer: 0
+     updateable: 1,//可选，账号是否可以更新（更新合约）
   };
   await u3.createUser(params);
    
@@ -190,6 +188,28 @@ await c.transfer({from: 'bob', to: 'ben', quantity: '1.3000 UGAS', memo: ''})
      let signedTransaction = Object.assign({}, unsigned_transaction.transaction, { signatures: [signature] });
      let processedTransaction = await u3_online.pushTx(signedTransaction);
   }
+
+```
+  
+## 资源
+
+调用合约只会消耗合约Owner的资源，所以如果你想部署一个合约，请先购买一些资源. 
+
+* resourcelease(payer,receiver,slot,days) 
+
+```
+const u3 = createU3(config);
+const c = await u3.contract('ultrainio')
+
+await c.resourcelease('ben', 'bob', 1, 10);// 1 slot for 10 days
+
+```
+
+通过以下方法查询资源详情.
+
+```
+const resource = await u3.queryResource('abcdefg12345');
+console.log(resource)
 
 ```
     

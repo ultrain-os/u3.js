@@ -236,7 +236,42 @@ router.post('/token/:symbol/:creator', async function (req, res, next) {
   next();
 });
 
+/**
+ * get all blocks
+ */
+router.post('/blocksheader', async function (req, res, next) {
+  let page = req.body.page || 1;
+  let pageSize = req.body.pageSize || 10;
+  let queryParams = req.body.queryParams || {};
+  let sortParams = req.body.sortParams || { _id: -1 };
+
+  let result = await History.getAllBlocksHeader(page, pageSize, queryParams, sortParams);
+  res.json(result);
+  next();
+});
+
+router.post('/proposers', async function (req, res, next) {
+  let page = req.body.page || 1;
+  let pageSize = req.body.pageSize || 10;
+  let queryParams = req.body.queryParams || {};
+  let sortParams = req.body.sortParams || {
+    total_produce_block: - 1
+  };
+
+  let result = await History.getProposerList(page, pageSize, queryParams, sortParams);
+  res.json(result);
+  next();
+});
+
+router.post('/award', async function (req, res, next) {
+  let result = await History.getAward();
+  res.json(result);
+  next();
+});
+
 router.get('/', function (req, res, next) {
+
+
   res.send("test");
 });
 

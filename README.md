@@ -9,6 +9,8 @@ A general library wrapped in javascript for interacting with Ultrain.
 
 Browser（ES6）or NodeJS
 
+If you want to integrate u3.js into a react native environment, there is a workable way to do this with rn-nodeify, see the example [U3RNDemo](https://github.com/benyasin/U3RNDemo)
+
 ## Usage
 
         <!DOCTYPE html>
@@ -146,11 +148,7 @@ await u3.transaction(tr => { tr.anyAction() }, {keyProvider})
      name: name,
      owner: pubkey,
      active: pubkey,
-     updateable: 1,//whether the account can be updated( update contract)
-     ram_bytes: 6666,
-     stake_net_quantity: '1.0000 UGAS',
-     stake_cpu_quantity: '1.0000 UGAS',
-     transfer: 0
+     updateable: 1,//[optional]whether the account can be updated( update contract)
   };
   await u3.createUser(params);
    
@@ -200,6 +198,30 @@ And then push the signedTransaction to the ultrain-chain.
   }
 
 ```
+
+## Resource
+
+Calling a contract will only spend the contract owner's resource. So if your want to deploy
+a contract, buy some resource before. 
+
+* resourcelease(payer,receiver,slot,days) 
+
+```
+const u3 = createU3(config);
+const c = await u3.contract('ultrainio')
+
+await c.resourcelease('ben', 'bob', 1, 10);// 1 slot for 10 days
+
+```
+
+And querying resource detail through the method below.
+
+```
+const resource = await u3.queryResource('abcdefg12345');
+console.log(resource)
+
+```
+
     
 ## Contracts
 

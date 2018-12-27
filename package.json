@@ -1,7 +1,7 @@
 {
   "name": "u3.js",
-  "version": "0.2.8",
-  "description": "Node wrapper for Ultrain API",
+  "version": "0.2.16",
+  "description": "A general library wrapped in javascript for interacting with Ultrain",
   "main": "index.js",
   "directories": {
     "test": "test"
@@ -20,7 +20,8 @@
     "url": "https://github.com/ultrain-os/u3.js/issues"
   },
   "keywords": [
-    "web-service"
+    "sdk",
+    "javascript"
   ],
   "author": "ben.yasin80@gmail.com",
   "contributors": [],
@@ -30,7 +31,7 @@
   "dependencies": {
     "axios": "^0.18.0",
     "babel-polyfill": "^6.26.0",
-    "u3-utils": "^0.0.2"
+    "u3-utils": "^0.0.4"
   },
   "devDependencies": {
     "@types/node": "^8.0.3",
