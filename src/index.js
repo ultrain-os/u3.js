@@ -193,7 +193,7 @@ const createU3 = (config = {}) => {
 
 /**
  * deploy contract
- * @param contract name of contract，eg. utrio.UGAStem
+ * @param contract path of contract，eg. utrio.UGAStem
  * @param account name of owner account，eg. ultrainio
  * @returns {Promise<*>}
  */

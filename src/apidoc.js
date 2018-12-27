@@ -346,14 +346,14 @@ function createUser(){}
 
 /**
 * deploy a contract to ultrain
-* @param {string} contract contract file name 
+* @param {string} contract contract file path 
 * @param {account_name} account contract owner account 
 * @memberOf chain
 * @example
         * import {deploy} from "u3.js/src";
         * const u3 = createU3(config);
                         * await u3.deploy({
-  "contract": "MyContract",
+  "contract": "/Users/benyasin/demo/contracts/token/token",
   "account": "ben"
 });
                         */

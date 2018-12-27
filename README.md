@@ -217,12 +217,7 @@ await c.resourcelease('ben', 'bob', 1, 10);// 1 slot for 10 days
 And querying resource detail through the method below.
 
 ```
-const resource = await u3.getTableRecords({
-    code: "ultrainio",//smart contract name
-    scope: "bob",//account name
-    table: "reslease",//table name
-    json: true
-});
+const resource = await u3.queryResource('abcdefg12345');
 console.log(resource)
 
 ```

@@ -567,7 +567,7 @@
     "params": {
       "contract": {
         "type": "string",
-        "description": "contract file name"
+        "description": "contract file path"
       },
       "account": {
         "type": "account_name",
@@ -576,7 +576,7 @@
     },
     "example": {
       "func_parameter": {
-        "contract": "MyContract",
+        "contract": "/Users/benyasin/demo/contracts/token/token",
         "account": "ben"
       }
     }
