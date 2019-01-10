@@ -1,4 +1,11 @@
 {
+  "get_subchain_resource": {
+    "brief": "Return subchain's resource",
+    "params": {
+      "chain_name": "account_name"
+    },
+    "results": "asset[]"
+  },
   "get_user_bulletin": {
     "brief": "Return committee list",
     "params": {
