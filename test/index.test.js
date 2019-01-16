@@ -110,7 +110,7 @@ describe("u3.js", () => {
       const config = { keyProvider: user.private_key };
       const u3 = createU3(config);
       const trs = await u3.deploy(path.resolve(__dirname, "../contracts/token/token"), user.account);
-      assert.ok(!isEmpty(trs.transaction_id));
+      assert.equal(trs.transaction.transaction.actions.length, 2);
     });
 
     //4.2 get contract detail (wast,abi)
