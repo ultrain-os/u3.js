@@ -170,7 +170,8 @@
       "account": "account_name",
       "name": "action_name",
       "authorization": "permission_level[]",
-      "data": "bytes"
+      "data": "bytes",
+      "ability":"uint8"
     }
   },
   "action_def": {
@@ -178,7 +179,8 @@
     "fields": {
       "name": "action_name",
       "type": "type_name",
-      "ricardian_contract": "string"
+      "ricardian_contract": "string",
+      "ability":"string"
     }
   },
   "block_header": {

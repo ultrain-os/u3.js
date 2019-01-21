@@ -1,6 +1,6 @@
-module.exports = {
-  httpEndpoint: 'http://127.0.0.1:8888',
-  httpEndpoint_history: 'http://127.0.0.1:3000',
+var devNet = {
+  httpEndpoint: 'http://172.16.10.3:8899',
+  httpEndpoint_history: 'http://172.16.10.3:8899',
   broadcast: true,
   debug: false,
   verbose: false,
@@ -10,7 +10,26 @@ module.exports = {
     error: console.error,
     debug: console.log
   },
-  chainId:'baf8bb9d3636379e3cd6779d2a72e693494670f1040d45154bb61dc8852c8971',
+  chainId:'3c253932643e8d6c59871c26e64abcea3c02be9a6fe76c3dd6fd5097134ff533',
   binaryen: require('binaryen'),
   symbol: 'UGAS'
 };
+
+var testNet = {
+  httpEndpoint: 'http://benyasin.s1.natapp.cc',
+  httpEndpoint_history: 'http://history.natapp1.cc',
+  broadcast: true,
+  debug: false,
+  verbose: false,
+  sign: true,
+  logger: {
+    log: console.log,
+    error: console.error,
+    debug: console.log
+  },
+  chainId:'262ba309c51d91e8c13a7b4bb1b8d25906135317b09805f61fcdf4e044cd71e8',
+  binaryen: require('binaryen'),
+  symbol: 'UGAS'
+};
+
+module.exports = devNet;
