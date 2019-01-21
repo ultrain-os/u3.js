@@ -10,7 +10,7 @@ var config = {
     error: console.error,
     debug: console.log
   },
-  chainId:'3c253932643e8d6c59871c26e64abcea3c02be9a6fe76c3dd6fd5097134ff533',
+  chainId:'baf8bb9d3636379e3cd6779d2a72e693494670f1040d45154bb61dc8852c8971',
   binaryen: require('binaryen'),
   symbol: 'UGAS'
 };
