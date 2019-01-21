@@ -19,7 +19,7 @@ const readKeysFromFiles = () => {
   return keys;
 };
 
-function randomString (length = 8, charset = "abcdefghijklmnopqrstuvwxyz") {
+function randomString(length = 8, charset = "abcdefghijklmnopqrstuvwxyz") {
   let text = "";
   for (let i = 0; i < length; i++)
     text += charset.charAt(Math.floor(Math.random() * charset.length));
@@ -59,7 +59,7 @@ describe("u3.js", () => {
   describe("offline", () => {
 
     // 3.1 generate key pair by seed
-    it("generateKeyPairBySeed", function() {
+    it("generateKeyPairBySeed", function () {
       let seed = randomName();
       let keys = ecc.generateKeyPairBySeed(seed);
       assert.equal(ecc.isValidPrivate(keys.private_key), true);
@@ -67,7 +67,7 @@ describe("u3.js", () => {
     });
 
     // 3.2 re-generate key pair by the same seed
-    it("generateKeyPairBySeed(same keys with same seed)", function() {
+    it("generateKeyPairBySeed(same keys with same seed)", function () {
       let seed = randomName();
       let keys1 = ecc.generateKeyPairBySeed(seed);
       let keys2 = ecc.generateKeyPairBySeed(seed);
@@ -76,7 +76,7 @@ describe("u3.js", () => {
     });
 
     // 3.3 generate key pair with mnemonic
-    it("generateKeyPairWithMnemonic", function() {
+    it("generateKeyPairWithMnemonic", function () {
       let result = ecc.generateKeyPairWithMnemonic();
       console.log(result);
       assert.ok((isString(result.mnemonic) && !isEmpty(result.mnemonic)), true);
@@ -85,7 +85,7 @@ describe("u3.js", () => {
     });
 
     // 3.4 re-generate key pair by the same mnemonic
-    it("generateKeyPairByMnemonic(same mnemonic same key pair)", function() {
+    it("generateKeyPairByMnemonic(same mnemonic same key pair)", function () {
       let result = ecc.generateKeyPairWithMnemonic();
       let result2 = ecc.generateKeyPairByMnemonic(result.mnemonic);
       assert.equal(result.public_key, result2.public_key);
@@ -93,7 +93,7 @@ describe("u3.js", () => {
     });
 
     // 3.5 generate publicKey by privateKey
-    it("generatePublicKeyByPrivateKey", function() {
+    it("generatePublicKeyByPrivateKey", function () {
       let result = ecc.generateKeyPairWithMnemonic();
       let publicKey = ecc.privateToPublic(result.private_key);
       assert.equal(publicKey, result.public_key);
@@ -357,7 +357,7 @@ describe("u3.js", () => {
     });
 
     // query currency's status
-    it("get currency stats", async function() {
+    it("get currency stats", async function () {
       const u3 = createU3({ keyProvider });
       await u3.getCurrencyStats("utrio.token", defaultConfig.symbol, (error, result) => {
         console.log(error, result);
@@ -419,7 +419,7 @@ describe("u3.js", () => {
     it("unsubscribe", async () => {
       // just do some biz in the callback
       // the data is the message that ultrain will push to you
-      listener(function(data) {
+      listener(function (data) {
         console.log(data);
       });
 
