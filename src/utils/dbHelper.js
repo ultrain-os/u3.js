@@ -1,6 +1,6 @@
 const async = require('async');
 const axios = require('axios');
-const defaultConfig = require('../config');
+const debug = require('debug')('u3:http');
 
 /**
  *
@@ -48,16 +48,10 @@ var pageQuery = function(page, pageSize, Model, queryParams, sortParams) {
  */
 var fetchUrl = function(url, data) {
   data = data || {};
-  var logger = defaultConfig.logger;
-
-  if (logger.log) {
-    logger.log('\napi >', 'post', '\t', url, '\n', data);
-  }
+  debug('\napi >', 'post', '\t', url, '\n', data);
   return axios.post(url, data)
     .then(function(response) {
-      if (logger.log) {
-        logger.log('\napi <', 'response', '\t', url, '\n', response.data, '\n\n');
-      }
+      debug('\napi <', 'response', '\t', url, '\n', response.data, '\n\n');
       return response.data;
     })
     .catch(function(error) {

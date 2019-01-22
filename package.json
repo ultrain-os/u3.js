@@ -31,6 +31,7 @@
   "dependencies": {
     "axios": "^0.18.0",
     "babel-polyfill": "^6.26.0",
+    "debug": "^4.1.1",
     "u3-utils": "^0.0.4"
   },
   "devDependencies": {
