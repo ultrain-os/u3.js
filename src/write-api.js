@@ -403,9 +403,6 @@ function WriteApi (Network, network, config, Transaction) {
       rawTx = Object.assign({}, rawTx);
 
       rawTx.actions = arg.actions;
-      rawTx.actions.forEach((element) => {
-        element.ability = 0;
-      });
 
       // Resolve shorthand, queue requests
       let txObject = Transaction.fromObject(rawTx);

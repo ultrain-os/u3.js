@@ -170,8 +170,7 @@
       "account": "account_name",
       "name": "action_name",
       "authorization": "permission_level[]",
-      "data": "bytes",
-      "ability":"uint8"
+      "data": "bytes"
     }
   },
   "action_def": {
