@@ -1,4 +1,4 @@
-<img src="https://user-images.githubusercontent.com/1866848/46092827-535d5880-c1e8-11e8-8a65-f5d9d74df96e.png" width="250" align=center />
+<img src="https://user-images.githubusercontent.com/1866848/53072742-06747880-3521-11e9-9fec-81ac10da89ba.png" width="250" align=center />
 
 Javascript封装的负责与链交互的通用库
 
