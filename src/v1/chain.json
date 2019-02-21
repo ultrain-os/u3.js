@@ -52,24 +52,6 @@
     },
     "results": "asset[]"
   },
-  "get_sourcerate": {
-    "brief": "Return net rate and cpu rate",
-    "params": {
-      "account_name": {
-        "type": "name",
-        "description": "Account name to get sourcerate"
-      }
-    },
-    "results": {
-      "net_rate": "uint64",
-      "cpu_rate": "uint64"
-    },
-    "example": {
-      "func_parameter": {
-        "account_name": "account"
-      }
-    }
-  },
   "get_currency_balance": {
     "params": {
       "code": {
@@ -489,18 +471,12 @@
           "ref_block_num": "100",
           "ref_block_prefix": "137469861",
           "expiration": "2017-09-25T06:28:49",
-          "scope": [
-            "initb",
-            "initc"
-          ],
+          "scope": ["initb", "initc"],
           "actions": [
             {
               "code": "currency",
               "type": "transfer",
-              "recipients": [
-                "initb",
-                "initc"
-              ],
+              "recipients": ["initb", "initc"],
               "authorization": [
                 {
                   "account": "initb",
