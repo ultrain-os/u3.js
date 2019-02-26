@@ -187,7 +187,6 @@ const createU3 = (config = {}) => {
   if (!config.signProvider) {
     config.signProvider = defaultSignProvider(u3, config);
   }
-
   return u3;
 };
 
@@ -201,17 +200,19 @@ async function deploy (contract, account) {
   try {
     const wasm = fs.readFileSync(path.resolve(process.cwd(), `${contract}.wasm`));
     const abi = fs.readFileSync(path.resolve(process.cwd(), `${contract}.abi`));
-
-    const tr = await this.transaction('ultrainio', c => {
-      c.setcode(account, 0, 0, wasm);
-      c.setabi(account, JSON.parse(abi));
+    // If the ability of action wasn't set up, setting up the ability.
+    let abi_obj = JSON.parse(abi);
+    abi_obj.actions.forEach((action) => {
+      if (action.ability == undefined) action.ability = "normal";
+    })
+    const sysContrName = "ultrainio";
+    return await this.transaction(sysContrName, contr => {
+      contr.setcode(account, 0, 0, wasm);
+      contr.setabi(account, abi_obj);
     });
-    return tr;
   } catch (e) {
     console.log(e);
-    return {
-      "error_msg": e
-    };
+    return {"error_msg": e};
   }
 }
 

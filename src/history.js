@@ -6,7 +6,7 @@ let httpEndPoint = require("./config").httpEndpoint_history;
 const { fetchUrl } = require("../src/utils/dbHelper");
 let U3Config = {};
 
-module.exports = function(config) {
+module.exports = function (config) {
   U3Config = config;
   httpEndPoint = config.httpEndpoint_history;
   return {
@@ -30,7 +30,8 @@ module.exports = function(config) {
     getBalanceByAccount,
     getHoldersBySymbol,
     getAllBlocksHeader,
-    getProposerList
+    getProposerList,
+    getReward
   };
 };
 
@@ -80,7 +81,7 @@ module.exports = function(config) {
     "irreversible" : false
 }
  */
-function getAllBlocks (page, pageSize, queryParams, sortParams) {
+function getAllBlocks(page, pageSize, queryParams, sortParams) {
   let data = {
     "page": page || 1,
     "pageSize": pageSize || 10,
@@ -127,7 +128,7 @@ function getAllBlocks (page, pageSize, queryParams, sortParams) {
     "updatedAt" : ISODate("2018-10-26T10:11:49.162+0000")
 }
  */
-function getContracts (page, pageSize, queryParams, sortParams) {
+function getContracts(page, pageSize, queryParams, sortParams) {
   let data = {
     "page": page || 1,
     "pageSize": pageSize || 10,
@@ -168,7 +169,7 @@ function getContracts (page, pageSize, queryParams, sortParams) {
     "updatedAt" : ISODate("2018-10-26T10:11:49.162+0000")
 }
  */
-function getContractByName (name) {
+function getContractByName(name) {
   return fetchUrl(`${httpEndPoint}/contracts/${name}`);
 }
 
@@ -198,37 +199,14 @@ function getContractByName (name) {
     "createdAt" : ISODate("2018-08-22T07:33:32.092+0000")
 }
  */
-async function getAllAccounts (page, pageSize, queryParams, sortParams) {
+async function getAllAccounts(page, pageSize, queryParams, sortParams) {
   let data = {
-    "page": page || 1,
-    "pageSize": pageSize || 10,
-    "queryParams": queryParams || {},
-    "sortParams": sortParams || { _id: -1 }
+    'page': page || 1,
+    'pageSize': pageSize || 10,
+    'queryParams': queryParams || {},
+    'sortParams': sortParams || { _id: -1 }
   };
-  let response = await fetchUrl(`${httpEndPoint}/accounts`, data);
-  if (response.error_msg) {
-    return response.error_msg;
-  }
-
-  let pageInfo = Object.assign({}, response);
-  let accounts = pageInfo.results;
-  const { createU3 } = require("./index");
-  const u3 = createU3(U3Config);
-
-  for (let i in accounts) {
-    // find tx count by name
-    // let count = await Txs.getTxCountByName(accounts[i].name);
-    // accounts[i].tx_count = count;
-    let balance = await u3.getCurrencyBalance({
-      code: "utrio.token",
-      account: accounts[i].name,
-      symbol: defaultConfig.symbol
-    });
-
-    accounts[i].balance = balance[0];
-  }
-
-  return pageInfo;
+  return fetchUrl(`${httpEndPoint}/accounts`, data);
 }
 
 /**
@@ -291,7 +269,7 @@ async function getAllAccounts (page, pageSize, queryParams, sortParams) {
     "createdAt" : ISODate("2018-08-22T07:33:12.469+0000")
 }
  */
-function getAllTxs (page, pageSize, queryParams, sortParams) {
+function getAllTxs(page, pageSize, queryParams, sortParams) {
   let data = {
     "page": page || 1,
     "pageSize": pageSize || 10,
@@ -354,7 +332,7 @@ function getAllTxs (page, pageSize, queryParams, sortParams) {
     "createdAt" : ISODate("2018-08-22T07:33:12.469+0000")
 }
  */
-function getTxByTxId (id) {
+function getTxByTxId(id) {
   return fetchUrl(`${httpEndPoint}/txs/${id}`);
 }
 
@@ -386,7 +364,7 @@ function getTxByTxId (id) {
     "hex_data" : "80e3474500000000000000000100000000000..."
 }
  */
-function getActionsByTxid (id) {
+function getActionsByTxid(id) {
   return fetchUrl(`${httpEndPoint}/actions/tx/${id}`);
 }
 
@@ -424,7 +402,7 @@ function getActionsByTxid (id) {
     "hex_data" : "80e34745000000000000000001000000000000..."
 }
  */
-function getActionsByAccount (page, pageSize, queryParams, sortParams) {
+function getActionsByAccount(page, pageSize, queryParams, sortParams) {
   let data = {
     "page": page || 1,
     "pageSize": pageSize || 10,
@@ -494,7 +472,7 @@ function getActionsByAccount (page, pageSize, queryParams, sortParams) {
     "createdAt" : ISODate("2018-08-22T07:33:12.469+0000")
 }
  */
-function getTxsByBlockNum (page, pageSize, queryParams, sortParams) {
+function getTxsByBlockNum(page, pageSize, queryParams, sortParams) {
   let data = {
     "page": page || 1,
     "pageSize": pageSize || 10,
@@ -523,7 +501,7 @@ function getTxsByBlockNum (page, pageSize, queryParams, sortParams) {
     "createdAt" : ISODate("2018-08-22T07:33:32.092+0000")
 }
  */
-function getExistAccount (name) {
+function getExistAccount(name) {
   return fetchUrl(`${httpEndPoint}/accounts/${name}`);
 }
 
@@ -573,7 +551,7 @@ function getExistAccount (name) {
     "irreversible" : false
 }
  */
-function getBlocksByContract (block_num, account, contract, contract_method) {
+function getBlocksByContract(block_num, account, contract, contract_method) {
   const data = {
     block_num,
     account,
@@ -636,7 +614,7 @@ function getBlocksByContract (block_num, account, contract, contract_method) {
  "createdAt" : ISODate("2018-08-22T07:33:12.469+0000")
  }
  */
-function getTxTraceByTxid (id) {
+function getTxTraceByTxid(id) {
   return fetchUrl(`${httpEndPoint}/txtraces/${id}`);
 }
 
@@ -650,7 +628,7 @@ function getTxTraceByTxid (id) {
  * const u3 = createU3(config)
  * u3.search(5b7d11b859bd97fab30ba7f5)
  */
-async function search (param) {
+async function search(param) {
   let rs = await fetchUrl(`${httpEndPoint}/search/${param}`);
   console.log(rs);
   if (rs.type === "account" && rs.data.name) {
@@ -693,7 +671,7 @@ async function search (param) {
     "createdAt" : ISODate("2018-08-22T07:33:32.092+0000")
 }
  */
-function getCreateAccountByName (name) {
+function getCreateAccountByName(name) {
   return fetchUrl(`${httpEndPoint}/getcreateaccount`, { name });
 }
 
@@ -731,7 +709,7 @@ function getCreateAccountByName (name) {
       "holders": 2
    }
  */
-function getAllTokens (page, pageSize, queryParams, sortParams) {
+function getAllTokens(page, pageSize, queryParams, sortParams) {
   let data = {
     "page": page || 1,
     "pageSize": pageSize || 10,
@@ -768,7 +746,7 @@ function getAllTokens (page, pageSize, queryParams, sortParams) {
     "id": "5be2ccc244ed468a4c331487"
     }
  */
-function getTokenBySymbol (symbol, creator) {
+function getTokenBySymbol(symbol, creator) {
   return fetchUrl(`${httpEndPoint}/token/${symbol}/${creator}`);
 }
 
@@ -791,7 +769,7 @@ function getTokenBySymbol (symbol, creator) {
     "contract_num": 3
     }
  */
-function getBaseInfo () {
+function getBaseInfo() {
   return fetchUrl(`${httpEndPoint}/base`);
 }
 
@@ -819,7 +797,7 @@ function getBaseInfo () {
       }
  * ]
  */
-function getBalanceByAccount (account) {
+function getBalanceByAccount(account) {
   return fetchUrl(`${httpEndPoint}/balance/${account}`);
 }
 
@@ -853,7 +831,7 @@ function getBalanceByAccount (account) {
       "id": "5be2ccfe44ed468a4c331510"
     }
  */
-function getHoldersBySymbol (page, pageSize, queryParams, sortParams) {
+function getHoldersBySymbol(page, pageSize, queryParams, sortParams) {
   let data = {
     "page": page || 1,
     "pageSize": pageSize || 10,
@@ -904,7 +882,7 @@ function getHoldersBySymbol (page, pageSize, queryParams, sortParams) {
       "id": "5be8fb7144ed468a4c348078"
     }
  */
-function getAllBlocksHeader (page, pageSize, queryParams, sortParams) {
+function getAllBlocksHeader(page, pageSize, queryParams, sortParams) {
   let data = {
     "page": page || 1,
     "pageSize": pageSize || 10,
@@ -919,13 +897,17 @@ function getAllBlocksHeader (page, pageSize, queryParams, sortParams) {
  * get proposer list
  * @param {Number} page page numbers
  * @param {Number} pageSize how many records are displayed per page
+ * @param {Object} queryParams query parameter for transactions
+ * @param {Object} sortParams sorting parameter
  * @memberOf history
  * @example
  * import {createU3} from "u3.js/src";
  * const u3 = createU3(config)
  * u3.getProposerList({
     'page': 1,
-    'pageSize': 10
+    'pageSize': 10,
+    'queryParams': {},
+    'sortParams': {}
  * })
  *
  * json structure:
@@ -934,11 +916,31 @@ function getAllBlocksHeader (page, pageSize, queryParams, sortParams) {
       "count": 972
     }
  */
-function getProposerList (page, pageSize) {
+function getProposerList(page, pageSize, queryParams, sortParams) {
   let data = {
-    "page": page || 1,
-    "pageSize": pageSize || 10
+    'page': page || 1,
+    'pageSize': pageSize || 10,
+    'queryParams': queryParams || {},
+    'sortParams': sortParams || { total_produce_block: -1 }
   };
 
   return fetchUrl(`${httpEndPoint}/proposers`, data);
+}
+
+/**
+ * get block reward
+ * @memberOf history
+ * @example
+ * import {createU3} from "u3.js/src";
+ * const u3 = createU3(config);
+ * await u3.getReward({));
+ * 
+ * * json structure:
+ *  {
+        current: 100,
+        total: 1000
+    }
+ */
+function getReward() {
+  return fetchUrl(`${httpEndPoint}/award`);
 }
