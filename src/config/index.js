@@ -11,6 +11,5 @@ module.exports = {
     debug: console.log
   },
   chainId:'baf8bb9d3636379e3cd6779d2a72e693494670f1040d45154bb61dc8852c8971',
-  binaryen: require('binaryen'),
   symbol: 'UGAS'
 };

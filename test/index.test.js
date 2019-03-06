@@ -1,4 +1,3 @@
-/* eslint-env mocha */
 const assert = require("assert");
 const isEmpty = require("lodash.isempty");
 const isString = require("lodash.isstring");
@@ -19,7 +18,7 @@ const readKeysFromFiles = () => {
   return keys;
 };
 
-function randomString (length = 8, charset = "abcdefghijklmnopqrstuvwxyz") {
+function randomString(length = 8, charset = "abcdefghijklmnopqrstuvwxyz") {
   let text = "";
   for (let i = 0; i < length; i++)
     text += charset.charAt(Math.floor(Math.random() * charset.length));
@@ -42,23 +41,14 @@ describe("u3.js", () => {
   describe("chainInfo", () => {
     it("chainInfo", async () => {
       const u3 = createU3();
-      await u3.getChainInfo((err, info) => {
-        if (err) throw err;
-      });
+      await u3.getChainInfo();
     });
   });
 
-  // 2. version info
-  describe("version", () => {
-    it("exposes a version number", () => {
-      console.info(version);
-    });
-  });
-
-  // 3. ecc utils
+  // 2. ecc utils
   describe("offline", () => {
 
-    // 3.1 generate key pair by seed
+    // 2.1 generate key pair by seed
     it("generateKeyPairBySeed", function() {
       let seed = randomName();
       let keys = ecc.generateKeyPairBySeed(seed);
@@ -66,7 +56,7 @@ describe("u3.js", () => {
       assert.equal(ecc.isValidPublic(keys.public_key), true);
     });
 
-    // 3.2 re-generate key pair by the same seed
+    // 2.2 re-generate key pair by the same seed
     it("generateKeyPairBySeed(same keys with same seed)", function() {
       let seed = randomName();
       let keys1 = ecc.generateKeyPairBySeed(seed);
@@ -75,7 +65,7 @@ describe("u3.js", () => {
       assert.equal(keys1.private_key, keys2.private_key);
     });
 
-    // 3.3 generate key pair with mnemonic
+    // 2.3 generate key pair with mnemonic
     it("generateKeyPairWithMnemonic", function() {
       let result = ecc.generateKeyPairWithMnemonic();
       console.log(result);
@@ -84,7 +74,7 @@ describe("u3.js", () => {
       assert.equal(ecc.isValidPublic(result.public_key), true);
     });
 
-    // 3.4 re-generate key pair by the same mnemonic
+    // 2.4 re-generate key pair by the same mnemonic
     it("generateKeyPairByMnemonic(same mnemonic same key pair)", function() {
       let result = ecc.generateKeyPairWithMnemonic();
       let result2 = ecc.generateKeyPairByMnemonic(result.mnemonic);
@@ -92,7 +82,7 @@ describe("u3.js", () => {
       assert.equal(result.private_key, result2.private_key);
     });
 
-    // 3.5 generate publicKey by privateKey
+    // 2.5 generate publicKey by privateKey
     it("generatePublicKeyByPrivateKey", function() {
       let result = ecc.generateKeyPairWithMnemonic();
       let publicKey = ecc.privateToPublic(result.private_key);
@@ -101,18 +91,18 @@ describe("u3.js", () => {
 
   });
 
-  // 4. contract relative
+  // 3. contract relative
   describe("contracts", () => {
 
-    // 4.1 deploy contract
-    it("deploy contract", async function() {
+    // 3.1 deploy contract
+    it("deploy contract", async () => {
       const config = { keyProvider: users["bob"].private_key };
       const u3 = createU3(config);
       const trs = await u3.deploy(path.resolve(__dirname, "../contracts/token/token"), "bob");
       assert.equal(trs.transaction.transaction.actions.length, 2);
     });
 
-    //4.2 get contract detail (wast,abi)
+    //3.2 get contract detail (wast,abi)
     it("getContract", async () => {
       const config = { keyProvider: users["bob"].private_key };
       const u3 = createU3(config);
@@ -121,7 +111,7 @@ describe("u3.js", () => {
       assert.equal(contract.abi.version, "ultraio:1.0:UIP06");
     });
 
-    //4.3 get abi
+    //3.3 get abi
     it("getAbi", async () => {
       const config = { keyProvider: users["bob"].private_key };
       const u3 = createU3(config);
@@ -130,7 +120,7 @@ describe("u3.js", () => {
       assert.ok(!isEmpty(abi));
     });
 
-    // 4.4 create custom token (uip06)
+    // 3.4 create custom token (uip06)
     it("create custom token", async () => {
       const config = { keyProvider: users["bob"].private_key };
       const u3 = createU3(config);
@@ -181,7 +171,7 @@ describe("u3.js", () => {
 
     });
 
-    // 4.5 query token holder and token symbol when issued
+    // 3.5 query token holder and token symbol when issued
     it("get table by scope", async () => {
       const config = { keyProvider: users["bob"].private_key };
       const u3 = createU3(config);
@@ -210,7 +200,7 @@ describe("u3.js", () => {
 
   });
 
-  // 5. transfer UGAS
+  // 4. transfer UGAS
   describe("transfer", () => {
     it("transfer UGAS", async () => {
       const keyProvider = () => {
@@ -218,14 +208,14 @@ describe("u3.js", () => {
       };
       const u3 = createU3();
       const tr = await u3.contract("utrio.token");
-      return tr.transfer("ben", "bob", "1.0000 " + defaultConfig.symbol, "", { keyProvider }).then(tr => {
+      await tr.transfer("ben", "bob", "1.0000 " + defaultConfig.symbol, "", { keyProvider }).then(tr => {
         assert.equal(tr.transaction.signatures.length, 1);
         assert.equal(typeof tr.transaction.signatures[0], "string");
       });
     });
   });
 
-  // 6. blocks (10s per block)
+  // 5. blocks (10s per block)
   describe("blocks", () => {
     it("transaction confirm", async () => {
       const keyProvider = () => {
@@ -248,7 +238,7 @@ describe("u3.js", () => {
     });
   });
 
-  // 7. sign (sign separately)
+  // 6. sign (sign separately)
   describe("sign", () => {
     it("offline sign", async () => {
       const config = { keyProvider: users["bob"].private_key };
@@ -276,7 +266,7 @@ describe("u3.js", () => {
     });
   });
 
-  // 8. create user
+  // 7. create user
   describe("createUser", () => {
     it("createUser", async () => {
       const u3 = createU3({ keyProvider: users["ben"].private_key });
@@ -299,12 +289,12 @@ describe("u3.js", () => {
     });
   });
 
-  // 9. transactions
+  // 8. transactions
   describe("transactions", () => {
 
     const keyProvider = () => users["bob"].private_key;
 
-    // 9.1 get accounts array by public key
+    // 8.1 get accounts array by public key
     it("getKeyAccounts", async () => {
       const u3 = createU3({ keyProvider });
       await u3.getKeyAccounts(users["ben"].public_key).then(accounts => {
@@ -312,7 +302,7 @@ describe("u3.js", () => {
       });
     });
 
-    // 9.2 get accountsInfo by name
+    // 8.2 get accountsInfo by name
     it("getAccountInfo", async () => {
       const u3 = createU3();
       await u3.getAccountInfo({
@@ -324,12 +314,12 @@ describe("u3.js", () => {
 
   });
 
-  // 10 database query
+  // 9. database query
   describe("database", () => {
 
     const keyProvider = () => users["bob"].private_key;
 
-    //Returns an object containing rows from the specified table.
+    //9.1 Returns an object containing rows from the specified table.
     //before using it, you should know table and scope defined in the contract
     it("get table records", async () => {
       const u3 = createU3({ keyProvider });
@@ -342,7 +332,7 @@ describe("u3.js", () => {
       assert.ok(balance !== "");
     });
 
-    // query account's current balance
+    //9.2 query account's current balance
     it("get currency balance", async () => {
       const u3 = createU3();
       await u3.getCurrencyBalance({
@@ -354,7 +344,7 @@ describe("u3.js", () => {
       });
     });
 
-    // query currency's status
+    //9.3 query currency's status
     it("get currency stats", async function() {
       const u3 = createU3({ keyProvider });
       await u3.getCurrencyStats("utrio.token", defaultConfig.symbol, (error, result) => {
@@ -363,10 +353,10 @@ describe("u3.js", () => {
     });
   });
 
-  // 11 resource
+  // 10 resource
   describe("resource", () => {
 
-    // 11.1 buy resource and query resource
+    // 10.1 buy resource and query resource
     it("lease_and_query", async () => {
       const config = { keyProvider: users["ben"].private_key };
       const u3 = createU3(config);
@@ -386,18 +376,18 @@ describe("u3.js", () => {
 
       U3Utils.test.wait(1000);
 
-      const balance = await u3.queryResource(name)
+      const balance = await u3.queryResource(name);
       console.log(balance);
     });
   });
 
-  // 12 event
+  // 11 event
   describe("subscribe", () => {
 
     //make sure '192.168.1.5' is your local IP
     //and 'http://192.168.1.5:3002' is an accessible service form docker
 
-    // 12.1 subscribe event
+    // 11.1 subscribe event
     it("subscribe", async () => {
       const config = { keyProvider: users["ben"].private_key };
       const u3 = createU3(config);
@@ -405,7 +395,7 @@ describe("u3.js", () => {
       console.log(sub);
     });
 
-    // 12.2 unsubscribe event
+    // 11.2 unsubscribe event
     it("unsubscribe", async () => {
       const config = { keyProvider: users["ben"].private_key };
       const u3 = createU3(config);
@@ -413,7 +403,7 @@ describe("u3.js", () => {
       console.log(unSub);
     });
 
-    // 12.3 event listener
+    // 11.3 event listener
     it("unsubscribe", async () => {
       // just do some biz in the callback
       // the data is the message that ultrain will push to you

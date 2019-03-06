@@ -119,7 +119,9 @@ const defaultSignProvider = (u3, config) => async function({
 
       // const pubkeys = missingKeys.map(key => ecc.PublicKey(key).toStringLegacy())
       keyProvider({ pubkeys: missingKeys })
-        .forEach(pvt => { pvts.push(pvt); });
+        .forEach(pvt => {
+          pvts.push(pvt);
+        });
     }
 
     const sigs = [];
@@ -197,12 +199,12 @@ const createU3 = (config = {}) => {
  * @param account name of owner account，eg. ultrainio
  * @returns {Promise<*>}
  */
-async function deploy (contract, account) {
+async function deploy(contract, account) {
   try {
     const wasm = fs.readFileSync(path.resolve(process.cwd(), `${contract}.wasm`));
     const abi = fs.readFileSync(path.resolve(process.cwd(), `${contract}.abi`));
 
-    const tr = await this.transaction('ultrainio', c => {
+    const tr = await this.transaction("ultrainio", c => {
       c.setcode(account, 0, 0, wasm);
       c.setabi(account, JSON.parse(abi));
     });
@@ -228,7 +230,7 @@ async function deploy (contract, account) {
   }
  * @returns {Promise<*>}
  */
-async function createUser (params) {
+async function createUser(params) {
   let defaults = {
     updateable: 1//default is updateable
   };
@@ -251,7 +253,7 @@ async function createUser (params) {
  * @param name  account who want to query resource
  * @returns {Promise<*>}
  */
-async function queryResource (name) {
+async function queryResource(name) {
   return this.getTableRecords({
     code: "ultrainio",
     scope: name,
@@ -267,7 +269,7 @@ async function queryResource (name) {
  * @param chainId
  * @returns {Promise<*>}
  */
-async function sign (unsigned_transaction, privateKeyOrMnemonic, chainId = "cf057bbfb72640471fd910bcb67639c22df9f92470936cddc1ade0e2f2e7dc4f") {
+async function sign(unsigned_transaction, privateKeyOrMnemonic, chainId = "cf057bbfb72640471fd910bcb67639c22df9f92470936cddc1ade0e2f2e7dc4f") {
   assert(unsigned_transaction, "unsigned transaction required");
   assert(privateKeyOrMnemonic, "privateKeyOrMnemonic required");
 
@@ -294,7 +296,7 @@ async function sign (unsigned_transaction, privateKeyOrMnemonic, chainId = "cf05
  in that it applies only to the root object and does not limit access
  to properties under a given object.
  */
-function safeConfig (config) {
+function safeConfig(config) {
   // access control is shallow references only
   const readOnly = new Set(["httpEndpoint", "abiCache"]);
   const readWrite = new Set(["verbose", "debug", "broadcast", "logger", "sign"]);
@@ -329,7 +331,7 @@ function safeConfig (config) {
  * @returns {*}
  * @private
  */
-function _mergeWriteFunctions (config, api, structs) {
+function _mergeWriteFunctions(config, api, structs) {
   assert(config, "network instance required");
   const { network } = config;
 
@@ -352,7 +354,7 @@ function _mergeWriteFunctions (config, api, structs) {
  * @param msg
  * @private
  */
-function _throwOnDuplicate (o1, o2, msg) {
+function _throwOnDuplicate(o1, o2, msg) {
   for (const key in o1) {
     if (o2[key]) {
       throw new TypeError(msg + ": " + key);
@@ -366,19 +368,15 @@ function _throwOnDuplicate (o1, o2, msg) {
  * @param chainId
  * @private
  */
-function _checkChainId (api, chainId) {
-
-  api.getChainInfo({}).then(info => {
-    if (info.chain_id !== chainId) {
-      console.warn(
-        "WARN: chainId mismatch, signatures will not match transaction authority. " +
-        `expected ${chainId} !== actual ${info.chain_id}`
-      );
-    }
-  }).catch(error => {
-    console.error(error);
-  });
-}
+_checkChainId = async (api, chainId) => {
+  let info = await api.getChainInfo();
+  if (info.chain_id !== chainId) {
+    console.warn(
+      "WARN: chainId mismatch, signatures will not match transaction authority. " +
+      `expected ${chainId} !== actual ${info.chain_id}`
+    );
+  }
+};
 
 module.exports = {
   createU3,

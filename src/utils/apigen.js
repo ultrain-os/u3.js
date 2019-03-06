@@ -58,11 +58,6 @@ function fetchMethod (methodName, url, definition, config) {
       args[_key2] = arguments[_key2]
     }
 
-    if (args.length === 0) {
-      console.log(usage(methodName, definition))
-      return
-    }
-
     var optionsFormatter = function optionsFormatter (option) {
       if (typeof option === 'boolean') {
         return {broadcast: option}
@@ -128,40 +123,4 @@ function fetchMethod (methodName, url, definition, config) {
 
     return returnPromise
   }
-}
-
-function usage (methodName, definition) {
-  var usage = ''
-  var out = function out (str) {
-    usage += str + '\n'
-  }
-
-  out('USAGE')
-  out(methodName + ' - ' + definition.brief)
-
-  out('\nPARAMETERS')
-  if (definition.params) {
-    out(JSON.stringify(definition.params, null, 2))
-  } else {
-    out('none')
-  }
-
-  out('\nRETURNS')
-  if (definition.results) {
-    out('' + JSON.stringify(definition.results, null, 2))
-  } else {
-    out('no data')
-  }
-
-  out('\nERRORS')
-  if (definition.errors) {
-    for (var error in definition.errors) {
-      var errorDesc = definition.errors[error]
-      out('' + error + (errorDesc ? ' - ' + errorDesc : ''))
-    }
-  } else {
-    out('nothing special')
-  }
-
-  return usage
 }
