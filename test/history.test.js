@@ -2,7 +2,7 @@
 const assert = require('assert');
 const { U3 } = require('../index');
 const u3Instance = U3.createU3({
-  httpEndpoint_history: 'http://127.0.0.1:3001'
+  httpEndpointHistory: 'http://127.0.0.1:3001'
 });
 
 describe('history', async () => {

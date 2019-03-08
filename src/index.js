@@ -1,11 +1,3 @@
-try {
-  require("babel-polyfill");
-} catch (e) {
-  if (e.message.indexOf("only one instance of babel-polyfill is allowed") === -1) {
-    console.error(e);
-  }
-}
-
 const fs = require("fs");
 const path = require("path");
 const configDefaults = require("./config");

@@ -23,7 +23,7 @@ If you want to integrate u3.js into a react native environment, there is a worka
             
                   let u3 = U3.createU3({
                     httpEndpoint: 'http://127.0.0.1:8888',
-                    httpEndpoint_history: 'http://127.0.0.1:3000',
+                    httpEndpointHistory: 'http://127.0.0.1:3000',
                     broadcast: true,
                     debug: false,
                     sign: true,
@@ -58,7 +58,7 @@ If you want to integrate u3.js into a react native environment, there is a worka
 const { createU3 } = require('u3.js/src');
 let config = {
   httpEndpoint: 'http://127.0.0.1:8888',
-  httpEndpoint_history: 'http://127.0.0.1:3000',
+  httpEndpointHistory: 'http://127.0.0.1:3000',
   chainId: '0eaaff4003d4e08a541332c62827c0ac5d96766c712316afe7ade6f99b8d70fe',
   keyProvider: ['PrivateKeys...'],
   broadcast: true,
@@ -93,7 +93,7 @@ Running u3 locally requires relying on docker.
 #### Global configuration
 
 * <b>httpEndpoint</b> string - http or https location of a ultrain providing a chain API. When using u3.js from a browser remember to configure the same origin policy in nodultrain or proxy server. For testing, nodultrain configuration access-control-allow-origin = * could be used.
-* <b>httpEndpoint_history</b> string - http or https location of a ultrain providing a chain history API. When using u3.js from a browser remember to configure the same origin policy in nodultrain or proxy server. .
+* <b>httpEndpointHistory</b> string - http or https location of a ultrain providing a chain history API. When using u3.js from a browser remember to configure the same origin policy in nodultrain or proxy server. .
 * <b>chainId</b> Unique ID for the blockchain you're connecting to. This is required for valid transaction signing. The chainId is provided via the get_chain_info API call.
 * <b>keyProvider</b> [array<string>|string|function] - Provides private keys used to sign transactions. If multiple private keys are found, the API get_required_keys is called to discover which signing keys to use. If a function is provided, this function is called for each transaction.
 If a keyProvider is not provided here, you should provided on a per-action or per-transaction basis in Options.
