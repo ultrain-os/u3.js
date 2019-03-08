@@ -1,6 +1,6 @@
 module.exports = {
-  httpEndpoint: 'http://benyasin.s1.natapp.cc',
-  httpEndpointHistory: 'http://history.natapp1.cc',
+  httpEndpoint: "http://127.0.0.1:8888",
+  httpEndpoint_history: "http://127.0.0.1:3000",
   broadcast: true,
   debug: false,
   verbose: false,
@@ -10,6 +10,6 @@ module.exports = {
     error: console.error,
     debug: console.log
   },
-  chainId: '262ba309c51d91e8c13a7b4bb1b8d25906135317b09805f61fcdf4e044cd71e8',
-  keyProvider: '5J3XwXBV9T9ikNEMq4hFFDTGGxh9VABM9xVU5zTnnXRrpwavAiZ',
+  chainId: "baf8bb9d3636379e3cd6779d2a72e693494670f1040d45154bb61dc8852c8971",
+  symbol: "UGAS"
 };
