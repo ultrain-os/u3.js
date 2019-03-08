@@ -2,13 +2,13 @@
 
 
 const defaultConfig = require("../src/config");
-let httpEndPoint = require("./config").httpEndpoint_history;
+let httpEndPoint = require("./config").httpEndpointHistory;
 const { fetchUrl } = require("../src/utils/dbHelper");
 let U3Config = {};
 
 module.exports = function(config) {
   U3Config = config;
-  httpEndPoint = config.httpEndpoint_history;
+  httpEndPoint = config.httpEndpointHistory;
   return {
     getAllBlocks,
     getContracts,

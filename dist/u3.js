@@ -279,7 +279,7 @@ AssetCache.pending = function () {
 
 module.exports = {
   httpEndpoint: 'http://127.0.0.1:8888',
-  httpEndpoint_history: 'http://127.0.0.1:3000',
+  httpEndpointHistory: 'http://127.0.0.1:3000',
   broadcast: true,
   debug: false,
   verbose: false,
@@ -1135,7 +1135,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 /** @namespace history*/
 
 var defaultConfig = require("../src/config");
-var httpEndPoint = require("./config").httpEndpoint_history;
+var httpEndPoint = require("./config").httpEndpointHistory;
 
 var _require = require("../src/utils/dbHelper"),
     fetchUrl = _require.fetchUrl;
@@ -1144,7 +1144,7 @@ var U3Config = {};
 
 module.exports = function (config) {
   U3Config = config;
-  httpEndPoint = config.httpEndpoint_history;
+  httpEndPoint = config.httpEndpointHistory;
   return {
     getAllBlocks: getAllBlocks,
     getContracts: getContracts,
@@ -67201,7 +67201,7 @@ module.exports={
 },{}],604:[function(require,module,exports){
 module.exports = {
   httpEndpoint: 'http://127.0.0.1:8888',
-  httpEndpoint_history: 'http://127.0.0.1:3000',
+  httpEndpointHistory: 'http://127.0.0.1:3000',
   broadcast: true,
   debug: false,
   verbose: false,

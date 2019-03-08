@@ -23,7 +23,7 @@ Javascript封装的负责与链交互的通用库
             
                   let u3 = U3.createU3({
                     httpEndpoint: 'http://127.0.0.1:8888',
-                    httpEndpoint_history: 'http://127.0.0.1:3000',
+                    httpEndpointHistory: 'http://127.0.0.1:3000',
                     broadcast: true,
                     debug: false,
                     sign: true,
@@ -59,7 +59,7 @@ Javascript封装的负责与链交互的通用库
 const { createU3 } = require('u3.js/src');
 let config = {
   httpEndpoint: 'http://127.0.0.1:8888',
-  httpEndpoint_history: 'http://127.0.0.1:3000',
+  httpEndpointHistory: 'http://127.0.0.1:3000',
   chainId: '0eaaff4003d4e08a541332c62827c0ac5d96766c712316afe7ade6f99b8d70fe',
   keyProvider: ['PrivateKeys...'],
   broadcast: true,
@@ -94,7 +94,7 @@ u3.getChainInfo((err, info) => {
 #### 全局配置
 
 * <b>httpEndpoint</b> string - 链实时API的http或https地址.如果是在浏览器环境中使用u3，请注意配置相同的域名.
-* <b>httpEndpoint_history</b> string - 链历史API的http或https地址.如果是在浏览器环境中使用u3，请注意配置相同的域名.
+* <b>httpEndpointHistory</b> string - 链历史API的http或https地址.如果是在浏览器环境中使用u3，请注意配置相同的域名.
 * <b>chainId</b> 链唯一的ID. 链ID可以通过 [httpEndpoint]/v1/chain/get_chain_info获得.
 * <b>keyProvider</b> [array<string>|string|function] - 提供私钥用来签名交易. 提供用于签名事务的私钥。
 如果提供了多个私钥，不能确定使用哪个私钥，可以使用调用get_required_keysAPI 获取要使用签名的密钥. 如果是函数，那么每一个交易都将会使用该函数.
