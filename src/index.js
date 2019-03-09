@@ -189,9 +189,10 @@ const createU3 = (config = {}) => {
  * deploy contract
  * @param contract path of contract，eg. utrio.UGAStem
  * @param account name of owner account，eg. ultrainio
+ * @param options eg:{keyProvider: 'xxx...'}
  * @returns {Promise<*>}
  */
-async function deploy(contract, account) {
+async function deploy(contract, account, options) {
   try {
     const wasm = fs.readFileSync(path.resolve(process.cwd(), `${contract}.wasm`));
     const abi = fs.readFileSync(path.resolve(process.cwd(), `${contract}.abi`));
@@ -199,7 +200,7 @@ async function deploy(contract, account) {
     const tr = await this.transaction("ultrainio", c => {
       c.setcode(account, 0, 0, wasm);
       c.setabi(account, JSON.parse(abi));
-    });
+    }, options);
     return tr;
   } catch (e) {
     console.log(e);
@@ -212,7 +213,9 @@ async function deploy(contract, account) {
 /**
  * create a new user account by chain, and buy some ram, net, cpu
  * @param params
- * eg format:
+ * @param options: eg:{keyProvider: 'xxx...'}
+ *
+ * params format:
  * {
     creator: "ultrainio",
     name: "test123",
@@ -222,7 +225,7 @@ async function deploy(contract, account) {
   }
  * @returns {Promise<*>}
  */
-async function createUser(params) {
+async function createUser(params, options) {
   let defaults = {
     updateable: 1//default is updateable
   };
@@ -237,7 +240,7 @@ async function createUser(params) {
       active: data.active,
       updateable: data.updateable
     });
-  });
+  }, options);
 }
 
 /**
