@@ -1,16 +1,13 @@
 const assert = require("assert");
-const {ecc} = require("u3-utils/src");
+const { ecc } = require("u3-utils/src");
 const Fcbuffer = require("fcbuffer");
 const createHash = require("create-hash");
 const processArgs = require("./utils/process-args");
-//const Structs = require("./structs");
 const AssetCache = require("./asset-cache");
-
-module.exports = writeApiGen;
 
 const { sign } = ecc;
 
-function writeApiGen (Network, network, structs, config, schemaDef) {
+function writeApiGen(Network, network, structs, config, schemaDef) {
   if (typeof config.chainId !== "string") {
     throw new TypeError("config.chainId is required");
   }
@@ -40,24 +37,28 @@ function writeApiGen (Network, network, structs, config, schemaDef) {
     merge[actionName] = writeApi.genMethod(type, definition, merge.transaction, schema.action.account);
   }
 
-  merge.contract = (...args) => {
+  merge.contract = async (...args) => {
     const { params, options, returnPromise, callback } =
       processArgs(args, ["account"], "contract", optionsFormatter);
 
     const { account } = params;
 
-    // sends transactions via its own transaction function
-    writeApi.genContractActions(account)
-      .then(r => {callback(null, r);})
-      .catch(r => {callback(r);});
+    //sends transactions via its own transaction function
+    return new Promise((resolve, reject) => {
+      writeApi.genContractActions(account).then(res => {
+        resolve(res);
+      }).catch(err => {
+        console.log(err);
+        reject(err);
+      });
+    });
 
-    return returnPromise;
   };
 
   return merge;
 }
 
-function WriteApi (Network, network, config, Transaction) {
+function WriteApi(Network, network, config, Transaction) {
 
   const genTransaction = (structs, merge) => async function(...args) {
     let contracts, options, callback;
@@ -116,7 +117,9 @@ function WriteApi (Network, network, config, Transaction) {
 
       return Promise.all(contractPromises).then(actions => {
         const merges = {};
-        actions.forEach((m, i) => {merges[contracts[i]] = m;});
+        actions.forEach((m, i) => {
+          merges[contracts[i]] = m;
+        });
         const param = isContractArray ? merges : merges[contracts[0]];
         // collect and invoke api calls
         return trMessageCollector(arg, options, param);
@@ -134,7 +137,7 @@ function WriteApi (Network, network, config, Transaction) {
     throw new Error("first transaction argument unrecognized", arg);
   };
 
-  function genContractActions (account, transaction = null) {
+  function genContractActions(account, transaction = null) {
     return config.abiCache.abiAsync(account).then(cache => {
       assert(Array.isArray(cache.abi.actions) && cache.abi.actions.length, "No actions");
 
@@ -153,8 +156,9 @@ function WriteApi (Network, network, config, Transaction) {
     });
   }
 
-  function genMethod (type, definition, transactionArg, account = "utrio.token", name = type) {
+  function genMethod(type, definition, transactionArg, account = "utrio.token", name = type) {
     return function(...args) {
+
       if (args.length === 0) {
         return;
       }
@@ -228,7 +232,7 @@ function WriteApi (Network, network, config, Transaction) {
 
       // multi-action transaction support
       if (!optionOverrides.messageOnly) {
-        transactionArg(tr, options, callback);
+        return transactionArg(tr, options, callback);
       } else {
         callback(null, tr);
       }
@@ -237,7 +241,7 @@ function WriteApi (Network, network, config, Transaction) {
     };
   }
 
-  function trMessageCollector (trCallback, options = {}, merges) {
+  function trMessageCollector(trCallback, options = {}, merges) {
     assert.equal("function", typeof trCallback, "trCallback");
     assert.equal("object", typeof options, "options");
     assert.equal("object", typeof merges, "merges");
@@ -295,7 +299,7 @@ function WriteApi (Network, network, config, Transaction) {
     }
 
     return Promise.resolve(promiseCollector).then(() =>
-      Promise.all(messageList).then(resolvedMessageList => {
+      Promise.all(messageList).then(async resolvedMessageList => {
         const actions = [];
         for (let m of resolvedMessageList) {
           const { actions: [action] } = m;
@@ -303,59 +307,59 @@ function WriteApi (Network, network, config, Transaction) {
         }
         const trObject = {};
         trObject.actions = actions;
-        return transaction(trObject, options);
+        return await transaction(trObject, options);
       })
     );
   }
 
   async function transaction(arg, options, callback) {
-    const defaultExpiration = config.expireInSeconds ? config.expireInSeconds : 60
-    const optionDefault = {expireInSeconds: defaultExpiration, broadcast: true, sign: true}
-    options = Object.assign({}/*clone*/, optionDefault, options)
+    const defaultExpiration = config.expireInSeconds ? config.expireInSeconds : 60;
+    const optionDefault = { expireInSeconds: defaultExpiration, broadcast: true, sign: true };
+    options = Object.assign({}/*clone*/, optionDefault, options);
 
-    let returnPromise
-    if(typeof callback !== 'function') {
+    let returnPromise;
+    if (typeof callback !== "function") {
       returnPromise = new Promise((resolve, reject) => {
         callback = (err, result) => {
-          if(err) {
-            reject(err)
+          if (err) {
+            reject(err);
           } else {
-            resolve(result)
+            resolve(result);
           }
-        }
-      })
+        };
+      });
     }
 
-    if(typeof arg !== 'object') {
-      throw new TypeError('First transaction argument should be an object or function')
+    if (typeof arg !== "object") {
+      throw new TypeError("First transaction argument should be an object or function");
     }
 
-    if(!Array.isArray(arg.actions)) {
-      throw new TypeError('Expecting actions array')
+    if (!Array.isArray(arg.actions)) {
+      throw new TypeError("Expecting actions array");
     }
 
-    if(config.logger.log || config.logger.error) {
+    if (config.logger.log || config.logger.error) {
       // wrap the callback with the logger
-      const superCallback = callback
+      const superCallback = callback;
       callback = (error, tr) => {
-        if(error && config.logger.error) {
-          config.logger.error(error)
+        if (error && config.logger.error) {
+          config.logger.error(error);
         }
-        if(config.logger.log){
-          config.logger.log(JSON.stringify(tr))
+        if (config.logger.log) {
+          config.logger.log(JSON.stringify(tr));
         }
-        superCallback(error, tr)
-      }
+        superCallback(error, tr);
+      };
     }
 
     arg.actions.forEach(action => {
-      if(!Array.isArray(action.authorization)) {
-        throw new TypeError('Expecting action.authorization array', action)
+      if (!Array.isArray(action.authorization)) {
+        throw new TypeError("Expecting action.authorization array", action);
       }
-    })
+    });
 
-    if(options.sign && typeof config.signProvider !== 'function') {
-      throw new TypeError('Expecting config.signProvider function (disable using {sign: false})')
+    if (options.sign && typeof config.signProvider !== "function") {
+      throw new TypeError("Expecting config.signProvider function (disable using {sign: false})");
     }
 
     let argHeaders = null;
@@ -390,133 +394,120 @@ function WriteApi (Network, network, config, Transaction) {
       headers = config.transactionHeaders;
     } else {
       assert(network, "Network is required, provide config.httpEndpoint");
-      headers = network.createTransaction;
+      headers = await network.createTransaction(options.expireInSeconds);
     }
 
-    headers(options.expireInSeconds, checkError(callback, config.logger, async function(rawTx) {
-      // console.log('rawTx', rawTx)
-      assert.equal(typeof rawTx, "object", "expecting transaction header object");
-      assert.equal(typeof rawTx.expiration, "string", "expecting expiration: iso date time string");
-      assert.equal(typeof rawTx.ref_block_num, "number", "expecting ref_block_num number");
-      assert.equal(typeof rawTx.ref_block_prefix, "number", "expecting ref_block_prefix number");
+    let rawTx = headers;
 
-      rawTx = Object.assign({}, rawTx);
+    assert.equal(typeof rawTx, "object", "expecting transaction header object");
+    assert.equal(typeof rawTx.expiration, "string", "expecting expiration: iso date time string");
+    assert.equal(typeof rawTx.ref_block_num, "number", "expecting ref_block_num number");
+    assert.equal(typeof rawTx.ref_block_prefix, "number", "expecting ref_block_prefix number");
 
-      rawTx.actions = arg.actions;
+    rawTx = Object.assign({}, rawTx);
 
-      // Resolve shorthand, queue requests
-      let txObject = Transaction.fromObject(rawTx);
+    rawTx.actions = arg.actions;
 
-      // After fromObject ensure any async actions are finished
-      if (AssetCache.pending()) {
-        await AssetCache.resolve();
+    // Resolve shorthand, queue requests
+    let txObject = Transaction.fromObject(rawTx);
 
-        // Create the object again with resolved data
-        txObject = Transaction.fromObject(rawTx);
-      }
+    // After fromObject ensure any async actions are finished
+    if (AssetCache.pending()) {
+      await AssetCache.resolve();
 
-      const buf = Fcbuffer.toBuffer(Transaction, txObject);
-      const tr = Transaction.toObject(txObject);
+      // Create the object again with resolved data
+      txObject = Transaction.fromObject(rawTx);
+    }
 
-      const transactionId = createHash("sha256").update(buf).digest().toString("hex");
+    const buf = Fcbuffer.toBuffer(Transaction, txObject);
+    const tr = Transaction.toObject(txObject);
 
-    let sigs = []
-    if(options.sign){
-      const chainIdBuf = Buffer.from(config.chainId, 'hex')
-      const packedContextFreeData = Buffer.from(new Uint8Array(32)) // TODO
-      const signBuf = Buffer.concat([chainIdBuf, buf, packedContextFreeData])
+    const transactionId = createHash("sha256").update(buf).digest().toString("hex");
 
-      sigs = config.signProvider({transaction: tr, buf: signBuf, sign,
-        optionsKeyProvider: options.keyProvider})
+    let sigs = [];
+    if (options.sign) {
+      const chainIdBuf = Buffer.from(config.chainId, "hex");
+      const packedContextFreeData = Buffer.from(new Uint8Array(32)); // TODO
+      const signBuf = Buffer.concat([chainIdBuf, buf, packedContextFreeData]);
 
-      if(!Array.isArray(sigs)) {
-        sigs = [sigs]
+      sigs = config.signProvider({
+        transaction: tr, buf: signBuf, sign,
+        optionsKeyProvider: options.keyProvider
+      });
+
+      if (!Array.isArray(sigs)) {
+        sigs = [sigs];
       }
     }
 
-    // sigs can be strings or Promises
-    Promise.all(sigs).then(sigs => {
-      sigs = [].concat.apply([], sigs) // flatten arrays in array
-
-      for(let i = 0; i < sigs.length; i++) {
-        const sig = sigs[i]
-        // normalize (hex to base58 format for example)
-        if(typeof sig === 'string' && sig.length === 130) {
-          sigs[i] = ecc.Signature.from(sig).toString()
-        }
+    for (let i = 0; i < sigs.length; i++) {
+      const sig = sigs[i];
+      // normalize (hex to base58 format for example)
+      if (typeof sig === "string" && sig.length === 130) {
+        sigs[i] = ecc.Signature.from(sig).toString();
       }
+    }
 
-      const packedTr = {
-        compression: 'none',
-        transaction: tr,
-        signatures: sigs
+    const packedTr = {
+      compression: "none",
+      transaction: tr,
+      signatures: sigs
+    };
+
+    const mock = config.mockTransactions ? config.mockTransactions() : null;
+    if (mock != null) {
+      assert(/pass|fail/.test(mock), "mockTransactions should return a string: pass or fail");
+      if (mock === "pass") {
+        callback(null, {
+          transaction_id: transactionId,
+          mockTransaction: true,
+          broadcast: false,
+          transaction: packedTr
+        });
       }
-
-      const mock = config.mockTransactions ? config.mockTransactions() : null
-      if(mock != null) {
-        assert(/pass|fail/.test(mock), 'mockTransactions should return a string: pass or fail')
-        if(mock === 'pass') {
-          callback(null, {
-            transaction_id: transactionId,
-            mockTransaction: true,
-            broadcast: false,
-            transaction: packedTr
-          })
-        }
-        if(mock === 'fail') {
-          const error = `[push_transaction mock error] 'fake error', digest '${buf.toString('hex')}'`
-
-          if(config.logger.error) {
-            config.logger.error(error)
-          }
-
-          callback(error)
-        }
-        return
-      }
-
-        if (!options.broadcast || !network) {
-          callback(null, {
-            transaction_id: transactionId,
-            broadcast: false,
-            transaction: packedTr
-          });
-        } else {
-          network.pushTx(packedTr, error => {
-            if (!error) {
-              callback(null, {
-                transaction_id: transactionId,
-                broadcast: true,
-                transaction: packedTr
-              });
-            } else {
-
-              if (config.logger.error) {
-                config.logger.error(
-                  `[push_transaction error] '${error.message}', transaction '${buf.toString("hex")}'`
-                );
-              }
-
-              callback(error.message);
-            }
-          });
-        }
-      }).catch(error => {
+      if (mock === "fail") {
+        const error = `[push_transaction mock error] 'fake error', digest '${buf.toString("hex")}'`;
         if (config.logger.error) {
           config.logger.error(error);
         }
         callback(error);
+      }
+      return;
+    }
+
+    if (!options.broadcast || !network) {
+      return new Promise((resolve, reject) => {
+        try {
+          resolve({
+            transaction_id: transactionId,
+            broadcast: false,
+            transaction: packedTr
+          });
+        } catch (err) {
+          reject(err);
+        }
       });
-    }));
-    return returnPromise;
+    } else {
+      return new Promise((resolve, reject) => {
+        network.pushTx(packedTr).then(res => {
+          let result = Object.assign({}, res, {
+            broadcast: true,
+            transaction: packedTr
+          });
+          resolve(result);
+        }).catch(err => {
+          console.log(err);
+          reject(err);
+        });
+      });
+    }
   }
 
-  // return WriteApi
   return {
     genTransaction,
     genContractActions,
     genMethod
-  }
+  };
 }
 
 const isStringArray = o => Array.isArray(o) && o.length > 0 &&
@@ -546,7 +537,7 @@ const checkError = (parentErr, logger, parrentRes) => (error, result) => {
   }
 };
 
-function schemaFields (schema, type) {
+function schemaFields(schema, type) {
   const { base, fields } = schema[type];
   const def = {};
   if (base && base !== "") {
@@ -555,3 +546,5 @@ function schemaFields (schema, type) {
   Object.assign(def, fields);
   return def;
 }
+
+module.exports = writeApiGen;
