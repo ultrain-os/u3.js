@@ -20,26 +20,21 @@ If you want to integrate u3.js into a react native environment, there is a worka
                 <title>test</title>
                 <script src="../dist/u3.js"></script>
                 <script>
-            
+                let func = async () => {
                   let u3 = U3.createU3({
-                    httpEndpoint: 'http://127.0.0.1:8888',
-                    httpEndpointHistory: 'http://127.0.0.1:3000',
-                    broadcast: true,
-                    debug: false,
-                    sign: true,
-                    logger: {
-                      log: console.log,
-                      error: console.error,
-                      debug: console.log
-                    },
-                    chainId:'0eaaff4003d4e08a541332c62827c0ac5d96766c712316afe7ade6f99b8d70fe',
-                    symbol: 'UGAS'
+                    httpEndpoint: "http://127.0.0.1:8888",
+                    httpEndpointHistory: "http://127.0.0.1:3000"
                   });
-            
-                  u3.getChainInfo((err, info) => {
-                    if (err) {throw err;}
-                    console.log(info);
-                  });
+          
+                  await u3.getChainInfo();
+          
+                  const keyProvider = () => {
+                    return ["5JbedY3jGfNK7HcLXcqGqSYrmX2n8wQWqZAuq6K7Gcf4Dj62UfL"];
+                  };
+                  const c = await u3.contract("utrio.token");
+                  await c.transfer("ben", "bob", "1.0000 UGAS", "", { keyProvider });
+                };
+                func();
                 </script>
             </head>
             <body>
@@ -57,12 +52,20 @@ If you want to integrate u3.js into a react native environment, there is a worka
 ```
 const { createU3 } = require('u3.js/src');
 let config = {
-  httpEndpoint: 'http://127.0.0.1:8888',
-  httpEndpointHistory: 'http://127.0.0.1:3000',
-  chainId: '0eaaff4003d4e08a541332c62827c0ac5d96766c712316afe7ade6f99b8d70fe',
-  keyProvider: ['PrivateKeys...'],
-  broadcast: true,
-  sign: true
+    httpEndpoint: "http://127.0.0.1:8888",
+    httpEndpointHistory: "http://127.0.0.1:3000",
+    chainId: "baf8bb9d3636379e3cd6779d2a72e693494670f1040d45154bb61dc8852c8971",
+    broadcast: true,
+    sign: true,
+    logger: {
+      directory: "../../logs", // daily rotate file directory
+      level: "info", // error->warn->info->verbose->debug->silly
+      console: true, // print to console
+      file: false // append to file
+    },
+    symbol: "UGAS",
+    //keyProvider:[],
+    //expireInSeconds:60
 }
 let u3 = createU3(config);
 
@@ -99,14 +102,14 @@ Running u3 locally requires relying on docker.
 If a keyProvider is not provided here, you should provided on a per-action or per-transaction basis in Options.
 * <b>expireInSeconds</b> number - number of seconds before the transaction will expire. The time is based on the nodultrain's clock. An unexpired transaction that may have had an error is a liability until the expiration is reached, this time should be brief.
 * <b>broadcast</b> [boolean=true] - post the transaction to the blockchain. Use false to obtain a fully signed transaction and it will not push to the blockchain.
-* <b>verbose</b> [boolean=false] - verbose logging such as API activity.
-* <b>debug</b> [boolean=false] - low level debug logging (serialization).
 * <b>sign</b> [boolean=true] - sign the transaction with a private key. Leaving a transaction unsigned avoids the need to provide a private key.
 * <b>logger</b> - default logging configuration.
 ```
 logger: {
-  log: config.verbose ? console.log : null,  // null to disable
-  error: config.verbose ? console.error : null,
+  directory: "../../logs", // daily rotate file directory
+  level: "info", // error->warn->info->verbose->debug->silly
+  console: true, // print to console
+  file: false // append to file
 }
 ```
 

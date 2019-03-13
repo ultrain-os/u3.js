@@ -204,9 +204,9 @@ describe("u3.js", () => {
   describe("transfer", () => {
     it("transfer UGAS", async () => {
       const keyProvider = [users["ben"].private_key];
-      const u3 = createU3();
+      const u3 = createU3({keyProvider});
       const c = await u3.contract("utrio.token");
-      const tr = await c.transfer("ben", "bob", "1.0000 " + defaultConfig.symbol, "", { keyProvider });
+      const tr = await c.transfer("ben", "bob", "1.0000 " + defaultConfig.symbol, "");
       assert.equal(typeof tr.transaction_id, "string");
     });
   });

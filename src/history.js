@@ -2,13 +2,17 @@
 
 
 const defaultConfig = require("../src/config");
-let httpEndPoint = require("./config").httpEndpointHistory;
-const { fetchUrl } = require("../src/utils/dbHelper");
-let U3Config = {};
+let httpEndpointHistory = require("./config").httpEndpointHistory;
 
-module.exports = function(config) {
+let U3Config = {};
+let fetchUrl = () => {
+};
+
+function historyGen(config) {
   U3Config = config;
-  httpEndPoint = config.httpEndpointHistory;
+  httpEndpointHistory = config.httpEndpointHistory;
+  fetchUrl = require("../src/utils/dbHelper")(config).fetchUrl;
+
   return {
     getAllBlocks,
     getContracts,
@@ -80,7 +84,7 @@ module.exports = function(config) {
     "irreversible" : false
 }
  */
-function getAllBlocks (page, pageSize, queryParams, sortParams) {
+function getAllBlocks(page, pageSize, queryParams, sortParams) {
   let data = {
     "page": page || 1,
     "pageSize": pageSize || 10,
@@ -88,7 +92,7 @@ function getAllBlocks (page, pageSize, queryParams, sortParams) {
     "sortParams": sortParams || { _id: -1 }
   };
 
-  return fetchUrl(`${httpEndPoint}/blocks`, data);
+  return fetchUrl("getAllBlocks", `${httpEndpointHistory}/blocks`, data);
 }
 
 /**
@@ -127,7 +131,7 @@ function getAllBlocks (page, pageSize, queryParams, sortParams) {
     "updatedAt" : ISODate("2018-10-26T10:11:49.162+0000")
 }
  */
-function getContracts (page, pageSize, queryParams, sortParams) {
+function getContracts(page, pageSize, queryParams, sortParams) {
   let data = {
     "page": page || 1,
     "pageSize": pageSize || 10,
@@ -135,7 +139,7 @@ function getContracts (page, pageSize, queryParams, sortParams) {
     "sortParams": sortParams || { _id: -1 }
   };
 
-  return fetchUrl(`${httpEndPoint}/contracts`, data);
+  return fetchUrl("getContracts", `${httpEndpointHistory}/contracts`, data);
 }
 
 /**
@@ -168,8 +172,8 @@ function getContracts (page, pageSize, queryParams, sortParams) {
     "updatedAt" : ISODate("2018-10-26T10:11:49.162+0000")
 }
  */
-function getContractByName (name) {
-  return fetchUrl(`${httpEndPoint}/contracts/${name}`);
+function getContractByName(name) {
+  return fetchUrl("getContractByName", `${httpEndpointHistory}/contracts/${name}`);
 }
 
 /**
@@ -198,14 +202,14 @@ function getContractByName (name) {
     "createdAt" : ISODate("2018-08-22T07:33:32.092+0000")
 }
  */
-async function getAllAccounts (page, pageSize, queryParams, sortParams) {
+async function getAllAccounts(page, pageSize, queryParams, sortParams) {
   let data = {
     "page": page || 1,
     "pageSize": pageSize || 10,
     "queryParams": queryParams || {},
     "sortParams": sortParams || { _id: -1 }
   };
-  let response = await fetchUrl(`${httpEndPoint}/accounts`, data);
+  let response = await fetchUrl("getAllAccounts", `${httpEndpointHistory}/accounts`, data);
   if (response.error_msg) {
     return response.error_msg;
   }
@@ -291,7 +295,7 @@ async function getAllAccounts (page, pageSize, queryParams, sortParams) {
     "createdAt" : ISODate("2018-08-22T07:33:12.469+0000")
 }
  */
-function getAllTxs (page, pageSize, queryParams, sortParams) {
+function getAllTxs(page, pageSize, queryParams, sortParams) {
   let data = {
     "page": page || 1,
     "pageSize": pageSize || 10,
@@ -299,7 +303,7 @@ function getAllTxs (page, pageSize, queryParams, sortParams) {
     "sortParams": sortParams || { _id: -1 }
   };
 
-  return fetchUrl(`${httpEndPoint}/txs`, data);
+  return fetchUrl("getAllTxs", `${httpEndpointHistory}/txs`, data);
 }
 
 /**
@@ -354,8 +358,8 @@ function getAllTxs (page, pageSize, queryParams, sortParams) {
     "createdAt" : ISODate("2018-08-22T07:33:12.469+0000")
 }
  */
-function getTxByTxId (id) {
-  return fetchUrl(`${httpEndPoint}/txs/${id}`);
+function getTxByTxId(id) {
+  return fetchUrl("getTxByTxId", `${httpEndpointHistory}/txs/${id}`);
 }
 
 /**
@@ -386,8 +390,8 @@ function getTxByTxId (id) {
     "hex_data" : "80e3474500000000000000000100000000000..."
 }
  */
-function getActionsByTxid (id) {
-  return fetchUrl(`${httpEndPoint}/actions/tx/${id}`);
+function getActionsByTxid(id) {
+  return fetchUrl("getActionsByTxid", `${httpEndpointHistory}/actions/tx/${id}`);
 }
 
 /**
@@ -424,14 +428,14 @@ function getActionsByTxid (id) {
     "hex_data" : "80e34745000000000000000001000000000000..."
 }
  */
-function getActionsByAccount (page, pageSize, queryParams, sortParams) {
+function getActionsByAccount(page, pageSize, queryParams, sortParams) {
   let data = {
     "page": page || 1,
     "pageSize": pageSize || 10,
     "queryParams": queryParams || {},
     "sortParams": sortParams || { _id: -1 }
   };
-  return fetchUrl(`${httpEndPoint}/actions/by/account`, data);
+  return fetchUrl("getActionsByAccount", `${httpEndpointHistory}/actions/by/account`, data);
 }
 
 /**
@@ -494,14 +498,14 @@ function getActionsByAccount (page, pageSize, queryParams, sortParams) {
     "createdAt" : ISODate("2018-08-22T07:33:12.469+0000")
 }
  */
-function getTxsByBlockNum (page, pageSize, queryParams, sortParams) {
+function getTxsByBlockNum(page, pageSize, queryParams, sortParams) {
   let data = {
     "page": page || 1,
     "pageSize": pageSize || 10,
     "queryParams": queryParams || {},
     "sortParams": sortParams || { _id: -1 }
   };
-  return fetchUrl(`${httpEndPoint}/txs/by/blocknum`, data);
+  return fetchUrl("getTxsByBlockNum", `${httpEndpointHistory}/txs/by/blocknum`, data);
 }
 
 /**
@@ -523,8 +527,8 @@ function getTxsByBlockNum (page, pageSize, queryParams, sortParams) {
     "createdAt" : ISODate("2018-08-22T07:33:32.092+0000")
 }
  */
-function getExistAccount (name) {
-  return fetchUrl(`${httpEndPoint}/accounts/${name}`);
+function getExistAccount(name) {
+  return fetchUrl("getExistAccount", `${httpEndpointHistory}/accounts/${name}`);
 }
 
 /**
@@ -573,14 +577,14 @@ function getExistAccount (name) {
     "irreversible" : false
 }
  */
-function getBlocksByContract (block_num, account, contract, contract_method) {
+function getBlocksByContract(block_num, account, contract, contract_method) {
   const data = {
     block_num,
     account,
     contract,
     contract_method
   };
-  return fetchUrl(`${httpEndPoint}/blocks/contract`, data);
+  return fetchUrl("getBlocksByContract", `${httpEndpointHistory}/blocks/contract`, data);
 }
 
 /**
@@ -636,8 +640,8 @@ function getBlocksByContract (block_num, account, contract, contract_method) {
  "createdAt" : ISODate("2018-08-22T07:33:12.469+0000")
  }
  */
-function getTxTraceByTxid (id) {
-  return fetchUrl(`${httpEndPoint}/txtraces/${id}`);
+function getTxTraceByTxid(id) {
+  return fetchUrl("getTxTraceByTxid", `${httpEndpointHistory}/txtraces/${id}`);
 }
 
 /**
@@ -650,9 +654,8 @@ function getTxTraceByTxid (id) {
  * const u3 = createU3(config)
  * u3.search(5b7d11b859bd97fab30ba7f5)
  */
-async function search (param) {
-  let rs = await fetchUrl(`${httpEndPoint}/search/${param}`);
-  console.log(rs);
+async function search(param) {
+  let rs = await fetchUrl("search", `${httpEndpointHistory}/search/${param}`);
   if (rs.type === "account" && rs.data.name) {
     const { createU3 } = require("./index");
     const u3 = createU3(U3Config);
@@ -693,8 +696,8 @@ async function search (param) {
     "createdAt" : ISODate("2018-08-22T07:33:32.092+0000")
 }
  */
-function getCreateAccountByName (name) {
-  return fetchUrl(`${httpEndPoint}/getcreateaccount`, { name });
+function getCreateAccountByName(name) {
+  return fetchUrl("getCreateAccountByName", `${httpEndpointHistory}/getcreateaccount`, { name });
 }
 
 /**
@@ -731,7 +734,7 @@ function getCreateAccountByName (name) {
       "holders": 2
    }
  */
-function getAllTokens (page, pageSize, queryParams, sortParams) {
+function getAllTokens(page, pageSize, queryParams, sortParams) {
   let data = {
     "page": page || 1,
     "pageSize": pageSize || 10,
@@ -739,7 +742,7 @@ function getAllTokens (page, pageSize, queryParams, sortParams) {
     "sortParams": sortParams || { _id: -1 }
   };
 
-  return fetchUrl(`${httpEndPoint}/tokens`, data);
+  return fetchUrl("getAllTokens", `${httpEndpointHistory}/tokens`, data);
 }
 
 /**
@@ -768,8 +771,8 @@ function getAllTokens (page, pageSize, queryParams, sortParams) {
     "id": "5be2ccc244ed468a4c331487"
     }
  */
-function getTokenBySymbol (symbol, creator) {
-  return fetchUrl(`${httpEndPoint}/token/${symbol}/${creator}`);
+function getTokenBySymbol(symbol, creator) {
+  return fetchUrl("getTokenBySymbol", `${httpEndpointHistory}/token/${symbol}/${creator}`);
 }
 
 /**
@@ -791,8 +794,8 @@ function getTokenBySymbol (symbol, creator) {
     "contract_num": 3
     }
  */
-function getBaseInfo () {
-  return fetchUrl(`${httpEndPoint}/base`);
+function getBaseInfo() {
+  return fetchUrl("getBaseInfo", `${httpEndpointHistory}/base`);
 }
 
 /**
@@ -819,8 +822,8 @@ function getBaseInfo () {
       }
  * ]
  */
-function getBalanceByAccount (account) {
-  return fetchUrl(`${httpEndPoint}/balance/${account}`);
+function getBalanceByAccount(account) {
+  return fetchUrl("getBalanceByAccount", `${httpEndpointHistory}/balance/${account}`);
 }
 
 /**
@@ -853,7 +856,7 @@ function getBalanceByAccount (account) {
       "id": "5be2ccfe44ed468a4c331510"
     }
  */
-function getHoldersBySymbol (page, pageSize, queryParams, sortParams) {
+function getHoldersBySymbol(page, pageSize, queryParams, sortParams) {
   let data = {
     "page": page || 1,
     "pageSize": pageSize || 10,
@@ -861,7 +864,7 @@ function getHoldersBySymbol (page, pageSize, queryParams, sortParams) {
     "sortParams": sortParams || { current_balance: -1 }
   };
 
-  return fetchUrl(`${httpEndPoint}/holders/by/symbol`, data);
+  return fetchUrl("getHoldersBySymbol", `${httpEndpointHistory}/holders/by/symbol`, data);
 }
 
 /**
@@ -904,7 +907,7 @@ function getHoldersBySymbol (page, pageSize, queryParams, sortParams) {
       "id": "5be8fb7144ed468a4c348078"
     }
  */
-function getAllBlocksHeader (page, pageSize, queryParams, sortParams) {
+function getAllBlocksHeader(page, pageSize, queryParams, sortParams) {
   let data = {
     "page": page || 1,
     "pageSize": pageSize || 10,
@@ -912,7 +915,7 @@ function getAllBlocksHeader (page, pageSize, queryParams, sortParams) {
     "sortParams": sortParams || { _id: -1 }
   };
 
-  return fetchUrl(`${httpEndPoint}/blocksheader`, data);
+  return fetchUrl("getAllBlocksHeader", `${httpEndpointHistory}/blocksheader`, data);
 }
 
 /**
@@ -934,11 +937,13 @@ function getAllBlocksHeader (page, pageSize, queryParams, sortParams) {
       "count": 972
     }
  */
-function getProposerList (page, pageSize) {
+function getProposerList(page, pageSize) {
   let data = {
     "page": page || 1,
     "pageSize": pageSize || 10
   };
 
-  return fetchUrl(`${httpEndPoint}/proposers`, data);
+  return fetchUrl("getProposerList", `${httpEndpointHistory}/proposers`, data);
 }
+
+module.exports = historyGen;

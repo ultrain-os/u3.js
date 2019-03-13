@@ -5,6 +5,7 @@ const { ecc } = require("u3-utils/src");
 const listener = require("./utils/listener");
 const Fcbuffer = require("fcbuffer");
 const apiGen = require("./utils/apigen");
+const historyGen = require("./history");
 const api = require("./v1/chain");
 const assert = require("assert");
 const Structs = require("./structs");
@@ -14,8 +15,9 @@ const writeApiGen = require("./write-api");
 const format = require("./format");
 const schema = require("./v1/schema");
 const pkg = require("../package.json");
-
 const version = pkg.version;
+const Logger = require("./utils/logger");
+let logger;
 
 const defaultSignProvider = (u3, config) => function({ sign, buf, transaction, optionsKeyProvider }) {
   const keyProvider = optionsKeyProvider ? optionsKeyProvider : config.keyProvider;
@@ -60,66 +62,6 @@ const defaultSignProvider = (u3, config) => function({ sign, buf, transaction, o
 };
 
 /**
- * create U3 instance
- * @param config configuration information
- * @returns {Object} instance of U3
- */
-const createU3 = (config = {}) => {
-  config = Object.assign({}, configDefaults, config);
-  const history = require("./history")(config);
-  const defaultLogger = {
-    log: config.verbose ? console.log : null,
-    error: console.error
-  };
-  config.logger = Object.assign({}, defaultLogger, config.logger);
-
-  const network = config.httpEndpoint != null ? apiGen("v1", api, config) : null;
-  config.network = network;
-
-  config.assetCache = AssetCache(network);
-  config.abiCache = AbiCache(network, config);
-
-  if (!config.chainId) {
-    config.chainId = "cf057bbfb72640471fd910bcb67639c22df9f92470936cddc1ade0e2f2e7dc4f";
-  }
-
-  _checkChainId(network, config.chainId);
-
-  if (config.mockTransactions != null) {
-    if (typeof config.mockTransactions === "string") {
-      const mock = config.mockTransactions;
-      config.mockTransactions = () => mock;
-    }
-    assert.equal(typeof config.mockTransactions, "function", "config.mockTransactions");
-  }
-
-  const { structs, types, fromBuffer, toBuffer } = Structs(config);
-  const u3 = _mergeWriteFunctions(config, network, structs);
-
-  Object.assign(u3, {
-      config: safeConfig(config),
-      fc: {
-        structs,
-        types,
-        fromBuffer,
-        toBuffer
-      }
-      , queryResource
-      , deploy
-      , createUser
-      , sign
-    },
-    history
-  );
-
-  if (!config.signProvider) {
-    config.signProvider = defaultSignProvider(u3, config);
-  }
-
-  return u3;
-};
-
-/**
  * deploy contract
  * @param contract path of contract，eg. utrio.UGAStem
  * @param account name of owner account，eg. ultrainio
@@ -137,10 +79,7 @@ async function deploy(contract, account, options) {
     }, options);
     return tr;
   } catch (e) {
-    console.log(e);
-    return {
-      "error_msg": e
-    };
+    logger.error(e);
   }
 }
 
@@ -155,7 +94,7 @@ async function deploy(contract, account, options) {
     name: "test123",
     owner: "UTR6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV",
     active: "UTR6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV",
-    updateable: 0
+    updateable: 1
   }
  * @returns {Promise<*>}
  */
@@ -221,38 +160,6 @@ async function sign(unsigned_transaction, privateKeyOrMnemonic, chainId = "cf057
 }
 
 /**
- Set each property as read-only, read-write, no-access.  This is shallow
- in that it applies only to the root object and does not limit access
- to properties under a given object.
- */
-function safeConfig(config) {
-  // access control is shallow references only
-  const readOnly = new Set(["httpEndpoint", "abiCache"]);
-  const readWrite = new Set(["verbose", "debug", "broadcast", "logger", "sign"]);
-  const protectedConfig = {};
-
-  Object.keys(config).forEach(key => {
-    Object.defineProperty(protectedConfig, key, {
-      set: function(value) {
-        if (readWrite.has(key)) {
-          config[key] = value;
-          return;
-        }
-        throw new Error("Access denied");
-      },
-
-      get: function() {
-        if (readOnly.has(key) || readWrite.has(key)) {
-          return config[key];
-        }
-        throw new Error("Access denied");
-      }
-    });
-  });
-  return protectedConfig;
-}
-
-/**
  * merge chain function and contract function
  * @param config
  * @param api
@@ -297,15 +204,70 @@ function _throwOnDuplicate(o1, o2, msg) {
  * @param chainId
  * @private
  */
-_checkChainId = async (api, chainId) => {
+async function _checkChainId(api, chainId) {
   let info = await api.getChainInfo();
   if (info.chain_id !== chainId) {
-    console.warn(
+    logger.warn(
       "WARN: chainId mismatch, signatures will not match transaction authority. " +
       `expected ${chainId} !== actual ${info.chain_id}`
     );
   }
 };
+
+/**
+ * create U3 instance
+ * @param config configuration information
+ * @returns {Object} instance of U3
+ */
+const createU3 = (config = {}) => {
+  config = Object.assign({}, configDefaults, config);
+  const loggerConfig = Object.assign({}, configDefaults.logger, config.logger);
+  config.logger = loggerConfig;
+  logger = new Logger(loggerConfig);
+
+  const history = historyGen(config);
+  const network = config.httpEndpoint != null ? apiGen("v1", api, config) : null;
+  config.network = network;
+
+  config.assetCache = AssetCache(network);
+  config.abiCache = AbiCache(network, config);
+
+  _checkChainId(network, config.chainId);
+
+  if (config.mockTransactions != null) {
+    if (typeof config.mockTransactions === "string") {
+      const mock = config.mockTransactions;
+      config.mockTransactions = () => mock;
+    }
+    assert.equal(typeof config.mockTransactions, "function", "config.mockTransactions");
+  }
+
+  const { structs, types, fromBuffer, toBuffer } = Structs(config);
+  const u3 = _mergeWriteFunctions(config, network, structs);
+
+  Object.assign(u3, {
+      config,
+      fc: {
+        structs,
+        types,
+        fromBuffer,
+        toBuffer
+      }
+      , queryResource
+      , deploy
+      , createUser
+      , sign
+    },
+    history
+  );
+
+  if (!config.signProvider) {
+    config.signProvider = defaultSignProvider(u3, config);
+  }
+
+  return u3;
+};
+
 
 module.exports = {
   createU3,

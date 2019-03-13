@@ -1,79 +1,89 @@
-const async = require('async');
-const axios = require('axios');
-const defaultConfig = require('../config');
+const async = require("async");
+const axios = require("axios");
+const Logger = require("../utils/logger");
+let logger;
 
-/**
- *
- * @param { Number } page
- * @param { Number } pageSize
- * @param { mongoose.model } Model
- * @param { Object } queryParams
- * @param { Object } sortParams
- * @param {*} callback
- */
-var pageQuery = function(page, pageSize, Model, queryParams, sortParams) {
-  var start = (page - 1) * pageSize;
-  var $page = {
-    pageNumber: page
+module.exports = function(config) {
+
+  logger = Logger(config.logger);
+
+  /**
+   *
+   * @param { Number } page
+   * @param { Number } pageSize
+   * @param { mongoose.model } Model
+   * @param { Object } queryParams
+   * @param { Object } sortParams
+   * @param {*} callback
+   */
+  let pageQuery = (page, pageSize, Model, queryParams, sortParams) => {
+    var start = (page - 1) * pageSize;
+    var $page = {
+      pageNumber: page
+    };
+    return new Promise(function(resolve, reject) {
+      async.parallel({
+        count: function(done) {
+          Model.countDocuments(queryParams).exec(function(err, count) {
+            done(err, count);
+          });
+        },
+        records: function(done) {
+          Model.find(queryParams).skip(start).limit(pageSize).sort(sortParams).exec(function(err, doc) {
+            done(err, doc);
+          });
+        }
+      }, function(err, results) {
+        var count = results.count;
+        $page.total = results.count;
+        $page.pageCount = (count - 1) / pageSize + 1;
+        $page.results = results.records;
+
+        if (err) reject(err);
+        resolve($page);
+      });
+    });
   };
-  return new Promise(function(resolve, reject) {
-    async.parallel({
-      count: function(done) {
-        Model.countDocuments(queryParams).exec(function(err, count) {
-          done(err, count);
-        });
-      },
-      records: function(done) {
-        Model.find(queryParams).skip(start).limit(pageSize).sort(sortParams).exec(function(err, doc) {
-          done(err, doc);
-        });
-      }
-    }, function(err, results) {
-      var count = results.count;
-      $page.total = results.count;
-      $page.pageCount = (count - 1) / pageSize + 1;
-      $page.results = results.records;
 
-      if (err) reject(err);
-      resolve($page);
+
+  /**
+   * @param methodName
+   * @param url
+   * @param data
+   * @returns {*}
+   */
+  let fetchUrl = (methodName, url, data) => {
+    data = data || {};
+
+    var body = JSON.stringify(data);
+
+    logger.info(">>[" + methodName + "][post][" + url + "]" + body);
+
+    return new Promise((resolve, reject) => {
+
+      axios.post(url, data).then(res => {
+
+        logger.info("<<[" + methodName + "]" + JSON.stringify(res.data));
+
+        resolve(res.data);
+
+      }).catch(err => {
+
+        let message = "";
+        if (err.response) {
+          message = err.response.statusText;
+        } else {
+          message = err.message;
+        }
+        logger.error("Error[" + methodName + "]" + message);
+
+        reject(message);
+      });
     });
-  });
-};
 
+  };
 
-/**
- * @param url
- * @param data
- * @returns {*}
- */
-var fetchUrl = function(url, data) {
-  data = data || {};
-  var logger = defaultConfig.logger;
-
-  if (logger.log) {
-    logger.log('\napi >', 'post', '\t', url, '\n', data);
-  }
-  return axios.post(url, data)
-    .then(function(response) {
-      if (logger.log) {
-        logger.log('\napi <', 'response', '\t', url, '\n', response.data, '\n\n');
-      }
-      return response.data;
-    })
-    .catch(function(error) {
-      var err = {
-        error_msg: ''
-      };
-      if (error.response) {
-        err.error_msg = error.response.statusText;
-      } else {
-        err.error_msg = error.message;
-      }
-      return err;
-    });
-};
-
-module.exports = {
-  pageQuery: pageQuery,
-  fetchUrl: fetchUrl
+  return {
+    pageQuery, fetchUrl
+  };
 };
