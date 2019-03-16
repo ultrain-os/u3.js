@@ -1,6 +1,4 @@
 /** @namespace history*/
-
-
 const defaultConfig = require("../src/config");
 let httpEndpointHistory = require("./config").httpEndpointHistory;
 
@@ -245,7 +243,7 @@ async function getAllAccounts(page, pageSize, queryParams, sortParams) {
  * @example
  * import {getAllTxs} from "u3.js/src";
  * const u3 = createU3(config)
- * let query = { $and: [{ "actions.0.account": "ben" }, { $or: [{ "actions.0.data.id": 1257 }, { "actions.0.data.id": "1257" }] }] };
+ * let query = { $and: [{ "actions.0.account": "user.11.111" }, { $or: [{ "actions.0.data.id": 1257 }, { "actions.0.data.id": "1257" }] }] };
  * u3.getAllTxs({
     'page': 1,
     'pageSize': 10,
@@ -720,13 +718,13 @@ function getCreateAccountByName(name) {
  * json structure:
  * {
       "_id": "5be2ccfe44ed468a4c33150c",
-      "account": "ben",
+      "account": "user.11.111",
       "symbol": "BJMZ",
       "__v": 0,
       "createdAt": "2018-11-07T11:31:10.065Z",
       "decimals": 4,
       "issue_time": "2018-11-07T11:30:57.654Z",
-      "issuer": "ben",
+      "issuer": "user.11.111",
       "max_supply": "10000000.0000",
       "supply": "10000000.0000",
       "updatedAt": "2018-11-08T01:51:10.074Z",
@@ -753,18 +751,18 @@ function getAllTokens(page, pageSize, queryParams, sortParams) {
  * @example
  * import {createU3} from "u3.js/src";
  * const u3 = createU3(config)
- * u3.getTokenBySymbol("ZTPJ","ben")
+ * u3.getTokenBySymbol("ZTPJ","user.11.111")
  *
  * json structure:
  * {
     "_id": "5be2ccc244ed468a4c331487",
-    "account": "ben",
+    "account": "user.11.111",
     "symbol": "ZTPJ",
     "__v": 0,
     "createdAt": "2018-11-07T11:30:10.057Z",
     "decimals": 4,
     "issue_time": "2018-11-07T11:29:57.777Z",
-    "issuer": "ben",
+    "issuer": "user.11.111",
     "max_supply": "10000000.0000",
     "supply": "10000000.0000",
     "updatedAt": "2018-11-08T01:51:10.049Z",
@@ -811,8 +809,8 @@ function getBaseInfo() {
  * [
  {
         "_id": "5be2ccfe44ed468a4c331510",
-        "holder_account": "ben",
-        "token_account": "ben",
+        "holder_account": "user.11.111",
+        "token_account": "user.11.111",
         "token_symbol": "BJMZ",
         "__v": 0,
         "createdAt": "2018-11-07T11:31:10.070Z",
@@ -839,15 +837,15 @@ function getBalanceByAccount(account) {
  * u3.getHoldersBySymbol({
     'page': 1,
     'pageSize': 10,
-    'queryParams': {"token_account":"ben","token_symbol":"BJMZ"},
+    'queryParams': {"token_account":"user.11.111","token_symbol":"BJMZ"},
     'sortParams': { current_balance: -1 }
  * })
  *
  * json structure:
  * {
       "_id": "5be2ccfe44ed468a4c331510",
-      "holder_account": "ben",
-      "token_account": "ben",
+      "holder_account": "user.11.111",
+      "token_account": "user.11.111",
       "token_symbol": "BJMZ",
       "__v": 0,
       "createdAt": "2018-11-07T11:31:10.070Z",
@@ -880,7 +878,7 @@ function getHoldersBySymbol(page, pageSize, queryParams, sortParams) {
  * u3.getHoldersBySymbol({
     'page': 1,
     'pageSize': 10,
-    'queryParams': {"token_account":"ben","token_symbol":"BJMZ"},
+    'queryParams': {"token_account":"user.11.111","token_symbol":"BJMZ"},
     'sortParams': { current_balance: -1 }
  * })
  *

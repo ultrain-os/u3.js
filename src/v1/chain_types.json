@@ -178,7 +178,8 @@
     "fields": {
       "name": "action_name",
       "type": "type_name",
-      "ricardian_contract": "string"
+      "ricardian_contract": "string",
+      "ability":"string"
     }
   },
   "block_header": {

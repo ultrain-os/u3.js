@@ -73,9 +73,15 @@ async function deploy(contract, account, options) {
     const wasm = fs.readFileSync(path.resolve(process.cwd(), `${contract}.wasm`));
     const abi = fs.readFileSync(path.resolve(process.cwd(), `${contract}.abi`));
 
+    let abi_obj = JSON.parse(abi);
+    abi_obj.actions.forEach((action) => {
+      if (!action.ability)
+        action.ability = "normal";
+    });
+
     const tr = await this.transaction("ultrainio", c => {
       c.setcode(account, 0, 0, wasm);
-      c.setabi(account, JSON.parse(abi));
+      c.setabi(account, abi_obj);
     }, options);
     return tr;
   } catch (e) {
@@ -114,20 +120,6 @@ async function createUser(params, options) {
       updateable: data.updateable
     });
   }, options);
-}
-
-/**
- * query resource detail of an account
- * @param name  account who want to query resource
- * @returns {Promise<*>}
- */
-async function queryResource(name) {
-  return this.getTableRecords({
-    code: "ultrainio",
-    scope: name,
-    table: "reslease",
-    json: true
-  });
 }
 
 /**
@@ -253,7 +245,6 @@ const createU3 = (config = {}) => {
         fromBuffer,
         toBuffer
       }
-      , queryResource
       , deploy
       , createUser
       , sign
@@ -271,7 +262,6 @@ const createU3 = (config = {}) => {
 
 module.exports = {
   createU3,
-  queryResource,
   format,
   ecc,
   Fcbuffer,

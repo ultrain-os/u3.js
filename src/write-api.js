@@ -405,7 +405,6 @@ function WriteApi(Network, network, config, Transaction) {
     assert.equal(typeof rawTx.ref_block_prefix, "number", "expecting ref_block_prefix number");
 
     rawTx = Object.assign({}, rawTx);
-
     rawTx.actions = arg.actions;
 
     // Resolve shorthand, queue requests

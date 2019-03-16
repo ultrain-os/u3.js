@@ -64,8 +64,14 @@ function fetchMethod(methodName, url, definition) {
 
         resolve(res.data);
       }).catch(err => {
-
-        let message = err.response.data.error.details[0];
+        let message = "";
+        if (err.message) {
+          message = err.message;
+        } else if (err.response &&
+          err.response.data &&
+          err.response.data.error) {
+          message = err.response.data.error.details[0];
+        }
         logger.error("Error[" + methodName + "]result callback:" + message);
 
         reject(message);

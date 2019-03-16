@@ -8,36 +8,6 @@ var requestData = {
   queryParams: {}
 };
 
-describe('producer', () => {
-  it('list', () => {
-    axios
-      .post('http://127.0.0.1:3001/proposers', requestData)
-      .then(function (response) {
-        console.log(JSON.stringify(response.data));
-        assert.ok(response.status == 200);
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-  })
-
-  it('getAward', () => {
-    // const currentDate = new Date();
-    // const start = `${currentDate.getUTCFullYear()}-${currentDate.getUTCMonth() + 1}-${currentDate.getUTCDate()}T00:00:00Z`;
-    // const end = `${currentDate.getUTCFullYear()}-${currentDate.getUTCMonth() + 1}-${currentDate.getUTCDate() + 1}T00:00:00Z`;
-
-    // console.log(new Date(start));
-    axios
-      .post('http://127.0.0.1:3001/award', requestData)
-      .then(function (response) {
-        console.log(JSON.stringify(response.data));
-        assert.ok(response.status == 200);
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-  })
-})
 describe('token', () => {
   it('base', () => {
     axios

@@ -1,180 +1,92 @@
 {
-  "version": "ultraio:1.0:UIP06",
-  "types": [
-    {
+   "version": "ultraio:1.0:UIP06",
+   "types": [{
       "new_type_name": "account_name",
       "type": "name"
-    },
-    {
-      "new_type_name": "Asset",
-      "type": "asset"
-    },
-    {
-      "new_type_name": "u64",
-      "type": "uint64"
-    }
-  ],
-  "structs": [
-    {
-      "fields": [
-        {
-          "name": "issuer",
-          "type": "account_name"
-        },
-        {
-          "name": "maximum_supply",
-          "type": "Asset"
-        }
-      ],
-      "name": "create",
-      "base": ""
-    },
-    {
-      "fields": [
-        {
-          "name": "to",
-          "type": "account_name"
-        },
-        {
-          "name": "quantity",
-          "type": "Asset"
-        },
-        {
-          "name": "memo",
-          "type": "string"
-        }
-      ],
-      "name": "issue",
-      "base": ""
-    },
-    {
-      "fields": [
-        {
-          "name": "from",
-          "type": "account_name"
-        },
-        {
-          "name": "to",
-          "type": "account_name"
-        },
-        {
-          "name": "quantity",
-          "type": "Asset"
-        },
-        {
-          "name": "memo",
-          "type": "string"
-        }
-      ],
+   }],
+  "structs": [{
       "name": "transfer",
-      "base": ""
-    },
-    {
+      "base": "",
       "fields": [
-        {
-          "name": "sym_name",
-          "type": "string"
-        }
-      ],
-      "name": "getSupply",
-      "base": ""
-    },
-    {
+        {"name":"from", "type":"account_name"},
+        {"name":"to", "type":"account_name"},
+        {"name":"quantity", "type":"asset"},
+        {"name":"memo", "type":"string"}
+      ]
+    },{
+      "name": "safe_transfer",
+      "base": "",
       "fields": [
-        {
-          "name": "owner",
-          "type": "account_name"
-        },
-        {
-          "name": "sym_name",
-          "type": "string"
-        }
-      ],
-      "name": "getBalance",
-      "base": ""
-    },
-    {
+        {"name":"from", "type":"account_name"},
+        {"name":"to", "type":"account_name"},
+        {"name":"quantity", "type":"asset"},
+        {"name":"memo", "type":"string"}
+      ]
+    },{
+     "name": "create",
+     "base": "",
+     "fields": [
+        {"name":"issuer", "type":"account_name"},
+        {"name":"maximum_supply", "type":"asset"}
+     ]
+  },{
+     "name": "issue",
+     "base": "",
+     "fields": [
+        {"name":"to", "type":"account_name"},
+        {"name":"quantity", "type":"asset"},
+        {"name":"memo", "type":"string"}
+     ]
+  },{
+      "name": "account",
+      "base": "",
       "fields": [
-        {
-          "name": "supply",
-          "type": "Asset"
-        },
-        {
-          "name": "max_supply",
-          "type": "Asset"
-        },
-        {
-          "name": "issuer",
-          "type": "account_name"
-        },
-        {
-          "name": "timestamp",
-          "type": "u64"
-        }
-      ],
-      "name": "CurrencyStats",
-      "base": ""
-    },
-    {
+        {"name":"balance", "type":"asset"},
+        {"name":"last_block_height", "type":"uint32"}
+      ]
+    },{
+      "name": "currency_stats",
+      "base": "",
       "fields": [
-        {
-          "name": "balance",
-          "type": "Asset"
-        }
-      ],
-      "name": "CurrencyAccount",
-      "base": ""
+        {"name":"supply", "type":"asset"},
+        {"name":"max_supply", "type":"asset"},
+        {"name":"issuer", "type":"account_name"}
+      ]
     }
   ],
-  "actions": [
-    {
-      "ricardian_contract": "",
-      "name": "create",
-      "type": "create"
-    },
-    {
-      "ricardian_contract": "",
-      "name": "issue",
-      "type": "issue"
-    },
-    {
-      "ricardian_contract": "",
+  "actions": [{
       "name": "transfer",
-      "type": "transfer"
-    },
-    {
-      "ricardian_contract": "",
-      "name": "getSupply",
-      "type": "getSupply"
-    },
-    {
-      "ricardian_contract": "",
-      "name": "getBalance",
-      "type": "getBalance"
+      "type": "transfer",
+      "ricardian_contract": ""
+    },{
+      "name": "safe_transfer",
+      "type": "safe_transfer",
+      "ricardian_contract": ""
+    }, {
+      "name": "issue",
+      "type": "issue",
+      "ricardian_contract": ""
+    }, {
+      "name": "create",
+      "type": "create",
+      "ricardian_contract": ""
     }
+
   ],
-  "tables": [
-    {
-      "index_type": "i64",
-      "keys_names": [
-        "currency"
-      ],
-      "keys_types": [
-        "uint64"
-      ],
-      "name": "stat",
-      "type": "CurrencyStats"
-    },
-    {
-      "index_type": "i64",
-      "keys_names": [
-        "currency"
-      ],
-      "keys_types": [
-        "uint64"
-      ],
+  "tables": [{
       "name": "accounts",
-      "type": "CurrencyAccount"
+      "type": "account",
+      "index_type": "i64",
+      "key_names" : ["currency"],
+      "key_types" : ["uint64"]
+    },{
+      "name": "stat",
+      "type": "currency_stats",
+      "index_type": "i64",
+      "key_names" : ["currency"],
+      "key_types" : ["uint64"]
     }
-  ]
+  ],
+  "ricardian_clauses": [],
+  "abi_extensions": []
 }

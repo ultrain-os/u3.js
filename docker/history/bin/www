@@ -1,30 +1,19 @@
-#!/usr/bin/env node
-
 /**
  * Module dependencies.
  */
-
-var app = require('../app');
-var debug = require('debug')('ultrain-rest-api:server');
-var http = require('http');
-var schedule = require('node-schedule');
-var washHolderBalance = require('../api/schedule');
-var restoreProducer = require('../api/schedule/producers');
+const app = require('../app');
+const debug = require('debug')('ultrain-rest-api:server');
+const http = require('http');
+const schedule = require('node-schedule');
+const washHolderBalance = require('../api/schedule');
+const moment = require('moment');
 
 var rule = new schedule.RecurrenceRule();
-rule.second = 10;
+rule.second = 30;
 
 var j = schedule.scheduleJob(rule, function () {
-  console.log('washing holder balance at：', new Date());
+  console.log('Washing holder balance at：', new Date());
   washHolderBalance();
-});
-
-var restoreProducerRule = new schedule.RecurrenceRule();
-restoreProducerRule.minute = 10;
-restoreProducer();
-schedule.scheduleJob(restoreProducerRule, function () {
-  console.log('restore producers：', new Date());
-  restoreProducer();
 });
 
 /**

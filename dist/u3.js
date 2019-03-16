@@ -1135,7 +1135,6 @@ var _regenerator2 = _interopRequireDefault(_regenerator);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /** @namespace history*/
-
 var defaultConfig = require("../src/config");
 var httpEndpointHistory = require("./config").httpEndpointHistory;
 
@@ -1412,7 +1411,7 @@ function getAllAccounts(page, pageSize, queryParams, sortParams) {
  * @example
  * import {getAllTxs} from "u3.js/src";
  * const u3 = createU3(config)
- * let query = { $and: [{ "actions.0.account": "ben" }, { $or: [{ "actions.0.data.id": 1257 }, { "actions.0.data.id": "1257" }] }] };
+ * let query = { $and: [{ "actions.0.account": "user.11.111" }, { $or: [{ "actions.0.data.id": 1257 }, { "actions.0.data.id": "1257" }] }] };
  * u3.getAllTxs({
     'page': 1,
     'pageSize': 10,
@@ -1915,13 +1914,13 @@ function getCreateAccountByName(name) {
  * json structure:
  * {
       "_id": "5be2ccfe44ed468a4c33150c",
-      "account": "ben",
+      "account": "user.11.111",
       "symbol": "BJMZ",
       "__v": 0,
       "createdAt": "2018-11-07T11:31:10.065Z",
       "decimals": 4,
       "issue_time": "2018-11-07T11:30:57.654Z",
-      "issuer": "ben",
+      "issuer": "user.11.111",
       "max_supply": "10000000.0000",
       "supply": "10000000.0000",
       "updatedAt": "2018-11-08T01:51:10.074Z",
@@ -1948,18 +1947,18 @@ function getAllTokens(page, pageSize, queryParams, sortParams) {
  * @example
  * import {createU3} from "u3.js/src";
  * const u3 = createU3(config)
- * u3.getTokenBySymbol("ZTPJ","ben")
+ * u3.getTokenBySymbol("ZTPJ","user.11.111")
  *
  * json structure:
  * {
     "_id": "5be2ccc244ed468a4c331487",
-    "account": "ben",
+    "account": "user.11.111",
     "symbol": "ZTPJ",
     "__v": 0,
     "createdAt": "2018-11-07T11:30:10.057Z",
     "decimals": 4,
     "issue_time": "2018-11-07T11:29:57.777Z",
-    "issuer": "ben",
+    "issuer": "user.11.111",
     "max_supply": "10000000.0000",
     "supply": "10000000.0000",
     "updatedAt": "2018-11-08T01:51:10.049Z",
@@ -2006,8 +2005,8 @@ function getBaseInfo() {
  * [
  {
         "_id": "5be2ccfe44ed468a4c331510",
-        "holder_account": "ben",
-        "token_account": "ben",
+        "holder_account": "user.11.111",
+        "token_account": "user.11.111",
         "token_symbol": "BJMZ",
         "__v": 0,
         "createdAt": "2018-11-07T11:31:10.070Z",
@@ -2034,15 +2033,15 @@ function getBalanceByAccount(account) {
  * u3.getHoldersBySymbol({
     'page': 1,
     'pageSize': 10,
-    'queryParams': {"token_account":"ben","token_symbol":"BJMZ"},
+    'queryParams': {"token_account":"user.11.111","token_symbol":"BJMZ"},
     'sortParams': { current_balance: -1 }
  * })
  *
  * json structure:
  * {
       "_id": "5be2ccfe44ed468a4c331510",
-      "holder_account": "ben",
-      "token_account": "ben",
+      "holder_account": "user.11.111",
+      "token_account": "user.11.111",
       "token_symbol": "BJMZ",
       "__v": 0,
       "createdAt": "2018-11-07T11:31:10.070Z",
@@ -2075,7 +2074,7 @@ function getHoldersBySymbol(page, pageSize, queryParams, sortParams) {
  * u3.getHoldersBySymbol({
     'page': 1,
     'pageSize': 10,
-    'queryParams': {"token_account":"ben","token_symbol":"BJMZ"},
+    'queryParams': {"token_account":"user.11.111","token_symbol":"BJMZ"},
     'sortParams': { current_balance: -1 }
  * })
  *
@@ -2259,7 +2258,7 @@ var defaultSignProvider = function defaultSignProvider(u3, config) {
  * @returns {Promise<*>}
  */
 function deploy(contract, account, options) {
-  var wasm, abi, tr;
+  var wasm, abi, abi_obj, tr;
   return _regenerator2.default.async(function deploy$(_context) {
     while (1) {
       switch (_context.prev = _context.next) {
@@ -2267,28 +2266,34 @@ function deploy(contract, account, options) {
           _context.prev = 0;
           wasm = fs.readFileSync(path.resolve(process.cwd(), contract + ".wasm"));
           abi = fs.readFileSync(path.resolve(process.cwd(), contract + ".abi"));
-          _context.next = 5;
+          abi_obj = JSON.parse(abi);
+
+          abi_obj.actions.forEach(function (action) {
+            if (!action.ability) action.ability = "normal";
+          });
+
+          _context.next = 7;
           return _regenerator2.default.awrap(this.transaction("ultrainio", function (c) {
             c.setcode(account, 0, 0, wasm);
-            c.setabi(account, JSON.parse(abi));
+            c.setabi(account, abi_obj);
           }, options));
 
-        case 5:
+        case 7:
           tr = _context.sent;
           return _context.abrupt("return", tr);
 
-        case 9:
-          _context.prev = 9;
+        case 11:
+          _context.prev = 11;
           _context.t0 = _context["catch"](0);
 
           logger.error(_context.t0);
 
-        case 12:
+        case 14:
         case "end":
           return _context.stop();
       }
     }
-  }, null, this, [[0, 9]]);
+  }, null, this, [[0, 11]]);
 }
 
 /**
@@ -2340,31 +2345,6 @@ function createUser(params, options) {
 }
 
 /**
- * query resource detail of an account
- * @param name  account who want to query resource
- * @returns {Promise<*>}
- */
-function queryResource(name) {
-  return _regenerator2.default.async(function queryResource$(_context3) {
-    while (1) {
-      switch (_context3.prev = _context3.next) {
-        case 0:
-          return _context3.abrupt("return", this.getTableRecords({
-            code: "ultrainio",
-            scope: name,
-            table: "reslease",
-            json: true
-          }));
-
-        case 1:
-        case "end":
-          return _context3.stop();
-      }
-    }
-  }, null, this);
-}
-
-/**
  * offline sign
  * @param unsigned_transaction
  * @param privateKeyOrMnemonic
@@ -2374,9 +2354,9 @@ function queryResource(name) {
 function sign(unsigned_transaction, privateKeyOrMnemonic) {
   var chainId = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : "cf057bbfb72640471fd910bcb67639c22df9f92470936cddc1ade0e2f2e7dc4f";
   var privateKey, isValidPrivateKey, result, txObject, buf, chainIdBuf, signBuf;
-  return _regenerator2.default.async(function sign$(_context4) {
+  return _regenerator2.default.async(function sign$(_context3) {
     while (1) {
-      switch (_context4.prev = _context4.next) {
+      switch (_context3.prev = _context3.next) {
         case 0:
           assert(unsigned_transaction, "unsigned transaction required");
           assert(privateKeyOrMnemonic, "privateKeyOrMnemonic required");
@@ -2398,11 +2378,11 @@ function sign(unsigned_transaction, privateKeyOrMnemonic) {
           buf = Fcbuffer.toBuffer(this.fc.structs.transaction, txObject);
           chainIdBuf = new Buffer(chainId, "hex");
           signBuf = Buffer.concat([chainIdBuf, buf, new Buffer(new Uint8Array(32))]);
-          return _context4.abrupt("return", ecc.sign(signBuf, privateKey));
+          return _context3.abrupt("return", ecc.sign(signBuf, privateKey));
 
         case 12:
         case "end":
-          return _context4.stop();
+          return _context3.stop();
       }
     }
   }, null, this);
@@ -2456,15 +2436,15 @@ function _throwOnDuplicate(o1, o2, msg) {
  */
 function _checkChainId(api, chainId) {
   var info;
-  return _regenerator2.default.async(function _checkChainId$(_context5) {
+  return _regenerator2.default.async(function _checkChainId$(_context4) {
     while (1) {
-      switch (_context5.prev = _context5.next) {
+      switch (_context4.prev = _context4.next) {
         case 0:
-          _context5.next = 2;
+          _context4.next = 2;
           return _regenerator2.default.awrap(api.getChainInfo());
 
         case 2:
-          info = _context5.sent;
+          info = _context4.sent;
 
           if (info.chain_id !== chainId) {
             logger.warn("WARN: chainId mismatch, signatures will not match transaction authority. " + ("expected " + chainId + " !== actual " + info.chain_id));
@@ -2472,7 +2452,7 @@ function _checkChainId(api, chainId) {
 
         case 4:
         case "end":
-          return _context5.stop();
+          return _context4.stop();
       }
     }
   }, null, this);
@@ -2526,7 +2506,6 @@ var createU3 = function createU3() {
       fromBuffer: fromBuffer,
       toBuffer: toBuffer
     },
-    queryResource: queryResource,
     deploy: deploy,
     createUser: createUser,
     sign: sign
@@ -2541,7 +2520,6 @@ var createU3 = function createU3() {
 
 module.exports = {
   createU3: createU3,
-  queryResource: queryResource,
   format: format,
   ecc: ecc,
   Fcbuffer: Fcbuffer,
@@ -3528,8 +3506,12 @@ function fetchMethod(methodName, url, definition) {
 
                 resolve(res.data);
               }).catch(function (err) {
-
-                var message = err.response.data.error.details[0];
+                var message = "";
+                if (err.message) {
+                  message = err.message;
+                } else if (err.response && err.response.data && err.response.data.error) {
+                  message = err.response.data.error.details[0];
+                }
                 logger.error("Error[" + methodName + "]result callback:" + message);
 
                 reject(message);
@@ -3699,19 +3681,30 @@ var resolve = function resolve(file) {
   return path.resolve(__dirname, file);
 };
 
+function mkdirsSync(dirname) {
+  if (fs.existsSync(dirname)) {
+    return true;
+  } else {
+    if (mkdirsSync(path.dirname(dirname))) {
+      fs.mkdirSync(dirname);
+      return true;
+    }
+  }
+}
+
 function Logger(config) {
 
   var LOG_DIR = resolve(config.directory);
   var consoleLogging = config.console || false;
   var fileLogging = config.file || false;
   var printFormat = format.printf(function (info) {
-    return info.timestamp + " - " + info.level + ": " + info.message;
+    return info.timestamp + " [" + info.label + "] - " + info.level + ": " + info.message;
   });
 
   var silent = !consoleLogging && !fileLogging || false;
   if (fileLogging) {
     if (!fs.existsSync(LOG_DIR)) {
-      fs.mkdirSync(LOG_DIR);
+      mkdirsSync(LOG_DIR);
     }
   }
 
@@ -3739,7 +3732,7 @@ function Logger(config) {
     exitOnError: false,
     level: config.level || "info",
     silent: silent,
-    format: format.combine(format.colorize(), format.timestamp({ format: "YYYY-MM-DD HH:mm:ss" }), printFormat),
+    format: format.combine(format.label({ label: 'U3' }), format.colorize(), format.timestamp({ format: "YYYY-MM-DD HH:mm:ss" }), printFormat),
     transports: transportArr
   });
   return Logger;
@@ -4740,7 +4733,8 @@ module.exports={
     "fields": {
       "name": "action_name",
       "type": "type_name",
-      "ricardian_contract": "string"
+      "ricardian_contract": "string",
+      "ability":"string"
     }
   },
   "block_header": {
@@ -5557,7 +5551,6 @@ function WriteApi(Network, network, config, Transaction) {
             assert.equal((0, _typeof3.default)(rawTx.ref_block_prefix), "number", "expecting ref_block_prefix number");
 
             rawTx = Object.assign({}, rawTx);
-
             rawTx.actions = arg.actions;
 
             // Resolve shorthand, queue requests
@@ -96291,7 +96284,7 @@ function extend() {
 },{}],523:[function(require,module,exports){
 module.exports={
   "name": "u3.js",
-  "version": "0.2.25",
+  "version": "0.3.0",
   "description": "A general library wrapped in javascript for interacting with Ultrain",
   "main": "index.js",
   "directories": {
@@ -96480,18 +96473,28 @@ const fs = require("fs");
 const path = require("path");
 const resolve = file => path.resolve(__dirname, file);
 
+function mkdirsSync(dirname) {
+  if (fs.existsSync(dirname)) {
+    return true;
+  } else {
+    if (mkdirsSync(path.dirname(dirname))) {
+      fs.mkdirSync(dirname);
+      return true;
+    }
+  }
+}
 
 function Logger(config) {
 
   const LOG_DIR = resolve(config.directory);
   const consoleLogging = config.console || false;
   const fileLogging = config.file || false;
-  const printFormat = format.printf(info => `${info.timestamp} - ${info.level}: ${info.message}`);
+  const printFormat = format.printf(info => `${info.timestamp} [${info.label}] - ${info.level}: ${info.message}`);
 
   let silent = (!consoleLogging && !fileLogging) || false;
   if (fileLogging) {
     if (!fs.existsSync(LOG_DIR)) {
-      fs.mkdirSync(LOG_DIR);
+      mkdirsSync(LOG_DIR);
     }
   }
 
@@ -96521,6 +96524,7 @@ function Logger(config) {
     level: config.level || "info",
     silent,
     format: format.combine(
+      format.label({ label: 'U3' }),
       format.colorize(),
       format.timestamp({ format: "YYYY-MM-DD HH:mm:ss" }),
       printFormat

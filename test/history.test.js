@@ -41,6 +41,11 @@ describe("history", async () => {
     assert.ok(rs);
   });
 
+  it("getExistAccount", async () => {
+    const acc = await u3.getExistAccount('benyasin1112');
+    assert.ok(acc);
+  });
+
   it("getActionsByAccount", async () => {
     var requestData = {
       "page": 1,
@@ -108,7 +113,7 @@ describe("history", async () => {
   });
 
   it("getTxByData", async () => {
-    //let rs = await u3.getAllTxs(1, 1, { "actions.0.data.from": "ben" } }, { _id: -1 });
+    //let rs = await u3.getAllTxs(1, 1, { "actions.0.data.from": "user.11.111" } }, { _id: -1 });
     //same as below
     let query = { $and: [{ "actions.0.account": "ufotrackuser" }, { $or: [{ "actions.0.data.id": 1257 }, { "actions.0.data.id": "1257" }] }] };
     let rs = await u3.getAllTxs(1, 2, query, { _id: -1 });
@@ -116,7 +121,7 @@ describe("history", async () => {
   });
 
   it("getTokenBySymbol", async () => {
-    let rs = await u3.getTokenBySymbol("ZTPJ", "ben");
+    let rs = await u3.getTokenBySymbol("ZTPJ", "user.11.111");
     console.log(JSON.stringify(rs, null, 2));
     assert.ok(rs);
   });
@@ -128,14 +133,14 @@ describe("history", async () => {
   });
 
   it("getBalanceByAccount", async () => {
-    let rs = await u3.getBalanceByAccount("ben");
+    let rs = await u3.getBalanceByAccount("user.11.111");
     console.log(JSON.stringify(rs, null, 2));
     assert.ok(rs);
   });
 
   it("getHoldersBySymbol", async () => {
     let rs = await u3.getHoldersBySymbol(1, 10, {
-      token_account: "ben",
+      token_account: "user.11.111",
       token_symbol: "BJMZ"
     }, { current_balance: -1 });
     console.log(JSON.stringify(rs, null, 2));

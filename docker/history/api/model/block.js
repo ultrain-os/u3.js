@@ -4,6 +4,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const async = require('async');
+const moment = require('moment');
 
 let BlockSchema = new Schema({
     block_id: String,
@@ -31,6 +32,57 @@ BlockSchema.static('getBlocksByContract', async function (block_num, account, co
 BlockSchema.static('getTrxNumByBlockNum', async function (block_num) {
     let rs = await this.aggregate([{ "$match": { "block_num": parseInt(block_num) } }, { "$project": { "trx_num": { "$size": "$block.transactions" } } }]);
     return rs[0].trx_num;
+})
+
+BlockSchema.static('statisticalByHr', async function () {
+    const currentDate = new Date();
+    const start = `${currentDate.getUTCFullYear()}-${currentDate.getUTCMonth() + 1}-${currentDate.getUTCDate()}T00:00:00Z`;
+    let rs = await this.aggregate([
+        {
+            $match: {
+                "block.proposer": { $ne: '' },
+                createdAt: { $gte: new Date(start) }
+            }
+        },
+        { $project: { yearMonthDayHr: { $dateToString: { format: "%Y-%m-%d %H", timezone: "+08", date: "$createdAt" } } } },
+        { $group: { _id: "$yearMonthDayHr", count: { $sum: 1 } } },
+        { $sort: { _id: 1 } }
+    ]);
+    return rs;
+})
+
+BlockSchema.static('statisticalByDay', async function (start, end) {
+    // const currentDate = new Date();
+    // const start = `${currentDate.getUTCFullYear()}-${currentDate.getUTCMonth() + 1}-${currentDate.getUTCDate()}T00:00:00Z`;
+    let rs = await this.aggregate([
+        {
+            $match: {
+                "block.proposer": { $ne: '' },
+                createdAt: { $gte: new Date(start), $lt: new Date(moment(end, 'YYYY-MM-DD').add(1, 'days').format('YYYY-MM-DD')) }
+            }
+        },
+        { $project: { yearMonthDayHr: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } } } },
+        { $group: { _id: "$yearMonthDayHr", count: { $sum: 1 } } },
+        { $sort: { _id: 1 } }
+    ]);
+    return rs;
+})
+
+BlockSchema.static('statisticalAwardByProposer', async function (proposer) {
+    const currentDate = new Date();
+    const start = `${currentDate.getUTCFullYear()}-${currentDate.getUTCMonth() + 1}-${currentDate.getUTCDate() - 6}T00:00:00Z`;
+    let rs = await this.aggregate([
+        {
+            $match: {
+                "block.proposer": proposer || { $ne: '' },
+                createdAt: { $gte: new Date(start) }
+            }
+        },
+        { $project: { yearMonthDay: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } } } },
+        { $group: { _id: "$yearMonthDay", count: { $sum: 1 } } },
+        { $sort: { _id: 1 } }
+    ]);
+    return rs;
 })
 
 BlockSchema.static('getProposerList', async function (page, pageSize) {

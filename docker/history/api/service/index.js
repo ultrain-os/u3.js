@@ -1,22 +1,21 @@
-const Accounts = require('../model/account');
-const Actions = require('../model/action');
-const Blocks = require('../model/block');
-const Txs = require('../model/transaction');
-const TxTraces = require('../model/transaction_traces');
-const Tokens = require('../model/token');
-const Balances = require('../model/balance');
-const Producers = require('../model/producer');
-const dbHelper = require('../../utils/dbHelper');
-const { createU3 } = require('u3.js/src');
-const config = require('../../config.json');
-const u3 = createU3();
+const Accounts = require("../model/account");
+const Actions = require("../model/action");
+const Blocks = require("../model/block");
+const Txs = require("../model/transaction");
+const TxTraces = require("../model/transaction_traces");
+const Tokens = require("../model/token");
+const Balances = require("../model/balance");
+const dbHelper = require("../../utils/dbHelper");
+const { createU3 } = require("u3.js/src");
+const config = require("../../config.json");
+const u3 = createU3(config.chain);
 
 /**
  * getContractByName
  * @param { String } name name of contract，eg. utrio.system
  * @returns { Object }
  */
-exports.getContractByName = async function (name) {
+exports.getContractByName = async function(name) {
   const rs = await Accounts.getContractByName(name);
   return JSON.parse(JSON.stringify(rs));
 };
@@ -25,7 +24,7 @@ exports.getContractByName = async function (name) {
  * getContracts
  * @returns {Array}
  */
-exports.getContracts = async function (page, pageSize, queryParams, sortParams) {
+exports.getContracts = async function(page, pageSize, queryParams, sortParams) {
   queryParams = Object.assign(queryParams, { abi: { $exists: true } });
   const rs = await dbHelper.pageQuery(
     page,
@@ -45,7 +44,7 @@ exports.getContracts = async function (page, pageSize, queryParams, sortParams) 
  * @param {Object} sortParams sort param
  * @returns {Object}
  */
-exports.getAllBlocks = async function (page, pageSize, queryParams, sortParams) {
+exports.getAllBlocks = async function(page, pageSize, queryParams, sortParams) {
   let rs = await dbHelper.pageQuery(
     page,
     pageSize,
@@ -57,8 +56,8 @@ exports.getAllBlocks = async function (page, pageSize, queryParams, sortParams) 
       block_num: 1,
       createdAt: 1,
       irreversible: 1,
-      'block.producer': 1,
-      'block.proposer': 1,
+      "block.producer": 1,
+      "block.proposer": 1,
       updatedAt: 1
     }
   );
@@ -83,7 +82,7 @@ exports.getAllBlocks = async function (page, pageSize, queryParams, sortParams) 
  * @param {Object} sortParams sort param
  * @returns {Object}
  */
-exports.getAllAccounts = async function (
+exports.getAllAccounts = async function(
   page,
   pageSize,
   queryParams,
@@ -100,15 +99,19 @@ exports.getAllAccounts = async function (
   let pageInfo = JSON.parse(JSON.stringify(rs));
   let accounts = pageInfo.results;
 
-  for (let i in accounts) {
-    let balance = await u3.getCurrencyBalance({
-      code: 'utrio.token',
-      account: accounts[i].name,
-      symbol: defaultConfig.symbol
-    });
+  const balances = await Promise.all(
+    accounts.map(account => u3
+      .getCurrencyBalance({
+        code: "utrio.token",
+        account: account.name,
+        symbol: "UGAS"
+      })
+      .catch(() => []))
+  );
 
-    accounts[i].balance = balance[0];
-  }
+  accounts.forEach((item, index) => {
+    item.balance = balances[index][0];
+  });
 
   return pageInfo;
 };
@@ -120,20 +123,21 @@ exports.getAllAccounts = async function (
  * @param {*} queryParams
  * @param {*} sortParams
  */
-exports.getAllAccountsForClow = async function (page, pageSize, queryParams, sortParams) {
+exports.getAllAccountsForClow = async function(page, pageSize, queryParams, sortParams) {
   const excludeUser = [
-    'ultrainio',
-    'utrio.code',
-    'ultrio.bpay',
-    'utrio.msig',
-    'utrio.names',
-    'utrio.ram',
-    'utrio.ramfee',
-    'utrio.saving',
-    'utrio.stake',
-    'utrio.token',
-    'utrio.vpay',
-    'exchange'
+    "ultrainio",
+    "utrio.code",
+    "ultrio.bpay",
+    "utrio.msig",
+    "utrio.names",
+    "utrio.ram",
+    "utrio.ramfee",
+    "utrio.saving",
+    "utrio.stake",
+    "utrio.token",
+    "utrio.vpay",
+    "exchange",
+    "utrio.fee"
   ];
 
   if (queryParams.name) {
@@ -156,7 +160,7 @@ exports.getAllAccountsForClow = async function (page, pageSize, queryParams, sor
  * get account by name
  * @param { String } name
  */
-exports.getAccountByName = async function (name) {
+exports.getAccountByName = async function(name) {
   const rs = await Accounts.getAccountByName(name);
   return JSON.parse(JSON.stringify(rs));
 };
@@ -169,7 +173,7 @@ exports.getAccountByName = async function (name) {
  * @param {Object} sortParams sort param
  * @returns {Object}
  */
-exports.getAllTxs = async function (page, pageSize, queryParams, sortParams) {
+exports.getAllTxs = async function(page, pageSize, queryParams, sortParams) {
   const rs = await dbHelper.pageQuery(
     page,
     pageSize,
@@ -187,7 +191,7 @@ exports.getAllTxs = async function (page, pageSize, queryParams, sortParams) {
  * @param {String} trx_id id of tx
  * @returns {Object}
  */
-exports.getTxByTxId = async function (trx_id) {
+exports.getTxByTxId = async function(trx_id) {
   const rs = await Txs.getTxByTxId(trx_id);
   return JSON.parse(JSON.stringify(rs));
 };
@@ -197,7 +201,7 @@ exports.getTxByTxId = async function (trx_id) {
  * @param {String} trx_id transaction_id
  * @returns {Object}
  */
-exports.getActionsByTxid = async function (trx_id) {
+exports.getActionsByTxid = async function(trx_id) {
   const rs = await Actions.getActionsByTxid(trx_id);
   return JSON.parse(JSON.stringify(rs));
 };
@@ -206,7 +210,7 @@ exports.getActionsByTxid = async function (trx_id) {
  * get actions by account
  * @param {String} account name of account eg. test1
  */
-exports.getActionsByAccount = async function (
+exports.getActionsByAccount = async function(
   page,
   pageSize,
   queryParams,
@@ -215,9 +219,9 @@ exports.getActionsByAccount = async function (
   // const typeList = ['']
   queryParams = {
     $or: [
-      { 'data.to': queryParams.account_name },
-      { 'data.receiver': queryParams.account_name },
-      { 'authorization.actor': queryParams.account_name }
+      { "data.to": queryParams.account_name },
+      { "data.receiver": queryParams.account_name },
+      { "authorization.actor": queryParams.account_name }
     ]
   };
   const rs = await dbHelper.pageQuery(
@@ -248,7 +252,7 @@ exports.getActionsByAccount = async function (
  * @param {*} block_num
  * @returns {Object}
  */
-exports.getTxsByBlockNum = async function (
+exports.getTxsByBlockNum = async function(
   page,
   pageSize,
   queryParams,
@@ -271,7 +275,7 @@ exports.getTxsByBlockNum = async function (
  * @param { String } contract contract name eg. utrio.token
  * @param { String } contract_method contract method eg. transfer
  */
-exports.getBlocksByContract = async function (
+exports.getBlocksByContract = async function(
   block_num,
   account,
   contract,
@@ -291,7 +295,7 @@ exports.getBlocksByContract = async function (
  * @param { String } tx_id
  * @returns { Object }
  */
-exports.getTxTraceByTxid = async function (tx_id) {
+exports.getTxTraceByTxid = async function(tx_id) {
   const rs = await TxTraces.getTxTraceByTxid(tx_id);
   return JSON.parse(JSON.stringify(rs));
 };
@@ -301,18 +305,18 @@ exports.getTxTraceByTxid = async function (tx_id) {
  * @param { String | Number} query eg. block_num,trx_hash,account
  * @param {Object} pageInfo
  */
-exports.search = async function (query) {
+exports.search = async function(query) {
   let type;
   let rs;
   if (query.length == 64) {
-    type = 'trx';
+    type = "trx";
     rs = await TxTraces.getTxTraceByTxid(query);
-  } else if (isNaN(query)) {
+  } else if (isNaN(query) || (!isNaN(query) && query.length == 12)) {
     rs = await Accounts.getAccountByName(query);
-    type = 'account';
+    type = "account";
   } else {
     rs = await Blocks.getBlockByBlockNum(query);
-    type = 'block';
+    type = "block";
   }
 
   return {
@@ -325,8 +329,8 @@ exports.search = async function (query) {
  * 根据用户名查询用户创建者
  * @param {String} name
  */
-exports.getCreateAccountByName = async function (name) {
-  let rs = await Actions.findOne({ 'data.name': name, name: 'newaccount' });
+exports.getCreateAccountByName = async function(name) {
+  let rs = await Actions.findOne({ "data.name": name, name: "newaccount" });
   if (!rs) {
     return {};
   }
@@ -350,56 +354,36 @@ exports.getCreateAccountByName = async function (name) {
  * headblock,transactions,tps,accounts,contracts,tokens
  * }
  */
-exports.getBaseInfo = () => {
-  return new Promise((resolve, reject) => {
-    u3.getChainInfo(async (err, info) => {
-      if (err) {
-        reject({ err });
-      }
-      // tx_num
-      let tx_num = await Txs.countDocuments({});
+exports.getBaseInfo = async () => {
+  let info = await u3.getChainInfo();
 
-      // headblock
-      let head_block_num = info.head_block_num;
+  // tx_num
+  let tx_num = await Txs.countDocuments({});
 
-      // accounts
-      // let account_num = await Accounts.countDocuments({
-      //     "abi": { $exists: false }
-      // });
+  // headblock
+  let head_block_num = info.head_block_num;
 
-      let account_num = await Accounts.countDocuments({});
+  let account_num = await Accounts.countDocuments({});
 
-      // contracts
-      // let contract_num = await Accounts.countDocuments({
-      //     $and: [
-      //         { "abi": { $exists: true } },
-      //         { "abi.proposal": { $exists: false } }
-      //     ]
-      // });
-
-      let contract_num = await Accounts.countDocuments({
-        $and: [{ abi: { $exists: true } }]
-      });
-
-      // tokens
-      let token_num = await Tokens.countDocuments({});
-
-      // tps (tx_num of latest block / 10)
-      let blockInfo = await Blocks.findOne({}).sort({ _id: -1 });
-      let tps = blockInfo.block.transactions.length / 10;
-
-      let baseInfo = {
-        head_block_num,
-        tx_num,
-        tps,
-        token_num,
-        account_num,
-        contract_num
-      };
-
-      resolve(baseInfo);
-    });
+  let contract_num = await Accounts.countDocuments({
+    $and: [{ abi: { $exists: true } }]
   });
+
+  // tokens
+  let token_num = await Tokens.countDocuments({});
+
+  // tps (tx_num of latest block / 10)
+  let blockInfo = await Blocks.findOne({}).sort({ _id: -1 });
+  let tps = (blockInfo && blockInfo.block) ? blockInfo.block.transactions.length / 10 : 0;
+
+  return {
+    head_block_num,
+    tx_num,
+    tps,
+    token_num,
+    account_num,
+    contract_num
+  };
 };
 
 /**
@@ -410,7 +394,7 @@ exports.getBaseInfo = () => {
  * @param {Object} sortParams sort param
  * @returns {Object}
  */
-exports.getAllTokens = async function (page, pageSize, queryParams, sortParams) {
+exports.getAllTokens = async function(page, pageSize, queryParams, sortParams) {
   const rs = await dbHelper.pageQuery(
     page,
     pageSize,
@@ -471,7 +455,7 @@ exports.getAllBlocksHeader = async (page, pageSize, queryParams, sortParams) => 
     queryParams,
     sortParams,
     {
-      'block.transactions': 0
+      "block.transactions": 0
     }
   );
 
@@ -479,34 +463,3 @@ exports.getAllBlocksHeader = async (page, pageSize, queryParams, sortParams) => 
 
   return pageInfo;
 };
-
-exports.getProposerList = async (page, pageSize, queryParams, sortParams) => {
-  const rs = await dbHelper.pageQuery(
-    page,
-    pageSize,
-    Producers,
-    queryParams,
-    sortParams
-  );
-  let pageInfo = JSON.parse(JSON.stringify(rs));
-
-  return pageInfo;
-};
-
-/**
- * 挖矿收益
- */
-exports.getAward = async () => {
-  const currentDate = new Date();
-  const start = `${currentDate.getUTCFullYear()}-${currentDate.getUTCMonth() + 1}-${currentDate.getUTCDate()}T00:00:00Z`;
-  const end = `${currentDate.getUTCFullYear()}-${currentDate.getUTCMonth() + 1}-${currentDate.getUTCDate() + 1}T00:00:00Z`;
-
-  // 当日收益
-  const currentBlocks = await Blocks.countDocuments({ 'block.proposer': { $ne: '' }, 'createdAt': { "$gte": new Date(start), "$lt": new Date(end) } });
-  // 总收益
-  const totalBlocks = await Blocks.countDocuments({ 'block.proposer': { $ne: '' } });
-  return {
-    current: currentBlocks * config.award,
-    total: totalBlocks * config.award
-  }
-}

@@ -55,7 +55,7 @@ function Logger(config) {
     level: config.level || "info",
     silent,
     format: format.combine(
-      format.label({ label: 'U3' }),
+      format.label({ label: 'History' }),
       format.colorize(),
       format.timestamp({ format: "YYYY-MM-DD HH:mm:ss" }),
       printFormat
