@@ -141,8 +141,6 @@ async function sign(unsigned_transaction, privateKeyOrMnemonic, chainId = "cf057
   }
 
   let txObject = unsigned_transaction.transaction.transaction;
-  delete txObject.context_free_actions;
-  delete txObject.transaction_extensions;
 
   const buf = Fcbuffer.toBuffer(this.fc.structs.transaction, txObject);
   const chainIdBuf = new Buffer(chainId, "hex");

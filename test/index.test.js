@@ -7,9 +7,6 @@ const defaultConfig = require("../src/config");
 const U3Utils = require("u3-utils/src");
 const { createU3, format, ecc, listener } = require("../src");
 
-let account = "ben";
-let account2 = "bob";
-
 const readKeysFromFiles = () => {
   let accounts = ["ben", "john", "tony", "jack", "bob", "tom", "jerry", "alice"];
   let keys = [];
@@ -36,6 +33,11 @@ const randomAsset = () => {
 
 const users = readKeysFromFiles();
 const customCurrency = randomAsset();
+
+const account1 = "ben";
+const account2 = "bob";
+const account1_pk = users[account1].private_key;
+const account2_pk = users[account2].private_key;
 
 describe("u3.js", () => {
 
@@ -107,22 +109,21 @@ describe("u3.js", () => {
     // 3.1 deploy contract only to side chain
     it("deploy contract", async () => {
       const u3 = createU3();
-      const tr = await u3.deploy(path.resolve(__dirname, "../contracts/token/token"), "ben", { keyProvider: users["ben"].private_key });
+      const tr = await u3.deploy(path.resolve(__dirname, "../contracts/token/token"), account1, { keyProvider: account1_pk });
       assert.equal(tr.transaction.transaction.actions.length, 2);
     });
 
     //3.2 get contract detail (wast,abi)
     it("getContract", async () => {
       const u3 = createU3();
-      const contract = await u3.getContract(account);
+      const contract = await u3.getContract(account1);
       assert.equal(contract.abi.version, "ultraio:1.0:UIP06");
     });
 
     //3.3 get abi
     it("getAbi", async () => {
-      const config = { keyProvider: users[account].private_key };
       const u3 = createU3();
-      const abi = await u3.getAbi(account);
+      const abi = await u3.getAbi(account1);
       assert.ok(!isEmpty(abi));
     });
 
@@ -132,60 +133,26 @@ describe("u3.js", () => {
       console.log("created token named: " + customCurrency);
 
       //these three method can user.11.111 called separately or together
-      await u3.transaction(account, token => {
-        token.create(account, "10000000.0000 " + customCurrency);
-        token.issue(account, "10000000.0000 " + customCurrency, "issue");
-      }, { keyProvider: users[account].private_key });
+      await u3.transaction(account1, token => {
+        token.create(account1, "10000000.0000 " + customCurrency);
+        token.issue(account1, "10000000.0000 " + customCurrency, "issue");
+      }, { keyProvider: account1_pk });
 
-      U3Utils.test.wait(10000);
+      await U3Utils.test.wait(10000);
 
-      //query currency stats
       await u3.getCurrencyStats({
-        "code": account,
+        "code": account1,
         "symbol": customCurrency
       });
-
-      //before transfer
-      await u3.getCurrencyBalance({
-        code: account,
-        symbol: customCurrency,
-        account: account
-      });
-      await u3.getCurrencyBalance({
-        code: account,
-        symbol: customCurrency,
-        account: account2
-      });
-
-      //do transfer (this is the UIP standard for transfer token)
-      const c = await u3.contract(account);
-      await c.transfer(account, account2, "1.0000 " + customCurrency, "", {
-        authorization: [account + `@active`],
-        keyProvider: users[account].private_key
-      });
-
-      //after transfer
-      await u3.getCurrencyBalance({
-        code: account,
-        symbol: customCurrency,
-        account: account
-      });
-      await u3.getCurrencyBalance({
-        code: account,
-        symbol: customCurrency,
-        account: account2
-      });
-
     });
 
     // 3.5 query token holder and token symbol when issued
     it("get table by scope", async () => {
-      const config = { keyProvider: users[account].private_key };
-      const u3 = createU3(config);
+      const u3 = createU3();
 
       //all holder accounts which held tokens created by the creator
       const holders_arr = await u3.getTableByScope({
-        code: account,//token creator
+        code: account1,//token creator
         table: "accounts" //token table name
       });
       for (let h in holders_arr.rows) {
@@ -195,7 +162,7 @@ describe("u3.js", () => {
 
       //all token symbols created by the creator
       const symbols_arr = await u3.getTableByScope({
-        code: account,//token creator
+        code: account1,//token creator
         table: "stat"//token table scope
       });
       for (let s in symbols_arr.rows) {
@@ -208,11 +175,18 @@ describe("u3.js", () => {
 
   // 4. transfer UGAS
   describe("transfer", () => {
-    it("transfer UGAS", async () => {
-      const keyProvider = [users[account].private_key];
+    it("globalConfig", async () => {
+      const keyProvider = [account1_pk];
       const u3 = createU3({ keyProvider });
       const c = await u3.contract("utrio.token");
-      const tr = await c.transfer(account, account2, "1.0000 " + defaultConfig.symbol, "");
+      const tr = await c.transfer(account1, account2, "1.0000 " + defaultConfig.symbol, "");
+      assert.equal(typeof tr.transaction_id, "string");
+    });
+
+    it("optionalConfig", async () => {
+      const u3 = createU3();
+      const c = await u3.contract("utrio.token");
+      const tr = await c.transfer(account1, account2, "1.0000 " + defaultConfig.symbol, "", { keyProvider: account1_pk });
       assert.equal(typeof tr.transaction_id, "string");
     });
   });
@@ -220,12 +194,9 @@ describe("u3.js", () => {
   // 5. blocks (10s per block)
   describe("blocks", () => {
     it("transaction confirm", async () => {
-      let account = "ben";
-      let account2 = "bob";
-      const keyProvider = [users[account].private_key];
-      const u3 = createU3({ keyProvider });
+      const u3 = createU3();
       const c = await u3.contract("utrio.token");
-      const result = await c.transfer(account, account2, "1.0000 " + defaultConfig.symbol, "");
+      const result = await c.transfer(account1, account2, "1.0000 " + defaultConfig.symbol, "", { keyProvider: account1_pk });
 
       //wait until block confirm
       let tx = await u3.getTxByTxId(result.transaction_id);
@@ -243,29 +214,17 @@ describe("u3.js", () => {
   // 6. sign (sign separately)
   describe("sign", () => {
     it("offline sign", async () => {
-      const config = { keyProvider: users[account].private_key };
-      const u3 = createU3(config);
-      const u3_offline = createU3({ sign: false, broadcast: false });
-
-      let symbol = "";
-      const symbols_arr = await u3.getTableByScope({
-        code: account,//token creator
-        table: "stat"//token table scope
-      });
-      for (let s in symbols_arr.rows) {
-        symbol = format.decodeSymbolName(symbols_arr.rows[s].scope);
-        console.log(symbol);
-        break;
-      }
-
       //using { sign: false, broadcast: false } to create a offline U3 instance and call some function
-      const tr = await u3_offline.contract(account);
-      const unsigned_transaction = await tr.transfer(account, account2, "1.0000 " + symbol, "", { authorization: [account + `@active`] });
-      let signature = await u3_offline.sign(unsigned_transaction, users[account].private_key, defaultConfig.chainId);
+      const u3_offline = createU3({ sign: false, broadcast: false });
+      const tr = await u3_offline.contract(account1);
+      const unsigned_transaction = await tr.transfer(account1, account2, "1.0000 " + customCurrency, "", { authorization: [account1 + `@active`] });
+      let signature = await u3_offline.sign(unsigned_transaction, account1_pk, defaultConfig.chainId);
       let signedTransaction = Object.assign({}, unsigned_transaction.transaction, { signatures: [signature] });
       //console.log(signedTransaction);
 
       //using {sign: true, broadcast: true} to create a online U3 instance and pushTx to chain
+      const config = { keyProvider: account1_pk };
+      const u3 = createU3(config);
       let processedTransaction = await u3.pushTx(signedTransaction);
       assert.equal(processedTransaction.transaction_id, unsigned_transaction.transaction_id);
     });
@@ -275,19 +234,21 @@ describe("u3.js", () => {
   describe("user", () => {
     const publicKey = "UTR6rBwNTWJSNMYu4ZLgEigyV5gM8hHiNinqejXT1dNGZa5xsbpCB";
 
-    // 7.1 can create user only main chain
+    // 7.1 create user only in the main chain
+    // We should call a 'empoweruser' method to async the user from the main chain to the side chain if in MainNet envirnment
     it("createUser", async () => {
-      const u3 = createU3({ keyProvider: users[account].private_key });
+      const u3 = createU3({ keyProvider: account1_pk });
       const name = randomName();
-
       let params = {
-        creator: account,
+        creator: account1,
         name: name,
         owner: publicKey,
         active: publicKey
       };
-
       await u3.createUser(params);
+
+      await U3Utils.test.wait(10000);
+
       const account_ = await u3.getAccountInfo({ account_name: name });
       assert.equal(account_.account_name, name);
     });
@@ -297,36 +258,31 @@ describe("u3.js", () => {
   // 8. transactions
   describe("transactions", () => {
 
-    const keyProvider = () => users[account].private_key;
-
     // 8.1 get accounts array by public key
     it("getKeyAccounts", async () => {
-      const u3 = createU3({ keyProvider });
-      const accounts = await u3.getKeyAccounts(users[account].public_key);
-      assert.ok(accounts.account_names.includes(account));
+      const u3 = createU3();
+      const accounts = await u3.getKeyAccounts(users[account1].public_key);
+      assert.ok(accounts.account_names.includes(account1));
     });
 
     // 8.2 get accountsInfo by name
     it("getAccountInfo", async () => {
       const u3 = createU3();
-      const account_ = await u3.getAccountInfo({ account_name: account });
-      assert.equal(account_.account_name, name);
+      const account_ = await u3.getAccountInfo({ account_name: account1 });
+      assert.equal(account_.account_name, account1);
     });
-
   });
 
   // 9. database query
   describe("database", () => {
 
-    const keyProvider = () => users[account].private_key;
-
     //9.1 Returns an object containing rows from the specified table.
     //before using it, you should know table and scope defined in the contract
     it("get table records", async () => {
-      const u3 = createU3({ keyProvider });
+      const u3 = createU3();
       const balance = await u3.getTableRecords({
         code: "utrio.token",//smart contract name
-        scope: account,//account name
+        scope: account1,//account name
         table: "accounts",//table name
         json: true
       });
@@ -338,19 +294,19 @@ describe("u3.js", () => {
       const u3 = createU3();
       const balance = await u3.getCurrencyBalance({
         code: "utrio.token",
-        account: account,
+        account: account1,
         symbol: defaultConfig.symbol
       });
       assert.ok(Array.isArray(balance));
       assert.equal(balance[0].split(" ").length, 2);
-      assert.equal(balance[0].split(" ")[1], "UGAS");
+      assert.equal(balance[0].split(" ")[1], defaultConfig.symbol);
     });
 
     //9.3 query currency's status
     it("get currency stats", async function() {
-      const u3 = createU3({ keyProvider });
+      const u3 = createU3();
       const stats = await u3.getCurrencyStats("utrio.token", defaultConfig.symbol);
-      assert.ok(stats.hasOwnProperty("UGAS"));
+      assert.ok(stats.hasOwnProperty(defaultConfig.symbol));
       assert.ok(stats["UGAS"].hasOwnProperty("supply"));
       assert.ok(stats["UGAS"].hasOwnProperty("max_supply"));
       assert.ok(stats["UGAS"].hasOwnProperty("issuer"));
@@ -362,16 +318,17 @@ describe("u3.js", () => {
 
     // 10.1 buy resource and query resource
     it("lease_and_query", async () => {
-
-      const name = account2;
-      const config = { keyProvider: users[account].private_key };
+      const config = { keyProvider: account1_pk };
       const u3 = createU3(config);
       const c = await u3.contract("ultrainio");
-      await c.resourcelease(account, name, 1, 2); // 1 slot for 2 days
 
-      await U3Utils.test.wait(5000);
+      //lease 1 slot for 2 days.
+      //the last parameter should be the name of the side chain.
+      await c.resourcelease(account1, account2, 1, 2, "ultrainio");
 
-      const account = await u3.getAccountInfo({ account_name: name });
+      await U3Utils.test.wait(10000);
+
+      const account = await u3.getAccountInfo({ account_name: account2 });
       assert.ok(account.chain_resource[0].lease_num > 0);
     });
   });
