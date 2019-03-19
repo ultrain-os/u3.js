@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 module.exports = {
 
@@ -38,44 +38,27 @@ module.exports = {
    @see {headers}
    @example eos.createTransaction(60, (error, headers) => {})
    */
-};function createTransaction(api) {
-  var expireInSeconds = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 60;
-  var callback = arguments[2];
-
-  if (!callback) {
-    throw new TypeError('callback parameter is required');
-  }
-  api.getChainInfo(checkError(callback, function (info) {
-    var chainDate = new Date(info.head_block_time + 'Z');
-
-    api.getBlockInfo(info.last_irreversible_block_num, checkError(callback, function (block) {
-      var expiration = new Date(chainDate.getTime() + expireInSeconds * 1000);
-
-      var ref_block_num = info.last_irreversible_block_num & 0xFFFF;
-
-      var headers = {
-        expiration: expiration.toISOString().split('.')[0],
-        ref_block_num: ref_block_num,
-        ref_block_prefix: block.ref_block_prefix,
-        net_usage_words: 0,
-        max_cpu_usage_ms: 0,
-        delay_sec: 0,
-        context_free_actions: [],
-        actions: [],
-        signatures: [],
-        transaction_extensions: []
-      };
-      callback(null, headers);
-    }));
-  }));
-}
-
-var checkError = function checkError(parentErr, parrentRes) {
-  return function (error, result) {
-    if (error) {
-      parentErr(error);
-    } else {
-      parrentRes(result);
-    }
-  };
 };
+
+async function createTransaction(api) {
+  var expireInSeconds = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 60;
+  const info = await api.getChainInfo();
+  var chainDate = new Date(info.head_block_time + "Z");
+
+  const block = await api.getBlockInfo(info.last_irreversible_block_num);
+  var expiration = new Date(chainDate.getTime() + expireInSeconds * 1000);
+  var ref_block_num = info.last_irreversible_block_num & 0xFFFF;
+  var headers = {
+    expiration: expiration.toISOString().split(".")[0],
+    ref_block_num: ref_block_num,
+    ref_block_prefix: block.ref_block_prefix,
+    net_usage_words: 0,
+    max_cpu_usage_ms: 0,
+    delay_sec: 0,
+    context_free_actions: [],
+    actions: [],
+    signatures: [],
+    transaction_extensions: []
+  };
+  return headers;
+}

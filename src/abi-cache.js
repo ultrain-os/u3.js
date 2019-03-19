@@ -96,7 +96,7 @@ function abiToFcSchema(abi, account) {
     // setprods = set_producers
     abi.actions.forEach(action => {
       // @example action = {name: 'setprods', type: 'set_producers'}
-      const type = abiSchema[action.type];
+      const type = abiSchema[action.type]
       if(!type) {
         console.error('Missing abiSchema type', action.type, account)//, abi, abiSchema)
       } else {

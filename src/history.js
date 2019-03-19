@@ -1,14 +1,16 @@
 /** @namespace history*/
-
-
 const defaultConfig = require("../src/config");
-let httpEndPoint = require("./config").httpEndpointHistory;
-const { fetchUrl } = require("../src/utils/dbHelper");
-let U3Config = {};
+let httpEndpointHistory = require("./config").httpEndpointHistory;
 
-module.exports = function (config) {
+let U3Config = {};
+let fetchUrl = () => {
+};
+
+function historyGen(config) {
   U3Config = config;
-  httpEndPoint = config.httpEndpointHistory;
+  httpEndpointHistory = config.httpEndpointHistory;
+  fetchUrl = require("../src/utils/dbHelper")(config).fetchUrl;
+
   return {
     getAllBlocks,
     getContracts,
@@ -89,7 +91,7 @@ function getAllBlocks(page, pageSize, queryParams, sortParams) {
     "sortParams": sortParams || { _id: -1 }
   };
 
-  return fetchUrl(`${httpEndPoint}/blocks`, data);
+  return fetchUrl("getAllBlocks", `${httpEndpointHistory}/blocks`, data);
 }
 
 /**
@@ -136,7 +138,7 @@ function getContracts(page, pageSize, queryParams, sortParams) {
     "sortParams": sortParams || { _id: -1 }
   };
 
-  return fetchUrl(`${httpEndPoint}/contracts`, data);
+  return fetchUrl("getContracts", `${httpEndpointHistory}/contracts`, data);
 }
 
 /**
@@ -170,7 +172,7 @@ function getContracts(page, pageSize, queryParams, sortParams) {
 }
  */
 function getContractByName(name) {
-  return fetchUrl(`${httpEndPoint}/contracts/${name}`);
+  return fetchUrl("getContractByName", `${httpEndpointHistory}/contracts/${name}`);
 }
 
 /**
@@ -201,12 +203,12 @@ function getContractByName(name) {
  */
 async function getAllAccounts(page, pageSize, queryParams, sortParams) {
   let data = {
-    'page': page || 1,
-    'pageSize': pageSize || 10,
-    'queryParams': queryParams || {},
-    'sortParams': sortParams || { _id: -1 }
+    "page": page || 1,
+    "pageSize": pageSize || 10,
+    "queryParams": queryParams || {},
+    "sortParams": sortParams || { _id: -1 }
   };
-  return fetchUrl(`${httpEndPoint}/accounts`, data);
+  return fetchUrl("getAllAccounts", `${httpEndpointHistory}/accounts`, data);
 }
 
 /**
@@ -277,7 +279,7 @@ function getAllTxs(page, pageSize, queryParams, sortParams) {
     "sortParams": sortParams || { _id: -1 }
   };
 
-  return fetchUrl(`${httpEndPoint}/txs`, data);
+  return fetchUrl("getAllTxs", `${httpEndpointHistory}/txs`, data);
 }
 
 /**
@@ -333,7 +335,7 @@ function getAllTxs(page, pageSize, queryParams, sortParams) {
 }
  */
 function getTxByTxId(id) {
-  return fetchUrl(`${httpEndPoint}/txs/${id}`);
+  return fetchUrl("getTxByTxId", `${httpEndpointHistory}/txs/${id}`);
 }
 
 /**
@@ -365,7 +367,7 @@ function getTxByTxId(id) {
 }
  */
 function getActionsByTxid(id) {
-  return fetchUrl(`${httpEndPoint}/actions/tx/${id}`);
+  return fetchUrl("getActionsByTxid", `${httpEndpointHistory}/actions/tx/${id}`);
 }
 
 /**
@@ -409,7 +411,7 @@ function getActionsByAccount(page, pageSize, queryParams, sortParams) {
     "queryParams": queryParams || {},
     "sortParams": sortParams || { _id: -1 }
   };
-  return fetchUrl(`${httpEndPoint}/actions/by/account`, data);
+  return fetchUrl("getActionsByAccount", `${httpEndpointHistory}/actions/by/account`, data);
 }
 
 /**
@@ -479,7 +481,7 @@ function getTxsByBlockNum(page, pageSize, queryParams, sortParams) {
     "queryParams": queryParams || {},
     "sortParams": sortParams || { _id: -1 }
   };
-  return fetchUrl(`${httpEndPoint}/txs/by/blocknum`, data);
+  return fetchUrl("getTxsByBlockNum", `${httpEndpointHistory}/txs/by/blocknum`, data);
 }
 
 /**
@@ -502,7 +504,7 @@ function getTxsByBlockNum(page, pageSize, queryParams, sortParams) {
 }
  */
 function getExistAccount(name) {
-  return fetchUrl(`${httpEndPoint}/accounts/${name}`);
+  return fetchUrl("getExistAccount", `${httpEndpointHistory}/accounts/${name}`);
 }
 
 /**
@@ -558,7 +560,7 @@ function getBlocksByContract(block_num, account, contract, contract_method) {
     contract,
     contract_method
   };
-  return fetchUrl(`${httpEndPoint}/blocks/contract`, data);
+  return fetchUrl("getBlocksByContract", `${httpEndpointHistory}/blocks/contract`, data);
 }
 
 /**
@@ -615,7 +617,7 @@ function getBlocksByContract(block_num, account, contract, contract_method) {
  }
  */
 function getTxTraceByTxid(id) {
-  return fetchUrl(`${httpEndPoint}/txtraces/${id}`);
+  return fetchUrl("getTxTraceByTxid", `${httpEndpointHistory}/txtraces/${id}`);
 }
 
 /**
@@ -629,7 +631,7 @@ function getTxTraceByTxid(id) {
  * u3.search(5b7d11b859bd97fab30ba7f5)
  */
 async function search(param) {
-  let rs = await fetchUrl(`${httpEndPoint}/search/${param}`);
+  let rs = await fetchUrl("search", `${httpEndpointHistory}/search/${param}`);
   console.log(rs);
   if (rs.type === "account" && rs.data.name) {
     const { createU3 } = require("./index");
@@ -672,7 +674,7 @@ async function search(param) {
 }
  */
 function getCreateAccountByName(name) {
-  return fetchUrl(`${httpEndPoint}/getcreateaccount`, { name });
+  return fetchUrl("getCreateAccountByName", `${httpEndpointHistory}/getcreateaccount`, { name });
 }
 
 /**
@@ -717,7 +719,7 @@ function getAllTokens(page, pageSize, queryParams, sortParams) {
     "sortParams": sortParams || { _id: -1 }
   };
 
-  return fetchUrl(`${httpEndPoint}/tokens`, data);
+  return fetchUrl("getAllTokens", `${httpEndpointHistory}/tokens`, data);
 }
 
 /**
@@ -747,7 +749,7 @@ function getAllTokens(page, pageSize, queryParams, sortParams) {
     }
  */
 function getTokenBySymbol(symbol, creator) {
-  return fetchUrl(`${httpEndPoint}/token/${symbol}/${creator}`);
+  return fetchUrl("getTokenBySymbol", `${httpEndpointHistory}/token/${symbol}/${creator}`);
 }
 
 /**
@@ -770,7 +772,7 @@ function getTokenBySymbol(symbol, creator) {
     }
  */
 function getBaseInfo() {
-  return fetchUrl(`${httpEndPoint}/base`);
+  return fetchUrl("getBaseInfo", `${httpEndpointHistory}/base`);
 }
 
 /**
@@ -798,7 +800,7 @@ function getBaseInfo() {
  * ]
  */
 function getBalanceByAccount(account) {
-  return fetchUrl(`${httpEndPoint}/balance/${account}`);
+  return fetchUrl("getBalanceByAccount", `${httpEndpointHistory}/balance/${account}`);
 }
 
 /**
@@ -839,7 +841,7 @@ function getHoldersBySymbol(page, pageSize, queryParams, sortParams) {
     "sortParams": sortParams || { current_balance: -1 }
   };
 
-  return fetchUrl(`${httpEndPoint}/holders/by/symbol`, data);
+  return fetchUrl("getHoldersBySymbol", `${httpEndpointHistory}/holders/by/symbol`, data);
 }
 
 /**
@@ -890,7 +892,7 @@ function getAllBlocksHeader(page, pageSize, queryParams, sortParams) {
     "sortParams": sortParams || { _id: -1 }
   };
 
-  return fetchUrl(`${httpEndPoint}/blocksheader`, data);
+  return fetchUrl("getAllBlocksHeader", `${httpEndpointHistory}/blocksheader`, data);
 }
 
 /**
@@ -918,13 +920,13 @@ function getAllBlocksHeader(page, pageSize, queryParams, sortParams) {
  */
 function getProposerList(page, pageSize, queryParams, sortParams) {
   let data = {
-    'page': page || 1,
-    'pageSize': pageSize || 10,
-    'queryParams': queryParams || {},
-    'sortParams': sortParams || { total_produce_block: -1 }
+    "page": page || 1,
+    "pageSize": pageSize || 10,
+    "queryParams": queryParams || {},
+    "sortParams": sortParams || { total_produce_block: -1 }
   };
 
-  return fetchUrl(`${httpEndPoint}/proposers`, data);
+  return fetchUrl("getProposerList", `${httpEndpointHistory}/proposers`, data);
 }
 
 /**
@@ -942,5 +944,7 @@ function getProposerList(page, pageSize, queryParams, sortParams) {
     }
  */
 function getReward() {
-  return fetchUrl(`${httpEndPoint}/award`);
+  return fetchUrl("getReward", `${httpEndpointHistory}/award`);
 }
+
+module.exports = historyGen;

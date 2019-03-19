@@ -1,4 +1,4 @@
-<img src="https://user-images.githubusercontent.com/1866848/46092827-535d5880-c1e8-11e8-8a65-f5d9d74df96e.png" width="250" align=center />
+<img src="https://user-images.githubusercontent.com/1866848/53072742-06747880-3521-11e9-9fec-81ac10da89ba.png" width="250" align=center />
 
 Javascript封装的负责与链交互的通用库
 
@@ -20,26 +20,21 @@ Javascript封装的负责与链交互的通用库
                 <title>test</title>
                 <script src="../dist/u3.js"></script>
                 <script>
-            
-                  let u3 = U3.createU3({
-                    httpEndpoint: 'http://127.0.0.1:8888',
-                    httpEndpointHistory: 'http://127.0.0.1:3000',
-                    broadcast: true,
-                    debug: false,
-                    sign: true,
-                    logger: {
-                      log: console.log,
-                      error: console.error,
-                      debug: console.log
-                    },
-                    chainId:'0eaaff4003d4e08a541332c62827c0ac5d96766c712316afe7ade6f99b8d70fe',
-                    symbol: 'UGAS'
-                  });
-            
-                  u3.getChainInfo((err, info) => {
-                    if (err) {throw err;}
-                    console.log(info);
-                  });
+                  let func = async () => {
+                      let u3 = U3.createU3({
+                        httpEndpoint: "http://127.0.0.1:8888",
+                        httpEndpointHistory: "http://127.0.0.1:3000"
+                      });
+              
+                      await u3.getChainInfo();
+              
+                      const keyProvider = () => {
+                        return ["5JbedY3jGfNK7HcLXcqGqSYrmX2n8wQWqZAuq6K7Gcf4Dj62UfL"];
+                      };
+                      const c = await u3.contract("utrio.token");
+                      await c.transfer("ben", "bob", "1.0000 UGAS", "", { keyProvider });
+                    };
+                    func();
                 </script>
             </head>
             <body>
@@ -58,12 +53,20 @@ Javascript封装的负责与链交互的通用库
 ```
 const { createU3 } = require('u3.js/src');
 let config = {
-  httpEndpoint: 'http://127.0.0.1:8888',
-  httpEndpointHistory: 'http://127.0.0.1:3000',
-  chainId: '0eaaff4003d4e08a541332c62827c0ac5d96766c712316afe7ade6f99b8d70fe',
-  keyProvider: ['PrivateKeys...'],
-  broadcast: true,
-  sign: true
+    httpEndpoint: "http://127.0.0.1:8888",
+    httpEndpointHistory: "http://127.0.0.1:3000",
+    chainId: "baf8bb9d3636379e3cd6779d2a72e693494670f1040d45154bb61dc8852c8971",
+    broadcast: true,
+    sign: true,
+    logger: {
+      directory: "../../logs", // daily rotate file directory
+      level: "info", // error->warn->info->verbose->debug->silly
+      console: true, // print to console
+      file: false // append to file
+    },
+    symbol: "UGAS",
+    //keyProvider:[],
+    //expireInSeconds:60
 }
 let u3 = createU3(config);
 
@@ -101,14 +104,14 @@ u3.getChainInfo((err, info) => {
 如果这里不提供keyProvider,那么它可能会Options配置项提供在每一个action或每一个transaction中
 * <b>expireInSeconds</b> number - 事务到期前的秒数，时间基于nodultrain的时间.
 * <b>broadcast</b> [boolean=true] - 默认是true。使用true将交易发布到区块链，使用false将获取签名的事务.
-* <b>verbose</b> [boolean=false] - 默认是false。详细日志记录.
-* <b>debug</b> [boolean=false] - 默认是false。低级调试日志记录.
 * <b>sign</b> [boolean=true] - 默认是true。使用私钥签名交易。保留未签名的交易避免了提供私钥的需要.
 * <b>logger</b> - 默认日志配置.
 ```
 logger: {
-  log: config.verbose ? console.log : null,  // 如果值为null，则禁用日志
-  error: config.verbose ? console.error : null,
+  directory: "../../logs", // 每天日志的目录
+  level: "info", // error->warn->info->verbose->debug->silly
+  console: true, // 打印到控制台
+  file: false // 输出到文件
 }
 ```
 

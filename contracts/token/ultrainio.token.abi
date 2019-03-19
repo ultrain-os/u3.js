@@ -1,20 +1,11 @@
 {
-   "version": "ultraio:1.0:UIP06",
+   "version": "ultraio:1.0",
    "types": [{
       "new_type_name": "account_name",
       "type": "name"
    }],
   "structs": [{
       "name": "transfer",
-      "base": "",
-      "fields": [
-        {"name":"from", "type":"account_name"},
-        {"name":"to", "type":"account_name"},
-        {"name":"quantity", "type":"asset"},
-        {"name":"memo", "type":"string"}
-      ]
-    },{
-      "name": "safe_transfer",
       "base": "",
       "fields": [
         {"name":"from", "type":"account_name"},
@@ -57,10 +48,6 @@
   "actions": [{
       "name": "transfer",
       "type": "transfer",
-      "ricardian_contract": ""
-    },{
-      "name": "safe_transfer",
-      "type": "safe_transfer",
       "ricardian_contract": ""
     }, {
       "name": "issue",
