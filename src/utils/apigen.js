@@ -65,12 +65,15 @@ function fetchMethod(methodName, url, definition) {
         resolve(res.data);
       }).catch(err => {
         let message = "";
-        if (err.message) {
-          message = err.message;
-        } else if (err.response &&
+        if (err.response &&
           err.response.data &&
           err.response.data.error) {
           message = err.response.data.error.details[0];
+          if (Object.prototype.toString.call(message) === "[object Object]") {
+            message = message.message;
+          }
+        } else if (err.message) {
+          message = err.message;
         }
         logger.error("Error[" + methodName + "]result callback:" + message);
 

@@ -1,6 +1,6 @@
 {
   "name": "u3.js",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "A general library wrapped in javascript for interacting with Ultrain",
   "main": "index.js",
   "directories": {

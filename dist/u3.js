@@ -280,7 +280,7 @@ AssetCache.pending = function () {
 module.exports = {
   httpEndpoint: "http://127.0.0.1:8888",
   httpEndpointHistory: "http://127.0.0.1:3000",
-  chainId: "baf8bb9d3636379e3cd6779d2a72e693494670f1040d45154bb61dc8852c8971",
+  chainId: "80a5d6aa3e0c2e2052c3df1cc6b591b90b8307fb102bd174805e06c8b8b16ec1",
   broadcast: true,
   sign: true,
   logger: {
@@ -2371,16 +2371,12 @@ function sign(unsigned_transaction, privateKeyOrMnemonic) {
           }
 
           txObject = unsigned_transaction.transaction.transaction;
-
-          delete txObject.context_free_actions;
-          delete txObject.transaction_extensions;
-
           buf = Fcbuffer.toBuffer(this.fc.structs.transaction, txObject);
           chainIdBuf = new Buffer(chainId, "hex");
           signBuf = Buffer.concat([chainIdBuf, buf, new Buffer(new Uint8Array(32))]);
           return _context3.abrupt("return", ecc.sign(signBuf, privateKey));
 
-        case 12:
+        case 10:
         case "end":
           return _context3.stop();
       }
@@ -3507,10 +3503,13 @@ function fetchMethod(methodName, url, definition) {
                 resolve(res.data);
               }).catch(function (err) {
                 var message = "";
-                if (err.message) {
-                  message = err.message;
-                } else if (err.response && err.response.data && err.response.data.error) {
+                if (err.response && err.response.data && err.response.data.error) {
                   message = err.response.data.error.details[0];
+                  if (Object.prototype.toString.call(message) === "[object Object]") {
+                    message = message.message;
+                  }
+                } else if (err.message) {
+                  message = err.message;
                 }
                 logger.error("Error[" + methodName + "]result callback:" + message);
 
@@ -96284,7 +96283,7 @@ function extend() {
 },{}],523:[function(require,module,exports){
 module.exports={
   "name": "u3.js",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "A general library wrapped in javascript for interacting with Ultrain",
   "main": "index.js",
   "directories": {
@@ -96360,7 +96359,7 @@ module.exports={
 module.exports = {
   httpEndpoint: "http://127.0.0.1:8888",
   httpEndpointHistory: "http://127.0.0.1:3000",
-  chainId: "baf8bb9d3636379e3cd6779d2a72e693494670f1040d45154bb61dc8852c8971",
+  chainId: "80a5d6aa3e0c2e2052c3df1cc6b591b90b8307fb102bd174805e06c8b8b16ec1",
   broadcast: true,
   sign: true,
   logger: {
