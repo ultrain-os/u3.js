@@ -10,7 +10,7 @@ fi
 # create default wallet
 WalletPwd=$($clultrain wallet create | tail -n 1 | sed 's/\"//g')
 
-$clultrain wallet import --private-key '5KJLpYUt5VuNUKWpAVNzmvbB95WtLP7GhdLQxAotU2cC8BcoPGT'
+$clultrain wallet import --private-key '5JPpd8k9p8tzt7X1xffP3eiiW1cemZHyqBtm43g59NLn6VPLu39'
 
 if test -z $WalletPwd
 then
