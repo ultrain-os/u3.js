@@ -247,8 +247,6 @@ describe("u3.js", () => {
       };
       await u3.createUser(params);
 
-      await U3Utils.test.wait(10000);
-
       const account_ = await u3.getAccountInfo({ account_name: name });
       assert.equal(account_.account_name, name);
     });
