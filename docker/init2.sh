@@ -67,7 +67,7 @@ accounts_l=${#test_acc_arr[*]}
 for ((i=0;i<$accounts_l;i++))
 do
     echo ${test_acc_arr[$i]}
-	$clultrain create account -u ultrainio ${test_acc_arr[$i]} ${test_acc_pub_arr[$i]} ${test_acc_pub_arr[$i]}
+	$clultrain create account ultrainio ${test_acc_arr[$i]} ${test_acc_pub_arr[$i]} ${test_acc_pub_arr[$i]}
 done
 
 sleep 15

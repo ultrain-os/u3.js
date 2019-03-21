@@ -191,23 +191,25 @@ describe("u3.js", () => {
     });
   });
 
-  // 5. blocks (10s per block)
+  // 5. blocks
   describe("blocks", () => {
     it("transaction confirm", async () => {
       const u3 = createU3();
       const c = await u3.contract("utrio.token");
       const result = await c.transfer(account1, account2, "1.0000 " + defaultConfig.symbol, "", { keyProvider: account1_pk });
 
-      //wait until block confirm
-      let tx = await u3.getTxByTxId(result.transaction_id);
-      while (!tx.irreversible) {
-        await U3Utils.test.wait(1000);
-        tx = await u3.getTxByTxId(result.transaction_id);
-        if (tx.irreversible) {
-          console.log(tx);
-          break;
-        }
+      // first check whether the transaction was failed
+      if (!result || result.processed.receipt.status !== "executed") {
+        console.log("the transaction was failed");
+        return;
       }
+
+      // then check whether the transaction was irreversible when it was not expired
+      let timeout = new Date(result.transaction.transaction.expiration + "Z") - new Date();
+      await U3Utils.test.waitUntil(async () => {
+        let tx = await u3.getTxByTxId(result.transaction_id);
+        return tx && tx.irreversible;
+      }, timeout, 1000);
     });
   });
 

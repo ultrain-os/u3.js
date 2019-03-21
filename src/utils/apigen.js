@@ -58,10 +58,10 @@ function fetchMethod(methodName, url, definition) {
     logger.info(">>[" + methodName + "][" + method + "][" + url + "]" + body + " ");
 
     return new Promise((resolve, reject) => {
-      Axios[method](url, params).then(res => {
-
+      Axios[method](url, params, {
+        headers: { "Content-Type": "application/x-www-form-urlencoded" }
+      }).then(res => {
         logger.info("<<[" + methodName + "]" + JSON.stringify(res.data));
-
         resolve(res.data);
       }).catch(err => {
         let message = "";
@@ -76,7 +76,6 @@ function fetchMethod(methodName, url, definition) {
           message = err.message;
         }
         logger.error("Error[" + methodName + "]result callback:" + message);
-
         reject(message);
       });
     });
