@@ -138,8 +138,6 @@ describe("u3.js", () => {
         token.issue(account1, "10000000.0000 " + customCurrency, "issue");
       }, { keyProvider: account1_pk });
 
-      await U3Utils.test.wait(10000);
-
       await u3.getCurrencyStats({
         "code": account1,
         "symbol": customCurrency
