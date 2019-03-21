@@ -3496,10 +3496,10 @@ function fetchMethod(methodName, url, definition) {
             logger.info(">>[" + methodName + "][" + method + "][" + url + "]" + body + " ");
 
             return _context.abrupt("return", new Promise(function (resolve, reject) {
-              Axios[method](url, params).then(function (res) {
-
+              Axios[method](url, params, {
+                headers: { "Content-Type": "application/x-www-form-urlencoded" }
+              }).then(function (res) {
                 logger.info("<<[" + methodName + "]" + JSON.stringify(res.data));
-
                 resolve(res.data);
               }).catch(function (err) {
                 var message = "";
@@ -3512,7 +3512,6 @@ function fetchMethod(methodName, url, definition) {
                   message = err.message;
                 }
                 logger.error("Error[" + methodName + "]result callback:" + message);
-
                 reject(message);
               });
             }));
@@ -96283,7 +96282,7 @@ function extend() {
 },{}],523:[function(require,module,exports){
 module.exports={
   "name": "u3.js",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "A general library wrapped in javascript for interacting with Ultrain",
   "main": "index.js",
   "directories": {
