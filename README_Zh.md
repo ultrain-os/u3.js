@@ -163,16 +163,35 @@ await u3.transaction(tr => { tr.anyAction() }, {keyProvider})
 
 转账方法使用非常频繁，UGAS的转账需要调用系统合约utrio.token.
 
+* transfer(from,to,content,memo)  其中content这个字段必须严格为金额与符号拼接的字符串, 如 '1.0000 UGAS'
+
 ```
 const u3 = createU3(config);
 const c = await u3.contract('utrio.token')
 
 // 使用位置参数
-await c.transfer('ben', 'bob', '1.2000 UGAS', '')
+const result = await c.transfer('ben', 'bob', '1.2000 UGAS', '')
 // 使用名称参数
-await c.transfer({from: 'bob', to: 'ben', quantity: '1.3000 UGAS', memo: ''})
+const result = await c.transfer({from: 'bob', to: 'ben', quantity: '1.3000 UGAS', memo: ''})
 ```
-  
+
+* 如果要确认这笔转账正确被执行了，可以遵循以下步骤:
+
+```
+// first check whether the transaction was failed
+if (!result || result.processed.receipt.status !== "executed") {
+console.log("the transaction was failed");
+return;
+}
+
+// then check whether the transaction was irreversible when it was not expired
+let timeout = new Date(result.transaction.transaction.expiration + "Z") - new Date();
+await U3Utils.test.waitUntil(async () => {
+let tx = await u3.getTxByTxId(result.transaction_id);
+return tx && tx.irreversible;
+}, timeout, 1000);
+```
+   
 ## 签名
 
 使用 `{ sign: false, broadcast: false }` 创建一个u3实例并且做一些action, 然后将未签名的交易发送到钱包中.
@@ -198,21 +217,21 @@ await c.transfer({from: 'bob', to: 'ben', quantity: '1.3000 UGAS', memo: ''})
 
 调用合约只会消耗合约Owner的资源，所以如果你想部署一个合约，请先购买一些资源. 
 
-* resourcelease(payer,receiver,slot,days) 
+* resourcelease(payer,receiver,slot,days,location) 
 
 ```
 const u3 = createU3(config);
 const c = await u3.contract('ultrainio')
 
-await c.resourcelease('ben', 'bob', 1, 10);// 1 slot for 10 days
+await c.resourcelease('ben', 'bob', 1, 10, "ultrainio");// 1 slot for 10 days on the side chain named ultrainio
 
 ```
 
 通过以下方法查询资源详情.
 
 ```
-const resource = await u3.queryResource('abcdefg12345');
-console.log(resource)
+const account = await u3.getAccountInfo({ account_name: 'abcdefg12345' });
+console.log(account.chain_resource[0].lease_num)
 
 ```
     

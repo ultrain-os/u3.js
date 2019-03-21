@@ -169,11 +169,29 @@ const u3 = createU3(config);
 const c = await u3.contract('utrio.token')
 
 // with positional parameters
-await c.transfer('ben', 'bob', '1.2000 UGAS', '')
+const result = await c.transfer('ben', 'bob', '1.2000 UGAS', '')
 // or with named parameters
-await c.transfer({from: 'bob', to: 'ben', quantity: '1.3000 UGAS', memo: ''})
+const result = await c.transfer({from: 'bob', to: 'ben', quantity: '1.3000 UGAS', memo: ''})
 ```
   
+* If you want to confirm that the transfer logic has been really done, please follow these steps:
+  
+```
+// first check whether the transaction was failed
+if (!result || result.processed.receipt.status !== "executed") {
+  console.log("the transaction was failed");
+  return;
+}
+
+// then check whether the transaction was irreversible when it was not expired
+let timeout = new Date(result.transaction.transaction.expiration + "Z") - new Date();
+await U3Utils.test.waitUntil(async () => {
+  let tx = await u3.getTxByTxId(result.transaction_id);
+  return tx && tx.irreversible;
+}, timeout, 1000);
+```
+    
+        
 ## Sign
 
 #### send unsigned_transaction
@@ -207,21 +225,21 @@ And then push the signedTransaction to the ultrain-chain.
 Calling a contract will only spend the contract owner's resource. So if your want to deploy
 a contract, buy some resource before. 
 
-* resourcelease(payer,receiver,slot,days) 
+* resourcelease(payer,receiver,slot,days,location) 
 
 ```
 const u3 = createU3(config);
 const c = await u3.contract('ultrainio')
 
-await c.resourcelease('ben', 'bob', 1, 10);// 1 slot for 10 days
+await c.resourcelease('ben', 'bob', 1, 10, "ultrainio");// 1 slot for 10 days on the side chain named ultrainio
 
 ```
 
 And querying resource detail through the method below.
 
 ```
-const resource = await u3.queryResource('abcdefg12345');
-console.log(resource)
+const account = await u3.getAccountInfo({ account_name: 'abcdefg12345' });
+console.log(account.chain_resource[0].lease_num)
 
 ```
 
