@@ -75,13 +75,13 @@
   ],
   "tables": [{
       "name": "accounts",
-      "type": "account",
+      "type": "CurrencyAccount",
       "index_type": "i64",
       "key_names" : ["currency"],
       "key_types" : ["uint64"]
     },{
       "name": "stat",
-      "type": "currency_stats",
+      "type": "CurrencyStats",
       "index_type": "i64",
       "key_names" : ["currency"],
       "key_types" : ["uint64"]
