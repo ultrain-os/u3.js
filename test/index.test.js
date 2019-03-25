@@ -4,8 +4,7 @@ const isString = require("lodash.isstring");
 const fs = require("fs");
 const path = require("path");
 const defaultConfig = require("../src/config");
-const U3Utils = require("u3-utils/src");
-const { createU3, format, ecc, listener } = require("../src");
+const { createU3, format, U3Utils, listener } = require("../src");
 
 const readKeysFromFiles = () => {
   let accounts = ["ben", "john", "tony", "jack", "bob", "tom", "jerry", "alice"];
@@ -49,47 +48,47 @@ describe("u3.js", () => {
     });
   });
 
-  // 2. ecc utils
+  // 2. U3Utils.ecc utils
   describe("offline", () => {
 
     // 2.1 generate key pair by seed
     it("generateKeyPairBySeed", function() {
       let seed = randomName();
-      let keys = ecc.generateKeyPairBySeed(seed);
-      assert.equal(ecc.isValidPrivate(keys.private_key), true);
-      assert.equal(ecc.isValidPublic(keys.public_key), true);
+      let keys = U3Utils.ecc.generateKeyPairBySeed(seed);
+      assert.equal(U3Utils.ecc.isValidPrivate(keys.private_key), true);
+      assert.equal(U3Utils.ecc.isValidPublic(keys.public_key), true);
     });
 
     // 2.2 re-generate key pair by the same seed
     it("generateKeyPairBySeed(same keys with same seed)", function() {
       let seed = randomName();
-      let keys1 = ecc.generateKeyPairBySeed(seed);
-      let keys2 = ecc.generateKeyPairBySeed(seed);
+      let keys1 = U3Utils.ecc.generateKeyPairBySeed(seed);
+      let keys2 = U3Utils.ecc.generateKeyPairBySeed(seed);
       assert.equal(keys1.public_key, keys2.public_key);
       assert.equal(keys1.private_key, keys2.private_key);
     });
 
     // 2.3 generate key pair with mnemonic
     it("generateKeyPairWithMnemonic", function() {
-      let result = ecc.generateKeyPairWithMnemonic();
+      let result = U3Utils.ecc.generateKeyPairWithMnemonic();
       console.log(result);
       assert.ok((isString(result.mnemonic) && !isEmpty(result.mnemonic)), true);
-      assert.equal(ecc.isValidPrivate(result.private_key), true);
-      assert.equal(ecc.isValidPublic(result.public_key), true);
+      assert.equal(U3Utils.ecc.isValidPrivate(result.private_key), true);
+      assert.equal(U3Utils.ecc.isValidPublic(result.public_key), true);
     });
 
     // 2.4 re-generate key pair by the same mnemonic
     it("generateKeyPairByMnemonic(same mnemonic same key pair)", function() {
-      let result = ecc.generateKeyPairWithMnemonic();
-      let result2 = ecc.generateKeyPairByMnemonic(result.mnemonic);
+      let result = U3Utils.ecc.generateKeyPairWithMnemonic();
+      let result2 = U3Utils.ecc.generateKeyPairByMnemonic(result.mnemonic);
       assert.equal(result.public_key, result2.public_key);
       assert.equal(result.private_key, result2.private_key);
     });
 
     // 2.5 generate publicKey by privateKey
     it("generatePublicKeyByPrivateKey", function() {
-      let result = ecc.generateKeyPairWithMnemonic();
-      let publicKey = ecc.privateToPublic(result.private_key);
+      let result = U3Utils.ecc.generateKeyPairWithMnemonic();
+      let publicKey = U3Utils.ecc.privateToPublic(result.private_key);
       assert.equal(publicKey, result.public_key);
     });
 
@@ -97,7 +96,7 @@ describe("u3.js", () => {
     it("privateToPublic", function() {
       const privateKey = "5JoTvD8emJDGHNGHyRCjqvpJqRY2jMmn5G6V9j8AifnszK5jKMe";
       const publicKey = "UTR5rgwrLWr2m3EbFhpn9pk1P1uQSje9BMG49fLKxmiJFj4WD2Ex1";
-      let result = ecc.privateToPublic(privateKey);
+      let result = U3Utils.ecc.privateToPublic(privateKey);
       assert.equal(publicKey, result);
     });
 

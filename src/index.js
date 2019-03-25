@@ -1,7 +1,7 @@
 const fs = require("fs");
 const path = require("path");
 const configDefaults = require("./config");
-const { ecc } = require("u3-utils/src");
+const U3Utils = require("u3-utils/src");
 const listener = require("./utils/listener");
 const Fcbuffer = require("fcbuffer");
 const apiGen = require("./utils/apigen");
@@ -33,10 +33,10 @@ const defaultSignProvider = (u3, config) => function({ sign, buf, transaction, o
   keys = keys.map(key => {
     try {
       // normalize format (WIF => PVT_K1_base58privateKey)
-      return { private: ecc.PrivateKey(key).toString() };
+      return { private: U3Utils.ecc.PrivateKey(key).toString() };
     } catch (e) {
       // normalize format (UTRKey => PUB_K1_base58publicKey)
-      return { public: ecc.PublicKey(key).toString() };
+      return { public: U3Utils.ecc.PublicKey(key).toString() };
     }
     assert(false, "expecting public or private keys from keyProvider");
   });
@@ -134,9 +134,9 @@ async function sign(unsigned_transaction, privateKeyOrMnemonic, chainId = "cf057
   assert(privateKeyOrMnemonic, "privateKeyOrMnemonic required");
 
   let privateKey = privateKeyOrMnemonic;
-  let isValidPrivateKey = ecc.isValidPrivate(privateKeyOrMnemonic);
+  let isValidPrivateKey = U3Utils.ecc.isValidPrivate(privateKeyOrMnemonic);
   if (!isValidPrivateKey) {
-    let result = ecc.generateKeyPairByMnemonic(privateKeyOrMnemonic);
+    let result = U3Utils.ecc.generateKeyPairByMnemonic(privateKeyOrMnemonic);
     privateKey = result.private_key;
   }
 
@@ -146,7 +146,7 @@ async function sign(unsigned_transaction, privateKeyOrMnemonic, chainId = "cf057
   const chainIdBuf = new Buffer(chainId, "hex");
   const signBuf = Buffer.concat([chainIdBuf, buf, new Buffer(new Uint8Array(32))]);
 
-  return ecc.sign(signBuf, privateKey);
+  return U3Utils.ecc.sign(signBuf, privateKey);
 }
 
 /**
@@ -261,7 +261,7 @@ const createU3 = (config = {}) => {
 module.exports = {
   createU3,
   format,
-  ecc,
+  U3Utils,
   Fcbuffer,
   listener,
   version
