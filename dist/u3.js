@@ -2158,10 +2158,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var fs = require("fs");
 var path = require("path");
 var configDefaults = require("./config");
-
-var _require = require("u3-utils/src"),
-    ecc = _require.ecc;
-
+var U3Utils = require("u3-utils/src");
 var listener = require("./utils/listener");
 var Fcbuffer = require("fcbuffer");
 var apiGen = require("./utils/apigen");
@@ -2199,10 +2196,10 @@ var defaultSignProvider = function defaultSignProvider(u3, config) {
     keys = keys.map(function (key) {
       try {
         // normalize format (WIF => PVT_K1_base58privateKey)
-        return { private: ecc.PrivateKey(key).toString() };
+        return { private: U3Utils.ecc.PrivateKey(key).toString() };
       } catch (e) {
         // normalize format (UTRKey => PUB_K1_base58publicKey)
-        return { public: ecc.PublicKey(key).toString() };
+        return { public: U3Utils.ecc.PublicKey(key).toString() };
       }
       assert(false, "expecting public or private keys from keyProvider");
     });
@@ -2362,10 +2359,10 @@ function sign(unsigned_transaction, privateKeyOrMnemonic) {
           assert(privateKeyOrMnemonic, "privateKeyOrMnemonic required");
 
           privateKey = privateKeyOrMnemonic;
-          isValidPrivateKey = ecc.isValidPrivate(privateKeyOrMnemonic);
+          isValidPrivateKey = U3Utils.ecc.isValidPrivate(privateKeyOrMnemonic);
 
           if (!isValidPrivateKey) {
-            result = ecc.generateKeyPairByMnemonic(privateKeyOrMnemonic);
+            result = U3Utils.ecc.generateKeyPairByMnemonic(privateKeyOrMnemonic);
 
             privateKey = result.private_key;
           }
@@ -2374,7 +2371,7 @@ function sign(unsigned_transaction, privateKeyOrMnemonic) {
           buf = Fcbuffer.toBuffer(this.fc.structs.transaction, txObject);
           chainIdBuf = new Buffer(chainId, "hex");
           signBuf = Buffer.concat([chainIdBuf, buf, new Buffer(new Uint8Array(32))]);
-          return _context3.abrupt("return", ecc.sign(signBuf, privateKey));
+          return _context3.abrupt("return", U3Utils.ecc.sign(signBuf, privateKey));
 
         case 10:
         case "end":
@@ -2517,7 +2514,7 @@ var createU3 = function createU3() {
 module.exports = {
   createU3: createU3,
   format: format,
-  ecc: ecc,
+  U3Utils: U3Utils,
   Fcbuffer: Fcbuffer,
   listener: listener,
   version: version
@@ -96282,7 +96279,7 @@ function extend() {
 },{}],523:[function(require,module,exports){
 module.exports={
   "name": "u3.js",
-  "version": "0.3.2",
+  "version": "0.3.4",
   "description": "A general library wrapped in javascript for interacting with Ultrain",
   "main": "index.js",
   "directories": {
