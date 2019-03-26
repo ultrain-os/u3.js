@@ -203,10 +203,16 @@ describe("u3.js", () => {
 
       // then check whether the transaction was irreversible when it was not expired
       let timeout = new Date(result.transaction.transaction.expiration + "Z") - new Date();
-      await U3Utils.test.waitUntil(async () => {
-        let tx = await u3.getTxByTxId(result.transaction_id);
-        return tx && tx.irreversible;
-      }, timeout, 1000);
+      let finalResult = false;
+      try {
+        await U3Utils.test.waitUntil(async () => {
+          let tx = await u3.getTxByTxId(result.transaction_id);
+          finalResult = tx && tx.irreversible;
+          if (finalResult) return true;
+        }, timeout, 1000);
+      } catch (e) {
+        console.log(finalResult);
+      }
     });
   });
 
@@ -265,8 +271,8 @@ describe("u3.js", () => {
     // 8.2 get accountsInfo by name
     it("getAccountInfo", async () => {
       const u3 = createU3();
-      const account_ = await u3.getAccountInfo({ account_name: account1 });
-      assert.equal(account_.account_name, account1);
+      const account_ = await u3.getAccountInfo({ account_name: "versly111213" });
+      assert.equal(account_.account_name, "versly111213");
     });
   });
 
