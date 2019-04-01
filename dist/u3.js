@@ -1,15 +1,18 @@
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.U3 = f()}})(function(){var define,module,exports;return (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 (function (Buffer){
-'use strict';
+"use strict";
 
-var _typeof2 = require('babel-runtime/helpers/typeof');
+var _typeof2 = require("babel-runtime/helpers/typeof");
 
 var _typeof3 = _interopRequireDefault(_typeof2);
 
+var _regenerator = require("babel-runtime/regenerator");
+
+var _regenerator2 = _interopRequireDefault(_regenerator);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var assert = require('assert');
-var Structs = require('./structs');
+var Structs = require("./structs");
 
 module.exports = AbiCache;
 
@@ -17,9 +20,10 @@ function AbiCache(network, config) {
   config.abiCache = {
     abiAsync: abiAsync,
     abi: abi
+  };
 
-    // Help (or "usage") needs {defaults: true}
-  };var abiCacheConfig = Object.assign({}, { defaults: true }, config);
+  // Help (or "usage") needs {defaults: true}
+  var abiCacheConfig = Object.assign({}, { defaults: true }, config);
 
   var cache = {};
 
@@ -31,22 +35,59 @@ function AbiCache(network, config) {
   function abiAsync(account) {
     var force = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
 
-    assert.equal(typeof account === 'undefined' ? 'undefined' : (0, _typeof3.default)(account), 'string', 'account string required');
+    var _abi, code;
 
-    if (force === false && cache[account] != null) {
-      return Promise.resolve(cache[account]);
-    }
+    return _regenerator2.default.async(function abiAsync$(_context) {
+      while (1) {
+        switch (_context.prev = _context.next) {
+          case 0:
+            if (!(typeof account !== "string")) {
+              _context.next = 2;
+              break;
+            }
 
-    if (network == null) {
-      var _abi = cache[account];
-      assert(_abi, 'Missing ABI for account: ' + account + ', provide httpEndpoint or add to abiCache');
-      return Promise.resolve(_abi);
-    }
+            throw new Error("account string required");
 
-    return network.getAbi(account).then(function (code) {
-      assert(code.abi, 'Missing ABI for account: ' + account);
-      return abi(account, code.abi);
-    });
+          case 2:
+            if (!(force === false && cache[account] != null)) {
+              _context.next = 4;
+              break;
+            }
+
+            return _context.abrupt("return", Promise.resolve(cache[account]));
+
+          case 4:
+            if (!(network == null)) {
+              _context.next = 7;
+              break;
+            }
+
+            _abi = cache[account];
+            return _context.abrupt("return", Promise.resolve(_abi));
+
+          case 7:
+            _context.next = 9;
+            return _regenerator2.default.awrap(network.getAbi(account));
+
+          case 9:
+            code = _context.sent;
+
+            if (code.abi) {
+              _context.next = 12;
+              break;
+            }
+
+            throw new Error("Missing ABI for account: " + account);
+
+          case 12:
+            return _context.abrupt("return", abi(account, code.abi));
+
+          case 13:
+          case "end":
+            return _context.stop();
+        }
+      }
+    }, null, this);
   }
 
   /**
@@ -55,9 +96,13 @@ function AbiCache(network, config) {
    @arg {string} [abi] - blockchain ABI json data.  Null to fetch or non-null to cache
    */
   function abi(account, abi) {
-    assert.equal(typeof account === 'undefined' ? 'undefined' : (0, _typeof3.default)(account), 'string', 'account string required');
+    if (typeof account !== "string") {
+      throw new Error("account string required");
+    }
     if (abi) {
-      assert.equal(typeof abi === 'undefined' ? 'undefined' : (0, _typeof3.default)(abi), 'object', 'abi');
+      if ((typeof abi === "undefined" ? "undefined" : (0, _typeof3.default)(abi)) !== "object") {
+        throw new Error("abi should be object");
+      }
       if (Buffer.isBuffer(abi)) {
         abi = JSON.parse(abi);
       }
@@ -67,7 +112,7 @@ function AbiCache(network, config) {
     }
     var c = cache[account];
     if (c == null) {
-      throw new Error('Abi \'' + account + '\' is not cached');
+      throw new Error("Abi '" + account + "' is not cached");
     }
     return c;
   }
@@ -119,7 +164,7 @@ function abiToFcSchema(abi, account) {
       }
 
       abiSchema[e.name] = { base: e.base, fields: fields };
-      if (e.base === '') {
+      if (e.base === "") {
         delete abiSchema[e.name].base;
       }
     });
@@ -131,7 +176,7 @@ function abiToFcSchema(abi, account) {
       // @example action = {name: 'setprods', type: 'set_producers'}
       var type = abiSchema[action.type];
       if (!type) {
-        console.error('Missing abiSchema type', action.type, account); //, abi, abiSchema)
+        console.error("Missing abiSchema type", action.type, account); //, abi, abiSchema)
       } else {
         type.action = {
           name: action.name,
@@ -145,7 +190,7 @@ function abiToFcSchema(abi, account) {
   return abiSchema;
 }
 }).call(this,{"isBuffer":require("../node_modules/is-buffer/index.js")})
-},{"../node_modules/is-buffer/index.js":295,"./structs":7,"assert":33,"babel-runtime/helpers/typeof":87}],2:[function(require,module,exports){
+},{"../node_modules/is-buffer/index.js":295,"./structs":7,"babel-runtime/helpers/typeof":87,"babel-runtime/regenerator":88}],2:[function(require,module,exports){
 'use strict';
 
 var _regenerator = require('babel-runtime/regenerator');
@@ -4920,7 +4965,7 @@ function writeApiGen(Network, network, structs, config, schemaDef) {
               writeApi.genContractActions(account).then(function (res) {
                 resolve(res);
               }).catch(function (err) {
-                console.log(err);
+                //console.log(err);
                 reject(err);
               });
             }));
@@ -96279,7 +96324,7 @@ function extend() {
 },{}],523:[function(require,module,exports){
 module.exports={
   "name": "u3.js",
-  "version": "0.3.4",
+  "version": "0.3.5",
   "description": "A general library wrapped in javascript for interacting with Ultrain",
   "main": "index.js",
   "directories": {
