@@ -48,7 +48,7 @@ function writeApiGen(Network, network, structs, config, schemaDef) {
       writeApi.genContractActions(account).then(res => {
         resolve(res);
       }).catch(err => {
-        console.log(err);
+        //console.log(err);
         reject(err);
       });
     });
