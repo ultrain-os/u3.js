@@ -48,7 +48,7 @@ function writeApiGen(Network, network, structs, config, schemaDef) {
       writeApi.genContractActions(account).then(res => {
         resolve(res);
       }).catch(err => {
-        //console.log(err);
+        console.log(err);
         reject(err);
       });
     });
@@ -158,10 +158,6 @@ function WriteApi(Network, network, config, Transaction) {
 
   function genMethod(type, definition, transactionArg, account = "utrio.token", name = type) {
     return function(...args) {
-
-      if (args.length === 0) {
-        return;
-      }
 
       const optionOverrides = {};
       const lastArg = args[args.length - 1];
