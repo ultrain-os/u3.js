@@ -1,6 +1,6 @@
 {
   "name": "u3.js",
-  "version": "0.3.6",
+  "version": "0.3.7",
   "description": "A general library wrapped in javascript for interacting with Ultrain",
   "main": "index.js",
   "directories": {
@@ -8,7 +8,7 @@
   },
   "scripts": {
     "test": "mocha test/index.test.js && mocha test/history.test.js --timeout 30000",
-    "dist": "rm -rf dist && mkdir -p dist && babel --copy-files src --out-dir dist",
+    "dist": "rm -rf dist && mkdir -p dist && babel --copy-files src --out-dir dist && babel --copy-files index.js --out-dir dist",
     "bundle": "browserify -o dist/u3.js -s U3 dist/index.js && uglifyjs dist/u3.js -o dist/u3.min.js --source-map --compress --mangle"
   },
   "repository": {

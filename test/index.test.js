@@ -4,7 +4,7 @@ const isString = require("lodash.isstring");
 const fs = require("fs");
 const path = require("path");
 const defaultConfig = require("../src/config");
-const { createU3, format, U3Utils, listener } = require("../src");
+const { createU3, format, U3Utils, listener } = require("../");
 
 const readKeysFromFiles = () => {
   let accounts = ["ben", "john", "tony", "jack", "bob", "tom", "jerry", "alice"];

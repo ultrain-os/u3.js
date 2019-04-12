@@ -319,7 +319,7 @@ AssetCache.resolve = function _callee() {
 AssetCache.pending = function () {
   return promises.length !== 0;
 };
-},{"../src/config":524,"./structs":7,"assert":33,"babel-runtime/helpers/slicedToArray":86,"babel-runtime/helpers/typeof":87,"babel-runtime/regenerator":88}],3:[function(require,module,exports){
+},{"../src/config":523,"./structs":7,"assert":33,"babel-runtime/helpers/slicedToArray":86,"babel-runtime/helpers/typeof":87,"babel-runtime/regenerator":88}],3:[function(require,module,exports){
 "use strict";
 
 module.exports = {
@@ -2186,7 +2186,7 @@ function getProposerList(page, pageSize) {
 }
 
 module.exports = historyGen;
-},{"../src/config":524,"../src/utils/dbHelper":525,"./config":3,"./index":6,"babel-runtime/regenerator":88}],6:[function(require,module,exports){
+},{"../src/config":523,"../src/utils/dbHelper":524,"./config":3,"./index":6,"babel-runtime/regenerator":88}],6:[function(require,module,exports){
 (function (process,Buffer){
 "use strict";
 
@@ -2202,22 +2202,20 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var fs = require("fs");
 var path = require("path");
-var configDefaults = require("./config");
-var U3Utils = require("u3-utils/src");
-var listener = require("./utils/listener");
+var assert = require("assert");
 var Fcbuffer = require("fcbuffer");
+var U3Utils = require("u3-utils/src");
+var configDefaults = require("./config");
+var listener = require("./utils/listener");
 var apiGen = require("./utils/apigen");
 var historyGen = require("./history");
 var api = require("./v1/chain");
-var assert = require("assert");
 var Structs = require("./structs");
 var AbiCache = require("./abi-cache");
 var AssetCache = require("./asset-cache");
 var writeApiGen = require("./write-api");
 var format = require("./format");
 var schema = require("./v1/schema");
-var pkg = require("../package.json");
-var version = pkg.version;
 var Logger = require("./utils/logger");
 var logger = void 0;
 
@@ -2516,7 +2514,7 @@ var createU3 = function createU3() {
   config.assetCache = AssetCache(network);
   config.abiCache = AbiCache(network, config);
 
-  _checkChainId(network, config.chainId);
+  //_checkChainId(network, config.chainId);
 
   if (config.mockTransactions != null) {
     if (typeof config.mockTransactions === "string") {
@@ -2561,11 +2559,11 @@ module.exports = {
   format: format,
   U3Utils: U3Utils,
   Fcbuffer: Fcbuffer,
-  listener: listener,
-  version: version
+  listener: listener
 };
+
 }).call(this,require('_process'),require("buffer").Buffer)
-},{"../package.json":523,"./abi-cache":1,"./asset-cache":2,"./config":3,"./format":4,"./history":5,"./structs":7,"./utils/apigen":8,"./utils/listener":10,"./utils/logger":11,"./v1/chain":14,"./v1/schema":17,"./write-api":18,"_process":386,"assert":33,"babel-runtime/helpers/typeof":87,"babel-runtime/regenerator":88,"buffer":139,"fcbuffer":271,"fs":135,"path":379,"u3-utils/src":452}],7:[function(require,module,exports){
+},{"./abi-cache":1,"./asset-cache":2,"./config":3,"./format":4,"./history":5,"./structs":7,"./utils/apigen":8,"./utils/listener":10,"./utils/logger":11,"./v1/chain":14,"./v1/schema":17,"./write-api":18,"_process":386,"assert":33,"babel-runtime/helpers/typeof":87,"babel-runtime/regenerator":88,"buffer":139,"fcbuffer":271,"fs":135,"path":379,"u3-utils/src":452}],7:[function(require,module,exports){
 (function (Buffer){
 'use strict';
 
@@ -4965,7 +4963,7 @@ function writeApiGen(Network, network, structs, config, schemaDef) {
               writeApi.genContractActions(account).then(function (res) {
                 resolve(res);
               }).catch(function (err) {
-                //console.log(err);
+                console.log(err);
                 reject(err);
               });
             }));
@@ -5227,15 +5225,13 @@ function WriteApi(Network, network, config, Transaction) {
     var name = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : type;
 
     return function () {
+
+      var optionOverrides = {};
+
       for (var _len3 = arguments.length, args = Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
         args[_key3] = arguments[_key3];
       }
 
-      if (args.length === 0) {
-        return;
-      }
-
-      var optionOverrides = {};
       var lastArg = args[args.length - 1];
       if ((typeof lastArg === "undefined" ? "undefined" : (0, _typeof3.default)(lastArg)) === "object" && (0, _typeof3.default)(lastArg.__optionOverrides) === "object") {
         // pop() fixes the args.length
@@ -96322,81 +96318,6 @@ function extend() {
 }
 
 },{}],523:[function(require,module,exports){
-module.exports={
-  "name": "u3.js",
-  "version": "0.3.5",
-  "description": "A general library wrapped in javascript for interacting with Ultrain",
-  "main": "index.js",
-  "directories": {
-    "test": "test"
-  },
-  "scripts": {
-    "test": "mocha test/index.test.js && mocha test/history.test.js --timeout 30000",
-    "dist": "rm -rf dist && mkdir -p dist && babel --copy-files src --out-dir dist",
-    "bundle": "browserify -o dist/u3.js -s U3 dist/index.js && uglifyjs dist/u3.js -o dist/u3.min.js --source-map --compress --mangle"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git@github.com:ultrain-os/u3.js.git"
-  },
-  "bugs": {
-    "url": "https://github.com/ultrain-os/u3.js/issues"
-  },
-  "keywords": [
-    "sdk",
-    "javascript"
-  ],
-  "author": "ben.yasin80@gmail.com",
-  "contributors": [],
-  "engines": {
-    "node": ">=8"
-  },
-  "dependencies": {
-    "async": "^2.6.2",
-    "axios": "^0.18.0",
-    "u3-utils": "^0.0.4",
-    "winston": "^3.2.1",
-    "winston-daily-rotate-file": "^3.8.0"
-  },
-  "devDependencies": {
-    "@types/node": "^8.0.3",
-    "babel-cli": "^6.26.0",
-    "babel-core": "^6.26.0",
-    "babel-plugin-syntax-async-functions": "^6.13.0",
-    "babel-plugin-transform-regenerator": "^6.26.0",
-    "babel-plugin-transform-runtime": "6.23.0",
-    "babel-preset-es2015": "^6.24.1",
-    "body-parser": "^1.18.3",
-    "browserify": "^14.4.0",
-    "camel-case": "^3.0.0",
-    "chai": "4.1.2",
-    "express": "^4.16.3",
-    "http": "0.0.0",
-    "mocha": "3.5.0",
-    "should": "1.2.2",
-    "uglify-es": "^3.3.9",
-    "url": "^0.11.0"
-  },
-  "license": "MIT",
-  "babel": {
-    "presets": [
-      "es2015"
-    ],
-    "plugins": [
-      "syntax-async-functions",
-      "transform-regenerator",
-      [
-        "transform-runtime",
-        {
-          "polyfill": false,
-          "regenerator": true
-        }
-      ]
-    ]
-  }
-}
-
-},{}],524:[function(require,module,exports){
 module.exports = {
   httpEndpoint: "http://127.0.0.1:8888",
   httpEndpointHistory: "http://127.0.0.1:3000",
@@ -96414,7 +96335,7 @@ module.exports = {
   //expireInSeconds:60
 
 };
-},{}],525:[function(require,module,exports){
+},{}],524:[function(require,module,exports){
 const async = require("async");
 const axios = require("axios");
 const Logger = require("../utils/logger");
@@ -96505,7 +96426,7 @@ module.exports = function(config) {
   };
 };
 
-},{"../utils/logger":526,"async":38,"axios":57}],526:[function(require,module,exports){
+},{"../utils/logger":525,"async":38,"axios":57}],525:[function(require,module,exports){
 (function (__dirname){
 const { createLogger, format, transports } = require("winston");
 const DailyRotateFile = require("winston-daily-rotate-file");
