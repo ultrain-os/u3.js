@@ -1,5 +1,5 @@
 const assert = require("assert");
-const { createU3 } = require("../src");
+const { createU3 } = require("../");
 const u3 = createU3();
 
 describe("history", async () => {
