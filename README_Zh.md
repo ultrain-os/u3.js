@@ -51,7 +51,7 @@ Javascript封装的负责与链交互的通用库
 * #### 初始化
 
 ```
-const { createU3 } = require('u3.js/src');
+const { createU3 } = require('u3.js');
 let config = {
     httpEndpoint: "http://127.0.0.1:8888",
     httpEndpointHistory: "http://127.0.0.1:3000",

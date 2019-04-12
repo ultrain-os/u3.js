@@ -50,7 +50,7 @@ If you want to integrate u3.js into a react native environment, there is a worka
 * #### Initialization
 
 ```
-const { createU3 } = require('u3.js/src');
+const { createU3 } = require('u3.js');
 let config = {
     httpEndpoint: "http://127.0.0.1:8888",
     httpEndpointHistory: "http://127.0.0.1:3000",

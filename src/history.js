@@ -1,7 +1,6 @@
 /** @namespace history*/
 const defaultConfig = require("../src/config");
 let httpEndpointHistory = require("./config").httpEndpointHistory;
-
 let U3Config = {};
 let fetchUrl = () => {
 };
@@ -44,7 +43,7 @@ function historyGen(config) {
  * @param {Object} sortParams sorting parameter
  * @memberOf history
  * @example
- * import {getAllBlocks} from "u3.js/src";
+ * import {getAllBlocks} from "u3.js";
  * const u3 = createU3(config)
  * u3.getAllBlocks({
     'page': 1,
@@ -102,7 +101,7 @@ function getAllBlocks(page, pageSize, queryParams, sortParams) {
  * @memberOf history
  *
  * @example
- * import {getContracts} from "u3.js/src";
+ * import {getContracts} from "u3.js";
  * const u3 = createU3(config)
  * u3.getContracts({
     'page': 1,
@@ -146,7 +145,7 @@ function getContracts(page, pageSize, queryParams, sortParams) {
  * @memberOf history
  *
  * @example
- * import {getContractByName} from "u3.js/src";
+ * import {getContractByName} from "u3.js";
  * const u3 = createU3(config)
  * u3.getContractByName({
     'name': 'utrio.code'
@@ -182,7 +181,7 @@ function getContractByName(name) {
  * @param {Object} sortParams sorting parameter
  * @memberOf history
  * @example
- * import {getAllAccounts} from "u3.js/src";
+ * import {getAllAccounts} from "u3.js";
  * const u3 = createU3(config)
  * u3.getAllAccounts({
     'page': 1,
@@ -214,7 +213,7 @@ async function getAllAccounts(page, pageSize, queryParams, sortParams) {
 
   let pageInfo = Object.assign({}, response);
   let accounts = pageInfo.results;
-  const { createU3 } = require("./index");
+  const { createU3 } = require("../");
   const u3 = createU3(U3Config);
 
   for (let i in accounts) {
@@ -241,7 +240,7 @@ async function getAllAccounts(page, pageSize, queryParams, sortParams) {
  * @param {Object} sortParams sorting parameter
  * @memberOf history
  * @example
- * import {getAllTxs} from "u3.js/src";
+ * import {getAllTxs} from "u3.js";
  * const u3 = createU3(config)
  * let query = { $and: [{ "actions.0.account": "user.11.111" }, { $or: [{ "actions.0.data.id": 1257 }, { "actions.0.data.id": "1257" }] }] };
  * u3.getAllTxs({
@@ -309,7 +308,7 @@ function getAllTxs(page, pageSize, queryParams, sortParams) {
  * @param {String} id transaction's id
  * @memberOf history
  * @example
- * import {getTxByTxId} from "u3.js/src";
+ * import {getTxByTxId} from "u3.js";
  * const u3 = createU3(config)
  * u3.getTxByTxId({
     'id': '40ed51618da80804373fd84015548c8343da8c7ade8af00548ada4952d3e38b9',
@@ -365,7 +364,7 @@ function getTxByTxId(id) {
  * @param {String} id  transaction's id
  * @memberOf history
  * @example
- * import {getActionsByTxid} from "u3.js/src";
+ * import {getActionsByTxid} from "u3.js";
  * const u3 = createU3(config)
  * u3.getActionsByTxid({
  *   'trx_id': "40ed51618da80804373fd84015548c8343da8c7ade8af00548ada4952d3e38b9"
@@ -400,7 +399,7 @@ function getActionsByTxid(id) {
  * @param {Object} sortParams sorting parameter
  * @memberOf history
  * @example
- * import {getActionsByAccount} from "u3.js/src";
+ * import {getActionsByAccount} from "u3.js";
  * const u3 = createU3(config)
  * u3.getActionsByAccount({
      'page': 1,
@@ -444,7 +443,7 @@ function getActionsByAccount(page, pageSize, queryParams, sortParams) {
  * @param {Object} sortParams sorting parameter
  * @memberOf history
  * @example
- * import {getTxsByBlockNum} from "u3.js/src";
+ * import {getTxsByBlockNum} from "u3.js";
  * const u3 = createU3(config)
  * u3.getTxsByBlockNum({
     'page': 1,
@@ -512,7 +511,7 @@ function getTxsByBlockNum(page, pageSize, queryParams, sortParams) {
  * @returns {account|null}
  * @memberOf history
  * @example
- * import {getExistAccount} from "u3.js/src";
+ * import {getExistAccount} from "u3.js";
  * const u3 = createU3(config)
  * u3.getExistAccount({
      'name': 'utrio.code'
@@ -537,7 +536,7 @@ function getExistAccount(name) {
  * @param { String } contract_method contract method eg. transfer
  * @memberOf history
  * @example
- * import {getBlocksByContract} from "u3.js/src";
+ * import {getBlocksByContract} from "u3.js";
  * const u3 = createU3(config)
  * u3.getBlocksByContract({
     'block_num': 1,
@@ -591,7 +590,7 @@ function getBlocksByContract(block_num, account, contract, contract_method) {
  * @memberOf history
  *
  * @example
- * import {getTxTraceByTxid} from "u3.js/src";
+ * import {getTxTraceByTxid} from "u3.js";
  * const u3 = createU3(config)
  * u3.getTxTraceByTxid({
     'id': '40ed51618da80804373fd84015548c8343da8c7ade8af00548ada4952d3e38b9'
@@ -648,14 +647,14 @@ function getTxTraceByTxid(id) {
  * @memberOf history
  *
  * @example
- * import {search} from "u3.js/src";
+ * import {search} from "u3.js";
  * const u3 = createU3(config)
  * u3.search(5b7d11b859bd97fab30ba7f5)
  */
 async function search(param) {
   let rs = await fetchUrl("search", `${httpEndpointHistory}/search/${param}`);
   if (rs.type === "account" && rs.data.name) {
-    const { createU3 } = require("./index");
+    const { createU3 } = require("../");
     const u3 = createU3(U3Config);
 
     let balance = await u3.getCurrencyBalance({
@@ -681,7 +680,7 @@ async function search(param) {
  * @param {String} name account name
  * @memberOf history
  * @example
- * import {getCreateAccountByName} from "u3.js/src";
+ * import {getCreateAccountByName} from "u3.js";
  * const u3 = createU3(config)
  * u3.getCreateAccountByName({
      'name': 'utrio.code'
@@ -706,7 +705,7 @@ function getCreateAccountByName(name) {
  * @param {Object} sortParams sorting parameter
  * @memberOf history
  * @example
- * import {createU3} from "u3.js/src";
+ * import {createU3} from "u3.js";
  * const u3 = createU3(config)
  * u3.getAllTokens({
     'page': 1,
@@ -749,7 +748,7 @@ function getAllTokens(page, pageSize, queryParams, sortParams) {
  * @param { String } creator creator of symbol
  * @memberOf history
  * @example
- * import {createU3} from "u3.js/src";
+ * import {createU3} from "u3.js";
  * const u3 = createU3(config)
  * u3.getTokenBySymbol("ZTPJ","user.11.111")
  *
@@ -778,7 +777,7 @@ function getTokenBySymbol(symbol, creator) {
  * @param { String } symbol symbol of token
  * @memberOf history
  * @example
- * import {createU3} from "u3.js/src";
+ * import {createU3} from "u3.js";
  * const u3 = createU3(config)
  * u3.getBaseInfo()
  *
@@ -801,7 +800,7 @@ function getBaseInfo() {
  * @param {String} account
  * @memberOf history
  * @example
- * import {createU3} from "u3.js/src";
+ * import {createU3} from "u3.js";
  * const u3 = createU3(config)
  * u3.getBalanceByAccount()
  *
@@ -832,7 +831,7 @@ function getBalanceByAccount(account) {
  * @param {Object} sortParams sorting parameter
  * @memberOf history
  * @example
- * import {createU3} from "u3.js/src";
+ * import {createU3} from "u3.js";
  * const u3 = createU3(config)
  * u3.getHoldersBySymbol({
     'page': 1,
@@ -873,7 +872,7 @@ function getHoldersBySymbol(page, pageSize, queryParams, sortParams) {
  * @param {Object} sortParams sorting parameter
  * @memberOf history
  * @example
- * import {createU3} from "u3.js/src";
+ * import {createU3} from "u3.js";
  * const u3 = createU3(config)
  * u3.getHoldersBySymbol({
     'page': 1,
@@ -922,7 +921,7 @@ function getAllBlocksHeader(page, pageSize, queryParams, sortParams) {
  * @param {Number} pageSize how many records are displayed per page
  * @memberOf history
  * @example
- * import {createU3} from "u3.js/src";
+ * import {createU3} from "u3.js";
  * const u3 = createU3(config)
  * u3.getProposerList({
     'page': 1,
