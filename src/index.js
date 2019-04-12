@@ -222,7 +222,7 @@ const createU3 = (config = {}) => {
   config.assetCache = AssetCache(network);
   config.abiCache = AbiCache(network, config);
 
-  _checkChainId(network, config.chainId);
+  //_checkChainId(network, config.chainId);
 
   if (config.mockTransactions != null) {
     if (typeof config.mockTransactions === "string") {
