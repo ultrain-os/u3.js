@@ -4,7 +4,7 @@ const Fcbuffer = require('fcbuffer');
 const ByteBuffer = require('bytebuffer');
 
 const {createU3} = require('../src');
-const {ecc} = require('u3-utils/src');
+const {ecc} = require('u3-utils');
 const {PublicKey} = ecc;
 const AssetCache = require('../src/asset-cache');
 const defaultConfig = require("../src/config");
