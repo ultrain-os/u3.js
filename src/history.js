@@ -634,7 +634,7 @@ async function search(param) {
   let rs = await fetchUrl("search", `${httpEndpointHistory}/search/${param}`);
   console.log(rs);
   if (rs.type === "account" && rs.data.name) {
-    const { createU3 } = require("./index");
+    const { createU3 } = require("../");
     const u3 = createU3(U3Config);
 
     let balance = await u3.getCurrencyBalance({
