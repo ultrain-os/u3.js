@@ -319,7 +319,7 @@ const unsubscribe = await u3.unregisterEvent('ben', 'http://192.168.1.5:3002');
 #### listen
 
 ```
-const { createU3 listener } = require('u3.js/src');
+const { createU3 listener } = require('u3.js');
 listener(function(data) {
    // do callback logic
    console.log(data);

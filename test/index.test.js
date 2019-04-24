@@ -95,7 +95,7 @@ describe("u3.js", () => {
     // 2.5 generate publicKey from privateKey
     it("privateToPublic", function() {
       const privateKey = "5JoTvD8emJDGHNGHyRCjqvpJqRY2jMmn5G6V9j8AifnszK5jKMe";
-      const publicKey = "UTR5rgwrLWr2m3EbFhpn9pk1P1uQSje9BMG49fLKxmiJFj4WD2Ex1";
+      const publicKey = "UTR74nPcTpvZxoEugKZqXgAMysC7FvBjUAiHCB6TBSh576HNAGXz5";
       let result = U3Utils.ecc.privateToPublic(privateKey);
       assert.equal(publicKey, result);
     });

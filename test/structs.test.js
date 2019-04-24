@@ -3,17 +3,16 @@ const assert = require('assert');
 const Fcbuffer = require('fcbuffer');
 const ByteBuffer = require('bytebuffer');
 
-const {createU3} = require('../src');
-const {ecc} = require('u3-utils/src');
-const {PublicKey} = ecc;
+const {createU3,U3Utils} = require('../index');
+const {PublicKey} = U3Utils.ecc;
 const AssetCache = require('../src/asset-cache');
 const defaultConfig = require("../src/config");
 
 describe('shorthand', () => {
 
   it('authority', () => {
-    const ultrain = createU3();
-    const { authority } = ultrain.fc.structs;
+    const u3 = createcreatecreateU3();
+    const { authority } = u3.fc.structs;
 
     const pubkey = 'UTR6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV';
     const auth = { threshold: 1, keys: [{ key: pubkey, weight: 1 }] };
@@ -28,8 +27,8 @@ describe('shorthand', () => {
   });
 
   it('PublicKey sorting', () => {
-    const ultrain = Ultrain();
-    const { authority } = ultrain.fc.structs;
+    const u3 = createcreateU3();
+    const { authority } = u3.fc.structs;
 
     const pubkeys = [
       'UTR7wBGPvBgRVa4wQN2zm5CjgBF6S7tP7R3JavtSa2unHUoVQGhey',
@@ -55,8 +54,8 @@ describe('shorthand', () => {
   });
 
   it('public_key', () => {
-    const ultrain = Ultrain();
-    const { structs, types } = ultrain.fc;
+    const u3 = createcreateU3();
+    const { structs, types } = u3.fc;
     const PublicKeyType = types.public_key();
     const pubkey = 'UTR6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV';
     // 02c0ded2bc1f1305fb0faac5e6c03ee3a1924234985427b6167ca569d13df435cf
@@ -64,37 +63,37 @@ describe('shorthand', () => {
   });
 
   it('symbol', () => {
-    const ultrain = Ultrain();
-    const { types } = ultrain.fc;
+    const u3 = createcreateU3();
+    const { types } = u3.fc;
     const Symbol = types.symbol();
 
     assertSerializer(Symbol, '4,' + defaultConfig.symbol, '4,' + defaultConfig.symbol, '' + defaultConfig.symbol);
   });
 
   it('extended_symbol', () => {
-    const ultrain = Ultrain({ defaults: true });
-    const esType = ultrain.fc.types.extended_symbol();
+    const u3 = createU3({ defaults: true });
+    const esType = u3.fc.types.extended_symbol();
     const esString = esType.toObject();
     assertSerializer(esType, esString);
   });
 
   it('asset', () => {
-    const ultrain = Ultrain();
-    const { types } = ultrain.fc;
+    const u3 = createcreateU3();
+    const { types } = u3.fc;
     const AssetType = types.asset();
     assertSerializer(AssetType, '1.1 4,' + defaultConfig.symbol + '@utrio.token', '1.1000 ' + defaultConfig.symbol + '@utrio.token', '1.1000 ' + defaultConfig.symbol);
   });
 
   it('extended_asset', () => {
-    const ultrain = Ultrain({ defaults: true });
-    const eaType = ultrain.fc.types.extended_asset();
+    const u3 = createcreateU3({ defaults: true });
+    const eaType = u3.fc.types.extended_asset();
     const eaString = eaType.toObject();
     assertSerializer(eaType, eaString);
   });
 
   it('signature', () => {
-    const ultrain = Ultrain();
-    const { types } = ultrain.fc;
+    const u3 = createcreateU3();
+    const { types } = u3.fc;
     const SignatureType = types.signature();
     const signatureString = 'SIG_K1_JwxtqesXpPdaZB9fdoVyzmbWkd8tuX742EQfnQNexTBfqryt2nn9PomT5xwsVnUB4m7KqTgTBQKYf2FTYbhkB5c7Kk9EsH';
     //const signatureString = 'SIG_K1_Jzdpi5RCzHLGsQbpGhndXBzcFs8vT5LHAtWLMxPzBdwRHSmJkcCdVu6oqPUQn1hbGUdErHvxtdSTS1YA73BThQFwV1v4G5'
@@ -105,12 +104,12 @@ describe('shorthand', () => {
 
 if (process.env['NODE_ENV'] === 'development') {
 
-  describe('Ultrainio Abi', () => {
+  describe('u3io Abi', () => {
 
-    it('Ultrainio token contract parses', (done) => {
-      const ultrain = Ultrain();
+    it('u3io token contract parses', (done) => {
+      const u3 = createcreateU3();
 
-      ultrain.contract('utrio.token', (error, utrio_token) => {
+      u3.contract('utrio.token', (error, utrio_token) => {
         assert(!error, error);
         assert(utrio_token.transfer, 'utrio.token contract');
         assert(utrio_token.issue, 'utrio.token contract');
@@ -123,8 +122,8 @@ if (process.env['NODE_ENV'] === 'development') {
 
 describe('Action.data', () => {
   it('json', () => {
-    const ultrain = Ultrain({ forceActionDataHex: false });
-    const { structs, types } = ultrain.fc;
+    const u3 = createU3({ forceActionDataHex: false });
+    const { structs, types } = u3.fc;
     const value = {
       account: 'utrio.token',
       name: 'transfer',
@@ -140,8 +139,8 @@ describe('Action.data', () => {
   });
 
   it('force hex', () => {
-    const ultrain = Ultrain({ forceActionDataHex: true });
-    const { structs, types } = ultrain.fc;
+    const u3 = createU3({ forceActionDataHex: true });
+    const { structs, types } = u3.fc;
     const value = {
       account: 'utrio.token',
       name: 'transfer',
@@ -157,8 +156,8 @@ describe('Action.data', () => {
   });
 
   it('unknown type', () => {
-    const ultrain = Ultrain({ forceActionDataHex: false });
-    const { structs, types } = ultrain.fc;
+    const u3 = createU3({ forceActionDataHex: false });
+    const { structs, types } = u3.fc;
     const value = {
       account: 'utrio.token',
       name: 'mytype',

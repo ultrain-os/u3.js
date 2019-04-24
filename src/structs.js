@@ -1,4 +1,4 @@
-const {ecc} = require('u3-utils/src')
+const {ecc} = require('u3-utils')
 const {Signature, PublicKey} = ecc
 const Fcbuffer = require('fcbuffer')
 const ByteBuffer = require('bytebuffer')
