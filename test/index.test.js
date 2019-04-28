@@ -336,7 +336,24 @@ describe("u3.js", () => {
     });
   });
 
-  // 11 event
+  // 11 random
+  describe("random", () => {
+
+    // 10.1 buy resource and query resource
+    it("queryRandom", async () => {
+      const u3 = createU3();
+      const c = await u3.contract("utrio.rand");
+      const tx = await c.query({
+        keyProvider: "5JbedY3jGfNK7HcLXcqGqSYrmX2n8wQWqZAuq6K7Gcf4Dj62UfL",
+        authorization: [`ben@active`]
+      });
+      let randomNumU64 = tx.processed.action_traces[0].return_value;
+      console.log(randomNumU64);
+      assert.ok(randomNumU64.split(",")[1] > 0);
+    });
+  });
+
+  // 12 event
   describe("subscribe", () => {
 
     //make sure '192.168.1.5' is your local IP
