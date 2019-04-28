@@ -190,6 +190,13 @@ describe("u3.js", () => {
 
   // 5. blocks
   describe("blocks", () => {
+
+    it("getBlockInfo", async () => {
+      const u3 = createU3();
+      const blockInfo = await u3.getBlockInfo(1);
+      assert.equal(blockInfo.block_num, 1);
+    });
+
     it("transaction confirm", async () => {
       const u3 = createU3();
       const c = await u3.contract("utrio.token");
