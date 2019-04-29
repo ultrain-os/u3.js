@@ -59,7 +59,7 @@ function fetchMethod(methodName, url, definition) {
 
     return new Promise((resolve, reject) => {
       Axios[method](url, params, {
-        headers: { "Content-Type": "application/x-www-form-urlencoded" }
+        headers: { "Content-Type": "application/x-www-form-urlencoded", "Connection": "keep-alive" }
       }).then(res => {
         logger.info("<<[" + methodName + "]" + JSON.stringify(res.data));
         resolve(res.data);
