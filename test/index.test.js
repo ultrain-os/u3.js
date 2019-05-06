@@ -268,14 +268,7 @@ describe("u3.js", () => {
   // 8. transactions
   describe("transactions", () => {
 
-    // 8.1 get accounts array by public key
-    it("getKeyAccounts", async () => {
-      const u3 = createU3();
-      const accounts = await u3.getKeyAccounts(users[account1].public_key);
-      assert.ok(accounts.account_names.includes(account1));
-    });
-
-    // 8.2 get accountsInfo by name
+    // 8.1 get accountsInfo by name
     it("getAccountInfo", async () => {
       const u3 = createU3();
       const account_ = await u3.getAccountInfo({ account_name: "versly111213" });
