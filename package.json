@@ -1,6 +1,6 @@
 {
   "name": "u3.js",
-  "version": "0.3.11",
+  "version": "0.3.12",
   "description": "A general library wrapped in javascript for interacting with Ultrain",
   "main": "index.js",
   "directories": {
@@ -30,7 +30,7 @@
   "dependencies": {
     "async": "^2.6.2",
     "axios": "^0.18.0",
-    "u3-utils": "^0.0.5",
+    "u3-utils": "^0.0.6",
     "winston": "^3.2.1",
     "winston-daily-rotate-file": "^3.8.0"
   },

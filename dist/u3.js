@@ -18565,7 +18565,7 @@ module.exports={
     "/ecurve",
     "/u3-utils"
   ],
-  "_resolved": "http://registry.npm.taobao.org/bigi/download/bigi-1.4.2.tgz",
+  "_resolved": "https://registry.npmjs.org/bigi/-/bigi-1.4.2.tgz",
   "_shasum": "9c665a95f88b8b08fc05cfd731f561859d725825",
   "_spec": "bigi@^1.4.2",
   "_where": "/Users/benyasin/Projects/u3.js/node_modules/u3-utils",
@@ -55572,7 +55572,7 @@ module.exports={
   "_from": "elliptic@^6.0.0",
   "_id": "elliptic@6.4.1",
   "_inBundle": false,
-  "_integrity": "sha1-wtC3d2kRuGcixjLDwGxg8vgZk5o=",
+  "_integrity": "sha512-BsXLz5sqX8OHcsh7CqBMztyXARmGQ3LWPtGjJi6DiJHq5C/qvi9P3OqgswKSDftbu8+IoI/QDTAm2fFnQ9SZSQ==",
   "_location": "/elliptic",
   "_phantomChildren": {},
   "_requested": {
@@ -55589,7 +55589,7 @@ module.exports={
     "/browserify-sign",
     "/create-ecdh"
   ],
-  "_resolved": "http://registry.npm.taobao.org/elliptic/download/elliptic-6.4.1.tgz",
+  "_resolved": "https://registry.npmjs.org/elliptic/-/elliptic-6.4.1.tgz",
   "_shasum": "c2d0b7776911b86722c632c3c06c60f2f819939a",
   "_spec": "elliptic@^6.0.0",
   "_where": "/Users/benyasin/Projects/u3.js/node_modules/browserify-sign",
@@ -88644,8 +88644,8 @@ function PrivateKey (d) {
 
   function toString () {
     // todo, use PVT_K1_
-     return 'PVT_K1_' + keyUtils.checkEncode(toBuffer(), 'K1')
-    //return toWif();
+     //return 'PVT_K1_' + keyUtils.checkEncode(toBuffer(), 'K1')
+    return toWif();
   }
 
   function toWif () {
@@ -92470,6 +92470,10 @@ var DailyRotateFile = function (options) {
             end_stream: true,
             audit_file: options.auditFile ? options.auditFile : path.join(self.dirname, '.' + hash(options) + '-audit.json'),
             file_options: options.options ? options.options : {flags: 'a'}
+        });
+
+        this.logStream.on('new', function (newFile) {
+            self.emit('new', newFile);
         });
 
         this.logStream.on('rotate', function (oldFile, newFile) {
@@ -96618,7 +96622,7 @@ module.exports={
   "_from": "winston@^3.2.1",
   "_id": "winston@3.2.1",
   "_inBundle": false,
-  "_integrity": "sha1-YwYTd5dsc1hAKL4kkKGEYFX3fwc=",
+  "_integrity": "sha512-zU6vgnS9dAWCEKg/QYigd6cgMVVNwyTzKs81XZtTFuRwJOcDdBg7AU0mXVyNbs7O5RH2zdv+BdNZUlx7mXPuOw==",
   "_location": "/winston",
   "_phantomChildren": {},
   "_requested": {
@@ -96634,7 +96638,7 @@ module.exports={
   "_requiredBy": [
     "/"
   ],
-  "_resolved": "http://registry.npm.taobao.org/winston/download/winston-3.2.1.tgz",
+  "_resolved": "https://registry.npmjs.org/winston/-/winston-3.2.1.tgz",
   "_shasum": "63061377976c73584028be2490a1846055f77f07",
   "_spec": "winston@^3.2.1",
   "_where": "/Users/benyasin/Projects/u3.js",
