@@ -420,7 +420,7 @@ function WriteApi(Network, network, config, Transaction) {
     const transactionId = createHash("sha256").update(buf).digest().toString("hex");
 
     let sigs = [];
-    if (options.sign && config.keyProvider) {
+    if (options.sign) {
       const chainIdBuf = Buffer.from(config.chainId, "hex");
       const packedContextFreeData = Buffer.from(new Uint8Array(32)); // TODO
       const signBuf = Buffer.concat([chainIdBuf, buf, packedContextFreeData]);

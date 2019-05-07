@@ -323,9 +323,9 @@ AssetCache.pending = function () {
 "use strict";
 
 module.exports = {
-  httpEndpoint: "http://127.0.0.1:8888",
-  httpEndpointHistory: "http://127.0.0.1:3000",
-  chainId: "80a5d6aa3e0c2e2052c3df1cc6b591b90b8307fb102bd174805e06c8b8b16ec1",
+  httpEndpoint: "http://ultrain.natapp1.cc",
+  httpEndpointHistory: "http://ultrain-history.natapp1.cc",
+  chainId: "1f1155433d9097e0f67de63a48369916da91f19cb1feff6ba8eca2e5d978a2b2",
   broadcast: true,
   sign: true,
   logger: {
@@ -5549,7 +5549,7 @@ function WriteApi(Network, network, config, Transaction) {
             transactionId = createHash("sha256").update(buf).digest().toString("hex");
             sigs = [];
 
-            if (options.sign && config.keyProvider) {
+            if (options.sign) {
               chainIdBuf = Buffer.from(config.chainId, "hex");
               packedContextFreeData = Buffer.from(new Uint8Array(32)); // TODO
 
@@ -96968,9 +96968,9 @@ AssetCache.pending = function() {
 
 },{"../src/config":544,"./structs":547,"assert":33}],544:[function(require,module,exports){
 module.exports = {
-  httpEndpoint: "http://127.0.0.1:8888",
-  httpEndpointHistory: "http://127.0.0.1:3000",
-  chainId: "80a5d6aa3e0c2e2052c3df1cc6b591b90b8307fb102bd174805e06c8b8b16ec1",
+  httpEndpoint:"http://ultrain.natapp1.cc",
+  httpEndpointHistory:"http://ultrain-history.natapp1.cc",
+  chainId:"1f1155433d9097e0f67de63a48369916da91f19cb1feff6ba8eca2e5d978a2b2",
   broadcast: true,
   sign: true,
   logger: {
@@ -96984,6 +96984,7 @@ module.exports = {
   //expireInSeconds:60
 
 };
+
 },{}],545:[function(require,module,exports){
 /** @namespace utils */
 
@@ -100247,7 +100248,7 @@ function WriteApi(Network, network, config, Transaction) {
     const transactionId = createHash("sha256").update(buf).digest().toString("hex");
 
     let sigs = [];
-    if (options.sign && config.keyProvider) {
+    if (options.sign) {
       const chainIdBuf = Buffer.from(config.chainId, "hex");
       const packedContextFreeData = Buffer.from(new Uint8Array(32)); // TODO
       const signBuf = Buffer.concat([chainIdBuf, buf, packedContextFreeData]);
