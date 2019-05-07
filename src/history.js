@@ -33,7 +33,8 @@ function historyGen(config) {
     getHoldersBySymbol,
     getAllBlocksHeader,
     getProposerList,
-    getReward
+    getReward,
+    getActionsByContract
   };
 };
 
@@ -632,7 +633,7 @@ function getTxTraceByTxid(id) {
  */
 async function search(param) {
   let rs = await fetchUrl("search", `${httpEndpointHistory}/search/${param}`);
-  console.log(rs);
+  // console.log(rs);
   if (rs.type === "account" && rs.data.name) {
     const { createU3 } = require("../");
     const u3 = createU3(U3Config);
@@ -945,6 +946,50 @@ function getProposerList(page, pageSize, queryParams, sortParams) {
  */
 function getReward() {
   return fetchUrl("getReward", `${httpEndpointHistory}/award`);
+}
+
+/**
+ * get actions by account name
+ * @param {Number} page page numbers
+ * @param {Number} pageSize how many records are displayed per page
+ * @param {Object} queryParams query parameter for Account
+ * @param {Object} sortParams sorting parameter
+ * @memberOf history
+ * @example
+ * import {getActionsByAccount} from "u3.js";
+ * const u3 = createU3(config)
+ * u3.getActionsByContract({
+     'page': 1,
+     'pageSize': 10,
+     'queryParams': {},
+     'sortParams': { _id: -1 }
+ * })
+ *
+ * json structure:
+ * { 
+    "_id" : ObjectId("5b7d11b859bd97fab30ba7f3"), 
+    "action_num" : NumberInt(0), 
+    "trx_id" : "40ed51618da80804373fd84015548c8343da8c7ade8af00548ada4952d3e38b9", 
+    "cfa" : false, 
+    "account" : "ultrainio", 
+    "name" : "onblock", 
+    "authorization" : [
+        {
+            "actor" : "ultrainio", 
+            "permission" : "active"
+        }
+    ], 
+    "hex_data" : "80e34745000000000000000001000000000000..."
+}
+ */
+function getActionsByContract(page, pageSize, queryParams, sortParams) {
+  let data = {
+    "page": page || 1,
+    "pageSize": pageSize || 10,
+    "queryParams": queryParams || {},
+    "sortParams": sortParams || { _id: -1 }
+  };
+  return fetchUrl("getActionsByContract", `${httpEndpointHistory}/actions/by/contract`, data);
 }
 
 module.exports = historyGen;
