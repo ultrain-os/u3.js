@@ -247,7 +247,7 @@ describe("u3.js", () => {
     const publicKey = "UTR6rBwNTWJSNMYu4ZLgEigyV5gM8hHiNinqejXT1dNGZa5xsbpCB";
 
     // 7.1 create user only in the main chain
-    // We should call a 'empoweruser' method to async the user from the main chain to the side chain if in MainNet envirnment
+    // We should call a 'empoweruser' method to async the user from the main chain to the side chain if in MainNet/TestNet envirnment
     it("createUser", async () => {
       const u3 = createU3({ keyProvider: account1_pk });
       const name = randomName();
@@ -263,6 +263,27 @@ describe("u3.js", () => {
       assert.equal(account_.account_name, name);
     });
 
+
+    // when in MainNet/TestNet
+    // this testcase below only works in TestNet
+    it("empoweruser", async () => {
+
+      /**
+       * accountName: cona1
+       * privateKey:5JuLu9LyeCq2Rh7cddN9qPXGpgNerRU31kzt8FFYuMASNaDFxUn
+       * publicKey:UTR5jKHKQZHCvrmfpZ8cjdf6QJFWKQrxUtBvj5QBPKdWUBob8BkqS
+       * mnemonic:spring equip exit tool monkey palm output siren next emerge slight flush
+       */
+      const u3 = createU3({ keyProvider: '5JuLu9LyeCq2Rh7cddN9qPXGpgNerRU31kzt8FFYuMASNaDFxUn' });
+      const c = await u3.contract("ultrainio");//系统合约名
+      await c.empoweruser({
+        user: 'cona1',
+        chain_name: '11', //pioneer sidechain name
+        owner_pk: 'UTR5jKHKQZHCvrmfpZ8cjdf6QJFWKQrxUtBvj5QBPKdWUBob8BkqS',
+        active_pk: 'UTR5jKHKQZHCvrmfpZ8cjdf6QJFWKQrxUtBvj5QBPKdWUBob8BkqS',
+        updateable: 1
+      })
+    });
   });
 
   // 8. transactions
@@ -327,6 +348,7 @@ describe("u3.js", () => {
 
       //lease 1 slot for 2 days.
       //the last parameter should be the name of the side chain.
+      //should connect to mainchain
       await c.resourcelease(account1, account2, 1, 2, "ultrainio");
 
       await U3Utils.test.wait(10000);
@@ -334,6 +356,7 @@ describe("u3.js", () => {
       const account = await u3.getAccountInfo({ account_name: account2 });
       assert.ok(account.chain_resource[0].lease_num > 0);
     });
+
   });
 
   // 11 random
