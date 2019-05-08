@@ -145,19 +145,38 @@ await u3.transaction(tr => { tr.anyAction() }, {keyProvider})
    创建账号需要花费creator账号的一些代币，为新账号抵押部分RAM和带宽
    
   ```
- const u3 = createU3(config);
- const name = 'abcdefg12345';//普通账号需要满足规则：必须为12345abcdefghijklmnopqrstuvwxyz中的12位
- let params = {
+  const u3 = createU3(config);
+  const name = 'abcd1';//普通账号需要满足规则：必须为12345abcdefghijklmnopqrstuvwxyz中的5-12位，且必须同时包含数字与字母
+  let params = {
      creator: 'ben',
      name: name,
      owner: pubkey,
      active: pubkey,
-     updateable: 1,//可选，账号是否可以更新（更新合约）
+     updateable: 1,//可选，账号是否可以更新（默认可以更新合约）
   };
   await u3.createUser(params);
    
   ```
  
+ 
+   主网与测试网为主侧链机制的多链架构，创建账号默认会先在主链上生成，然后需要同步到对应的侧链上，这一过程需要账号自身提供授权主动同步
+   
+   以下示例为账号tester1主动将自身从主链同步到pioneer侧链上的过程, 注意config的节点配置需提供主链配置信息
+    
+   * empoweruser(user,chain_name,owner_pk,active_pk,updateable) 
+   
+   ```
+   const u3 = createU3(config);
+   const c = await u3.contract("ultrainio");
+   await c.empoweruser({
+     user: 'tester1',
+     chain_name: 'pioneer', // pioneer is one of the sidechain name
+     owner_pk: 'UTR...',    // publicKey of owner permission
+     active_pk: 'UTR...',   // publicKey of active permission 
+     updateable: 1
+   })
+    
+   ```
  
 ## 转账（UGAS）
 
@@ -215,9 +234,14 @@ return tx && tx.irreversible;
   
 ## 资源
 
-调用合约只会消耗合约Owner的资源，所以如果你想部署一个合约，请先购买一些资源. 
+调用合约只会消耗合约Owner的资源，如果你想部署一个合约，请先购买一些资源. 
+
+主网与测试网的套餐购买目前只能通过系统账号ultrainio来购买
+
 
 * resourcelease(payer,receiver,slot,days,location) 
+
+location is the chain name you to use your resource
 
 ```
 const u3 = createU3(config);
@@ -226,6 +250,7 @@ const c = await u3.contract('ultrainio')
 await c.resourcelease('ben', 'bob', 1, 10, "ultrainio");// 1 slot for 10 days on the side chain named ultrainio
 
 ```
+
 
 通过以下方法查询资源详情.
 
