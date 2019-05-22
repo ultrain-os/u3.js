@@ -236,7 +236,8 @@ return tx && tx.irreversible;
 
 调用合约只会消耗合约Owner的资源，如果你想部署一个合约，请先购买一些资源. 
 
-主网与测试网的套餐购买目前只能通过系统账号ultrainio来购买
+主网环境下,请至[开发者网站](https://developer.ultrain.io/resources)上选择合适的资源套餐并进行购买，
+测试网环境下,请至[测试网浏览器](https://testnet-explorer.ultrain.io/ultrainio/account-recharge)自行进行账号充值与资源购买。
 
 
 * resourcelease(payer,receiver,slot,days,location) 

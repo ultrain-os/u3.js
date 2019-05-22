@@ -225,6 +225,10 @@ And then push the signedTransaction to the ultrain-chain.
 Calling a contract will only spend the contract owner's resource. So if your want to deploy
 a contract, buy some resource before. 
 
+Please go to the [developer website](https://developer.ultrain.io/resources) and choose the right resource package and make a purchase if you are in the MainNet environment，
+and go to the [testnet explorer](https://testnet-explorer.ultrain.io/ultrainio/account-recharge) to do the self-service account recharge and resource purchase if you are in the TestNet environment.
+
+
 * resourcelease(payer,receiver,slot,days,location) 
 
 ```
