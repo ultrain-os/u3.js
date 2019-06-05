@@ -319,13 +319,14 @@ AssetCache.resolve = function _callee() {
 AssetCache.pending = function () {
   return promises.length !== 0;
 };
-},{"../src/config":544,"./structs":7,"assert":33,"babel-runtime/helpers/slicedToArray":86,"babel-runtime/helpers/typeof":87,"babel-runtime/regenerator":88}],3:[function(require,module,exports){
+},{"../src/config":545,"./structs":7,"assert":33,"babel-runtime/helpers/slicedToArray":86,"babel-runtime/helpers/typeof":87,"babel-runtime/regenerator":88}],3:[function(require,module,exports){
 "use strict";
 
 module.exports = {
-  httpEndpoint: "http://ultrain.natapp1.cc",
-  httpEndpointHistory: "http://ultrain-history.natapp1.cc",
-  chainId: "1f1155433d9097e0f67de63a48369916da91f19cb1feff6ba8eca2e5d978a2b2",
+  httpEndpoint: "http://pioneer.natapp1.cc",
+  httpEndpointHistory: "http://pioneer-history.natapp1.cc",
+  chainId: "20c35b993c10b5ea1007014857bb2b8832fb8ae22e9dcfdc61dacf336af4450f",
+
   broadcast: true,
   sign: true,
   logger: {
@@ -2185,7 +2186,7 @@ function getProposerList(page, pageSize) {
 }
 
 module.exports = historyGen;
-},{"../":18,"../src/config":544,"../src/utils/dbHelper":549,"./config":3,"babel-runtime/regenerator":88}],6:[function(require,module,exports){
+},{"../":18,"../src/config":545,"../src/utils/dbHelper":550,"./config":3,"babel-runtime/regenerator":88}],6:[function(require,module,exports){
 (function (process,Buffer){
 "use strict";
 
@@ -2218,75 +2219,77 @@ var schema = require("./v1/schema");
 var Logger = require("./utils/logger");
 var logger = void 0;
 
+var version = require("../package").version;
+
 var defaultSignProvider = function defaultSignProvider(u3, config) {
-  return function (_ref) {
-    var sign = _ref.sign,
-        buf = _ref.buf,
-        transaction = _ref.transaction,
-        optionsKeyProvider = _ref.optionsKeyProvider;
+    return function (_ref) {
+        var sign = _ref.sign,
+            buf = _ref.buf,
+            transaction = _ref.transaction,
+            optionsKeyProvider = _ref.optionsKeyProvider;
 
-    var keyProvider = optionsKeyProvider ? optionsKeyProvider : config.keyProvider;
-    if (!keyProvider) {
-      throw new TypeError("This transaction requires a keyProvider for signing");
-    }
-
-    var keys = keyProvider;
-    if (!Array.isArray(keys)) {
-      keys = [keys];
-    }
-
-    keys = keys.map(function (key) {
-      try {
-        // normalize format (WIF => PVT_K1_base58privateKey)
-        return { private: U3Utils.ecc.PrivateKey(key).toString() };
-      } catch (e) {
-        // normalize format (UTRKey => PUB_K1_base58publicKey)
-        return { public: U3Utils.ecc.PublicKey(key).toString() };
-      }
-      assert(false, "expecting public or private keys from keyProvider");
-    });
-
-    if (!keys.length) {
-      throw new Error("missing key, check your keyProvider");
-    }
-
-    // simplify default signing #17
-    if (keys.length === 1 && keys[0].private) {
-      var pvt = keys[0].private;
-      return sign(buf, pvt);
-    }
-
-    // offline signing assumes all keys provided need to sign
-    if (config.httpEndpoint == null) {
-      var sigs = [];
-      var _iteratorNormalCompletion = true;
-      var _didIteratorError = false;
-      var _iteratorError = undefined;
-
-      try {
-        for (var _iterator = keys[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-          var key = _step.value;
-
-          sigs.push(sign(buf, key.private));
+        var keyProvider = optionsKeyProvider ? optionsKeyProvider : config.keyProvider;
+        if (!keyProvider) {
+            throw new TypeError("This transaction requires a keyProvider for signing");
         }
-      } catch (err) {
-        _didIteratorError = true;
-        _iteratorError = err;
-      } finally {
-        try {
-          if (!_iteratorNormalCompletion && _iterator.return) {
-            _iterator.return();
-          }
-        } finally {
-          if (_didIteratorError) {
-            throw _iteratorError;
-          }
-        }
-      }
 
-      return sigs;
-    }
-  };
+        var keys = keyProvider;
+        if (!Array.isArray(keys)) {
+            keys = [keys];
+        }
+
+        keys = keys.map(function (key) {
+            try {
+                // normalize format (WIF => PVT_K1_base58privateKey)
+                return { private: U3Utils.ecc.PrivateKey(key).toString() };
+            } catch (e) {
+                // normalize format (UTRKey => PUB_K1_base58publicKey)
+                return { public: U3Utils.ecc.PublicKey(key).toString() };
+            }
+            assert(false, "expecting public or private keys from keyProvider");
+        });
+
+        if (!keys.length) {
+            throw new Error("missing key, check your keyProvider");
+        }
+
+        // simplify default signing #17
+        if (keys.length === 1 && keys[0].private) {
+            var pvt = keys[0].private;
+            return sign(buf, pvt);
+        }
+
+        // offline signing assumes all keys provided need to sign
+        if (config.httpEndpoint == null) {
+            var sigs = [];
+            var _iteratorNormalCompletion = true;
+            var _didIteratorError = false;
+            var _iteratorError = undefined;
+
+            try {
+                for (var _iterator = keys[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                    var key = _step.value;
+
+                    sigs.push(sign(buf, key.private));
+                }
+            } catch (err) {
+                _didIteratorError = true;
+                _iteratorError = err;
+            } finally {
+                try {
+                    if (!_iteratorNormalCompletion && _iterator.return) {
+                        _iterator.return();
+                    }
+                } finally {
+                    if (_didIteratorError) {
+                        throw _iteratorError;
+                    }
+                }
+            }
+
+            return sigs;
+        }
+    };
 };
 
 /**
@@ -2297,42 +2300,42 @@ var defaultSignProvider = function defaultSignProvider(u3, config) {
  * @returns {Promise<*>}
  */
 function deploy(contract, account, options) {
-  var wasm, abi, abi_obj, tr;
-  return _regenerator2.default.async(function deploy$(_context) {
-    while (1) {
-      switch (_context.prev = _context.next) {
-        case 0:
-          _context.prev = 0;
-          wasm = fs.readFileSync(path.resolve(process.cwd(), contract + ".wasm"));
-          abi = fs.readFileSync(path.resolve(process.cwd(), contract + ".abi"));
-          abi_obj = JSON.parse(abi);
+    var wasm, abi, abi_obj, tr;
+    return _regenerator2.default.async(function deploy$(_context) {
+        while (1) {
+            switch (_context.prev = _context.next) {
+                case 0:
+                    _context.prev = 0;
+                    wasm = fs.readFileSync(path.resolve(process.cwd(), contract + ".wasm"));
+                    abi = fs.readFileSync(path.resolve(process.cwd(), contract + ".abi"));
+                    abi_obj = JSON.parse(abi);
 
-          abi_obj.actions.forEach(function (action) {
-            if (!action.ability) action.ability = "normal";
-          });
+                    abi_obj.actions.forEach(function (action) {
+                        if (!action.ability) action.ability = "normal";
+                    });
 
-          _context.next = 7;
-          return _regenerator2.default.awrap(this.transaction("ultrainio", function (c) {
-            c.setcode(account, 0, 0, wasm);
-            c.setabi(account, abi_obj);
-          }, options));
+                    _context.next = 7;
+                    return _regenerator2.default.awrap(this.transaction("ultrainio", function (c) {
+                        c.setcode(account, 0, 0, wasm);
+                        c.setabi(account, abi_obj);
+                    }, options));
 
-        case 7:
-          tr = _context.sent;
-          return _context.abrupt("return", tr);
+                case 7:
+                    tr = _context.sent;
+                    return _context.abrupt("return", tr);
 
-        case 11:
-          _context.prev = 11;
-          _context.t0 = _context["catch"](0);
+                case 11:
+                    _context.prev = 11;
+                    _context.t0 = _context["catch"](0);
 
-          logger.error(_context.t0);
+                    logger.error(_context.t0);
 
-        case 14:
-        case "end":
-          return _context.stop();
-      }
-    }
-  }, null, this, [[0, 11]]);
+                case 14:
+                case "end":
+                    return _context.stop();
+            }
+        }
+    }, null, this, [[0, 11]]);
 }
 
 /**
@@ -2351,36 +2354,36 @@ function deploy(contract, account, options) {
  * @returns {Promise<*>}
  */
 function createUser(params, options) {
-  var defaults, data, c;
-  return _regenerator2.default.async(function createUser$(_context2) {
-    while (1) {
-      switch (_context2.prev = _context2.next) {
-        case 0:
-          defaults = {
-            updateable: 1 //default is updateable
-          };
-          data = Object.assign({}, defaults, params);
-          _context2.next = 4;
-          return _regenerator2.default.awrap(this.contract("ultrainio"));
+    var defaults, data, c;
+    return _regenerator2.default.async(function createUser$(_context2) {
+        while (1) {
+            switch (_context2.prev = _context2.next) {
+                case 0:
+                    defaults = {
+                        updateable: 1 //default is updateable
+                    };
+                    data = Object.assign({}, defaults, params);
+                    _context2.next = 4;
+                    return _regenerator2.default.awrap(this.contract("ultrainio"));
 
-        case 4:
-          c = _context2.sent;
-          return _context2.abrupt("return", c.transaction(function (tr) {
-            tr.newaccount({
-              creator: data.creator,
-              name: data.name,
-              owner: data.owner,
-              active: data.active,
-              updateable: data.updateable
-            });
-          }, options));
+                case 4:
+                    c = _context2.sent;
+                    return _context2.abrupt("return", c.transaction(function (tr) {
+                        tr.newaccount({
+                            creator: data.creator,
+                            name: data.name,
+                            owner: data.owner,
+                            active: data.active,
+                            updateable: data.updateable
+                        });
+                    }, options));
 
-        case 6:
-        case "end":
-          return _context2.stop();
-      }
-    }
-  }, null, this);
+                case 6:
+                case "end":
+                    return _context2.stop();
+            }
+        }
+    }, null, this);
 }
 
 /**
@@ -2391,36 +2394,36 @@ function createUser(params, options) {
  * @returns {Promise<*>}
  */
 function sign(unsigned_transaction, privateKeyOrMnemonic) {
-  var chainId = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : "cf057bbfb72640471fd910bcb67639c22df9f92470936cddc1ade0e2f2e7dc4f";
-  var privateKey, isValidPrivateKey, result, txObject, buf, chainIdBuf, signBuf;
-  return _regenerator2.default.async(function sign$(_context3) {
-    while (1) {
-      switch (_context3.prev = _context3.next) {
-        case 0:
-          assert(unsigned_transaction, "unsigned transaction required");
-          assert(privateKeyOrMnemonic, "privateKeyOrMnemonic required");
+    var chainId = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : "cf057bbfb72640471fd910bcb67639c22df9f92470936cddc1ade0e2f2e7dc4f";
+    var privateKey, isValidPrivateKey, result, txObject, buf, chainIdBuf, signBuf;
+    return _regenerator2.default.async(function sign$(_context3) {
+        while (1) {
+            switch (_context3.prev = _context3.next) {
+                case 0:
+                    assert(unsigned_transaction, "unsigned transaction required");
+                    assert(privateKeyOrMnemonic, "privateKeyOrMnemonic required");
 
-          privateKey = privateKeyOrMnemonic;
-          isValidPrivateKey = U3Utils.ecc.isValidPrivate(privateKeyOrMnemonic);
+                    privateKey = privateKeyOrMnemonic;
+                    isValidPrivateKey = U3Utils.ecc.isValidPrivate(privateKeyOrMnemonic);
 
-          if (!isValidPrivateKey) {
-            result = U3Utils.ecc.generateKeyPairByMnemonic(privateKeyOrMnemonic);
+                    if (!isValidPrivateKey) {
+                        result = U3Utils.ecc.generateKeyPairByMnemonic(privateKeyOrMnemonic);
 
-            privateKey = result.private_key;
-          }
+                        privateKey = result.private_key;
+                    }
 
-          txObject = unsigned_transaction.transaction.transaction;
-          buf = Fcbuffer.toBuffer(this.fc.structs.transaction, txObject);
-          chainIdBuf = new Buffer(chainId, "hex");
-          signBuf = Buffer.concat([chainIdBuf, buf, new Buffer(new Uint8Array(32))]);
-          return _context3.abrupt("return", U3Utils.ecc.sign(signBuf, privateKey));
+                    txObject = unsigned_transaction.transaction.transaction;
+                    buf = Fcbuffer.toBuffer(this.fc.structs.transaction, txObject);
+                    chainIdBuf = new Buffer(chainId, "hex");
+                    signBuf = Buffer.concat([chainIdBuf, buf, new Buffer(new Uint8Array(32))]);
+                    return _context3.abrupt("return", U3Utils.ecc.sign(signBuf, privateKey));
 
-        case 10:
-        case "end":
-          return _context3.stop();
-      }
-    }
-  }, null, this);
+                case 10:
+                case "end":
+                    return _context3.stop();
+            }
+        }
+    }, null, this);
 }
 
 /**
@@ -2432,20 +2435,20 @@ function sign(unsigned_transaction, privateKeyOrMnemonic) {
  * @private
  */
 function _mergeWriteFunctions(config, api, structs) {
-  assert(config, "network instance required");
-  var network = config.network;
+    assert(config, "network instance required");
+    var network = config.network;
 
-  // block api
+    // block api
 
-  var merge = Object.assign({}, network);
+    var merge = Object.assign({}, network);
 
-  // contract abi
-  var writeApi = writeApiGen(api, network, structs, config, schema);
+    // contract abi
+    var writeApi = writeApiGen(api, network, structs, config, schema);
 
-  _throwOnDuplicate(merge, writeApi, "Conflicting methods in UltrainApi and Transaction Api");
-  Object.assign(merge, writeApi);
+    _throwOnDuplicate(merge, writeApi, "Conflicting methods in UltrainApi and Transaction Api");
+    Object.assign(merge, writeApi);
 
-  return merge;
+    return merge;
 }
 
 /**
@@ -2456,11 +2459,11 @@ function _mergeWriteFunctions(config, api, structs) {
  * @private
  */
 function _throwOnDuplicate(o1, o2, msg) {
-  for (var key in o1) {
-    if (o2[key]) {
-      throw new TypeError(msg + ": " + key);
+    for (var key in o1) {
+        if (o2[key]) {
+            throw new TypeError(msg + ": " + key);
+        }
     }
-  }
 }
 
 /**
@@ -2470,27 +2473,27 @@ function _throwOnDuplicate(o1, o2, msg) {
  * @private
  */
 function _checkChainId(api, chainId) {
-  var info;
-  return _regenerator2.default.async(function _checkChainId$(_context4) {
-    while (1) {
-      switch (_context4.prev = _context4.next) {
-        case 0:
-          _context4.next = 2;
-          return _regenerator2.default.awrap(api.getChainInfo());
+    var info;
+    return _regenerator2.default.async(function _checkChainId$(_context4) {
+        while (1) {
+            switch (_context4.prev = _context4.next) {
+                case 0:
+                    _context4.next = 2;
+                    return _regenerator2.default.awrap(api.getChainInfo());
 
-        case 2:
-          info = _context4.sent;
+                case 2:
+                    info = _context4.sent;
 
-          if (info.chain_id !== chainId) {
-            logger.warn("WARN: chainId mismatch, signatures will not match transaction authority. " + ("expected " + chainId + " !== actual " + info.chain_id));
-          }
+                    if (info.chain_id !== chainId) {
+                        logger.warn("WARN: chainId mismatch, signatures will not match transaction authority. " + ("expected " + chainId + " !== actual " + info.chain_id));
+                    }
 
-        case 4:
-        case "end":
-          return _context4.stop();
-      }
-    }
-  }, null, this);
+                case 4:
+                case "end":
+                    return _context4.stop();
+            }
+        }
+    }, null, this);
 };
 
 /**
@@ -2499,70 +2502,71 @@ function _checkChainId(api, chainId) {
  * @returns {Object} instance of U3
  */
 var createU3 = function createU3() {
-  var config = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+    var config = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
-  config = Object.assign({}, configDefaults, config);
-  var loggerConfig = Object.assign({}, configDefaults.logger, config.logger);
-  config.logger = loggerConfig;
-  logger = new Logger(loggerConfig);
+    config = Object.assign({}, configDefaults, config);
+    var loggerConfig = Object.assign({}, configDefaults.logger, config.logger);
+    config.logger = loggerConfig;
+    logger = new Logger(loggerConfig);
 
-  var history = historyGen(config);
-  var network = config.httpEndpoint != null ? apiGen("v1", api, config) : null;
-  config.network = network;
+    var history = historyGen(config);
+    var network = config.httpEndpoint != null ? apiGen("v1", api, config) : null;
+    config.network = network;
 
-  config.assetCache = AssetCache(network);
-  config.abiCache = AbiCache(network, config);
+    config.assetCache = AssetCache(network);
+    config.abiCache = AbiCache(network, config);
 
-  //_checkChainId(network, config.chainId);
+    //_checkChainId(network, config.chainId);
 
-  if (config.mockTransactions != null) {
-    if (typeof config.mockTransactions === "string") {
-      var mock = config.mockTransactions;
-      config.mockTransactions = function () {
-        return mock;
-      };
+    if (config.mockTransactions != null) {
+        if (typeof config.mockTransactions === "string") {
+            var mock = config.mockTransactions;
+            config.mockTransactions = function () {
+                return mock;
+            };
+        }
+        assert.equal((0, _typeof3.default)(config.mockTransactions), "function", "config.mockTransactions");
     }
-    assert.equal((0, _typeof3.default)(config.mockTransactions), "function", "config.mockTransactions");
-  }
 
-  var _Structs = Structs(config),
-      structs = _Structs.structs,
-      types = _Structs.types,
-      fromBuffer = _Structs.fromBuffer,
-      toBuffer = _Structs.toBuffer;
+    var _Structs = Structs(config),
+        structs = _Structs.structs,
+        types = _Structs.types,
+        fromBuffer = _Structs.fromBuffer,
+        toBuffer = _Structs.toBuffer;
 
-  var u3 = _mergeWriteFunctions(config, network, structs);
+    var u3 = _mergeWriteFunctions(config, network, structs);
 
-  Object.assign(u3, {
-    config: config,
-    fc: {
-      structs: structs,
-      types: types,
-      fromBuffer: fromBuffer,
-      toBuffer: toBuffer
-    },
-    deploy: deploy,
-    createUser: createUser,
-    sign: sign
-  }, history);
+    Object.assign(u3, {
+        config: config,
+        fc: {
+            structs: structs,
+            types: types,
+            fromBuffer: fromBuffer,
+            toBuffer: toBuffer
+        },
+        deploy: deploy,
+        createUser: createUser,
+        sign: sign
+    }, history);
 
-  if (!config.signProvider) {
-    config.signProvider = defaultSignProvider(u3, config);
-  }
+    if (!config.signProvider) {
+        config.signProvider = defaultSignProvider(u3, config);
+    }
 
-  return u3;
+    return u3;
 };
 
 module.exports = {
-  createU3: createU3,
-  format: format,
-  U3Utils: U3Utils,
-  Fcbuffer: Fcbuffer,
-  listener: listener
+    version: version,
+    createU3: createU3,
+    format: format,
+    U3Utils: U3Utils,
+    Fcbuffer: Fcbuffer,
+    listener: listener
 };
 
 }).call(this,require('_process'),require("buffer").Buffer)
-},{"./abi-cache":1,"./asset-cache":2,"./config":3,"./format":4,"./history":5,"./structs":7,"./utils/apigen":8,"./utils/listener":10,"./utils/logger":11,"./v1/chain":14,"./v1/schema":16,"./write-api":17,"_process":386,"assert":33,"babel-runtime/helpers/typeof":87,"babel-runtime/regenerator":88,"buffer":139,"fcbuffer":271,"fs":135,"path":379,"u3-utils":464}],7:[function(require,module,exports){
+},{"../package":542,"./abi-cache":1,"./asset-cache":2,"./config":3,"./format":4,"./history":5,"./structs":7,"./utils/apigen":8,"./utils/listener":10,"./utils/logger":11,"./v1/chain":14,"./v1/schema":16,"./write-api":17,"_process":386,"assert":33,"babel-runtime/helpers/typeof":87,"babel-runtime/regenerator":88,"buffer":139,"fcbuffer":271,"fs":135,"path":379,"u3-utils":464}],7:[function(require,module,exports){
 (function (Buffer){
 'use strict';
 
@@ -3536,7 +3540,7 @@ function fetchMethod(methodName, url, definition) {
 
             return _context.abrupt("return", new Promise(function (resolve, reject) {
               Axios[method](url, params, {
-                headers: { "Content-Type": "application/x-www-form-urlencoded", "Connection": "keep-alive" }
+                headers: { "Content-Type": "application/x-www-form-urlencoded" }
               }).then(function (res) {
                 logger.info("<<[" + methodName + "]" + JSON.stringify(res.data));
                 resolve(res.data);
@@ -5721,46 +5725,48 @@ const schema = require("./src/v1/schema");
 const Logger = require("./src/utils/logger");
 let logger;
 
-const defaultSignProvider = (u3, config) => function({ sign, buf, transaction, optionsKeyProvider }) {
-  const keyProvider = optionsKeyProvider ? optionsKeyProvider : config.keyProvider;
-  if (!keyProvider) {
-    throw new TypeError("This transaction requires a keyProvider for signing");
-  }
+const version = require("./package").version;
 
-  let keys = keyProvider;
-  if (!Array.isArray(keys)) {
-    keys = [keys];
-  }
-
-  keys = keys.map(key => {
-    try {
-      // normalize format (WIF => PVT_K1_base58privateKey)
-      return { private: U3Utils.ecc.PrivateKey(key).toString() };
-    } catch (e) {
-      // normalize format (UTRKey => PUB_K1_base58publicKey)
-      return { public: U3Utils.ecc.PublicKey(key).toString() };
+const defaultSignProvider = (u3, config) => function ({sign, buf, transaction, optionsKeyProvider}) {
+    const keyProvider = optionsKeyProvider ? optionsKeyProvider : config.keyProvider;
+    if (!keyProvider) {
+        throw new TypeError("This transaction requires a keyProvider for signing");
     }
-    assert(false, "expecting public or private keys from keyProvider");
-  });
 
-  if (!keys.length) {
-    throw new Error("missing key, check your keyProvider");
-  }
-
-  // simplify default signing #17
-  if (keys.length === 1 && keys[0].private) {
-    const pvt = keys[0].private;
-    return sign(buf, pvt);
-  }
-
-  // offline signing assumes all keys provided need to sign
-  if (config.httpEndpoint == null) {
-    const sigs = [];
-    for (const key of keys) {
-      sigs.push(sign(buf, key.private));
+    let keys = keyProvider;
+    if (!Array.isArray(keys)) {
+        keys = [keys];
     }
-    return sigs;
-  }
+
+    keys = keys.map(key => {
+        try {
+            // normalize format (WIF => PVT_K1_base58privateKey)
+            return {private: U3Utils.ecc.PrivateKey(key).toString()};
+        } catch (e) {
+            // normalize format (UTRKey => PUB_K1_base58publicKey)
+            return {public: U3Utils.ecc.PublicKey(key).toString()};
+        }
+        assert(false, "expecting public or private keys from keyProvider");
+    });
+
+    if (!keys.length) {
+        throw new Error("missing key, check your keyProvider");
+    }
+
+    // simplify default signing #17
+    if (keys.length === 1 && keys[0].private) {
+        const pvt = keys[0].private;
+        return sign(buf, pvt);
+    }
+
+    // offline signing assumes all keys provided need to sign
+    if (config.httpEndpoint == null) {
+        const sigs = [];
+        for (const key of keys) {
+            sigs.push(sign(buf, key.private));
+        }
+        return sigs;
+    }
 };
 
 /**
@@ -5771,24 +5777,24 @@ const defaultSignProvider = (u3, config) => function({ sign, buf, transaction, o
  * @returns {Promise<*>}
  */
 async function deploy(contract, account, options) {
-  try {
-    const wasm = fs.readFileSync(path.resolve(process.cwd(), `${contract}.wasm`));
-    const abi = fs.readFileSync(path.resolve(process.cwd(), `${contract}.abi`));
+    try {
+        const wasm = fs.readFileSync(path.resolve(process.cwd(), `${contract}.wasm`));
+        const abi = fs.readFileSync(path.resolve(process.cwd(), `${contract}.abi`));
 
-    let abi_obj = JSON.parse(abi);
-    abi_obj.actions.forEach((action) => {
-      if (!action.ability)
-        action.ability = "normal";
-    });
+        let abi_obj = JSON.parse(abi);
+        abi_obj.actions.forEach((action) => {
+            if (!action.ability)
+                action.ability = "normal";
+        });
 
-    const tr = await this.transaction("ultrainio", c => {
-      c.setcode(account, 0, 0, wasm);
-      c.setabi(account, abi_obj);
-    }, options);
-    return tr;
-  } catch (e) {
-    logger.error(e);
-  }
+        const tr = await this.transaction("ultrainio", c => {
+            c.setcode(account, 0, 0, wasm);
+            c.setabi(account, abi_obj);
+        }, options);
+        return tr;
+    } catch (e) {
+        logger.error(e);
+    }
 }
 
 /**
@@ -5807,21 +5813,21 @@ async function deploy(contract, account, options) {
  * @returns {Promise<*>}
  */
 async function createUser(params, options) {
-  let defaults = {
-    updateable: 1//default is updateable
-  };
-  let data = Object.assign({}, defaults, params);
+    let defaults = {
+        updateable: 1//default is updateable
+    };
+    let data = Object.assign({}, defaults, params);
 
-  const c = await this.contract("ultrainio");
-  return c.transaction(tr => {
-    tr.newaccount({
-      creator: data.creator,
-      name: data.name,
-      owner: data.owner,
-      active: data.active,
-      updateable: data.updateable
-    });
-  }, options);
+    const c = await this.contract("ultrainio");
+    return c.transaction(tr => {
+        tr.newaccount({
+            creator: data.creator,
+            name: data.name,
+            owner: data.owner,
+            active: data.active,
+            updateable: data.updateable
+        });
+    }, options);
 }
 
 /**
@@ -5832,23 +5838,23 @@ async function createUser(params, options) {
  * @returns {Promise<*>}
  */
 async function sign(unsigned_transaction, privateKeyOrMnemonic, chainId = "cf057bbfb72640471fd910bcb67639c22df9f92470936cddc1ade0e2f2e7dc4f") {
-  assert(unsigned_transaction, "unsigned transaction required");
-  assert(privateKeyOrMnemonic, "privateKeyOrMnemonic required");
+    assert(unsigned_transaction, "unsigned transaction required");
+    assert(privateKeyOrMnemonic, "privateKeyOrMnemonic required");
 
-  let privateKey = privateKeyOrMnemonic;
-  let isValidPrivateKey = U3Utils.ecc.isValidPrivate(privateKeyOrMnemonic);
-  if (!isValidPrivateKey) {
-    let result = U3Utils.ecc.generateKeyPairByMnemonic(privateKeyOrMnemonic);
-    privateKey = result.private_key;
-  }
+    let privateKey = privateKeyOrMnemonic;
+    let isValidPrivateKey = U3Utils.ecc.isValidPrivate(privateKeyOrMnemonic);
+    if (!isValidPrivateKey) {
+        let result = U3Utils.ecc.generateKeyPairByMnemonic(privateKeyOrMnemonic);
+        privateKey = result.private_key;
+    }
 
-  let txObject = unsigned_transaction.transaction.transaction;
+    let txObject = unsigned_transaction.transaction.transaction;
 
-  const buf = Fcbuffer.toBuffer(this.fc.structs.transaction, txObject);
-  const chainIdBuf = new Buffer(chainId, "hex");
-  const signBuf = Buffer.concat([chainIdBuf, buf, new Buffer(new Uint8Array(32))]);
+    const buf = Fcbuffer.toBuffer(this.fc.structs.transaction, txObject);
+    const chainIdBuf = new Buffer(chainId, "hex");
+    const signBuf = Buffer.concat([chainIdBuf, buf, new Buffer(new Uint8Array(32))]);
 
-  return U3Utils.ecc.sign(signBuf, privateKey);
+    return U3Utils.ecc.sign(signBuf, privateKey);
 }
 
 /**
@@ -5860,19 +5866,19 @@ async function sign(unsigned_transaction, privateKeyOrMnemonic, chainId = "cf057
  * @private
  */
 function _mergeWriteFunctions(config, api, structs) {
-  assert(config, "network instance required");
-  const { network } = config;
+    assert(config, "network instance required");
+    const {network} = config;
 
-  // block api
-  const merge = Object.assign({}, network);
+    // block api
+    const merge = Object.assign({}, network);
 
-  // contract abi
-  const writeApi = writeApiGen(api, network, structs, config, schema);
+    // contract abi
+    const writeApi = writeApiGen(api, network, structs, config, schema);
 
-  _throwOnDuplicate(merge, writeApi, "Conflicting methods in UltrainApi and Transaction Api");
-  Object.assign(merge, writeApi);
+    _throwOnDuplicate(merge, writeApi, "Conflicting methods in UltrainApi and Transaction Api");
+    Object.assign(merge, writeApi);
 
-  return merge;
+    return merge;
 }
 
 /**
@@ -5883,11 +5889,11 @@ function _mergeWriteFunctions(config, api, structs) {
  * @private
  */
 function _throwOnDuplicate(o1, o2, msg) {
-  for (const key in o1) {
-    if (o2[key]) {
-      throw new TypeError(msg + ": " + key);
+    for (const key in o1) {
+        if (o2[key]) {
+            throw new TypeError(msg + ": " + key);
+        }
     }
-  }
 }
 
 /**
@@ -5897,13 +5903,13 @@ function _throwOnDuplicate(o1, o2, msg) {
  * @private
  */
 async function _checkChainId(api, chainId) {
-  let info = await api.getChainInfo();
-  if (info.chain_id !== chainId) {
-    logger.warn(
-      "WARN: chainId mismatch, signatures will not match transaction authority. " +
-      `expected ${chainId} !== actual ${info.chain_id}`
-    );
-  }
+    let info = await api.getChainInfo();
+    if (info.chain_id !== chainId) {
+        logger.warn(
+            "WARN: chainId mismatch, signatures will not match transaction authority. " +
+            `expected ${chainId} !== actual ${info.chain_id}`
+        );
+    }
 };
 
 /**
@@ -5912,64 +5918,65 @@ async function _checkChainId(api, chainId) {
  * @returns {Object} instance of U3
  */
 const createU3 = (config = {}) => {
-  config = Object.assign({}, configDefaults, config);
-  const loggerConfig = Object.assign({}, configDefaults.logger, config.logger);
-  config.logger = loggerConfig;
-  logger = new Logger(loggerConfig);
+    config = Object.assign({}, configDefaults, config);
+    const loggerConfig = Object.assign({}, configDefaults.logger, config.logger);
+    config.logger = loggerConfig;
+    logger = new Logger(loggerConfig);
 
-  const history = historyGen(config);
-  const network = config.httpEndpoint != null ? apiGen("v1", api, config) : null;
-  config.network = network;
+    const history = historyGen(config);
+    const network = config.httpEndpoint != null ? apiGen("v1", api, config) : null;
+    config.network = network;
 
-  config.assetCache = AssetCache(network);
-  config.abiCache = AbiCache(network, config);
+    config.assetCache = AssetCache(network);
+    config.abiCache = AbiCache(network, config);
 
-  //_checkChainId(network, config.chainId);
+    //_checkChainId(network, config.chainId);
 
-  if (config.mockTransactions != null) {
-    if (typeof config.mockTransactions === "string") {
-      const mock = config.mockTransactions;
-      config.mockTransactions = () => mock;
+    if (config.mockTransactions != null) {
+        if (typeof config.mockTransactions === "string") {
+            const mock = config.mockTransactions;
+            config.mockTransactions = () => mock;
+        }
+        assert.equal(typeof config.mockTransactions, "function", "config.mockTransactions");
     }
-    assert.equal(typeof config.mockTransactions, "function", "config.mockTransactions");
-  }
 
-  const { structs, types, fromBuffer, toBuffer } = Structs(config);
-  const u3 = _mergeWriteFunctions(config, network, structs);
+    const {structs, types, fromBuffer, toBuffer} = Structs(config);
+    const u3 = _mergeWriteFunctions(config, network, structs);
 
-  Object.assign(u3, {
-      config,
-      fc: {
-        structs,
-        types,
-        fromBuffer,
-        toBuffer
-      }
-      , deploy
-      , createUser
-      , sign
-    },
-    history
-  );
+    Object.assign(u3, {
+            config,
+            fc: {
+                structs,
+                types,
+                fromBuffer,
+                toBuffer
+            }
+            , deploy
+            , createUser
+            , sign
+        },
+        history
+    );
 
-  if (!config.signProvider) {
-    config.signProvider = defaultSignProvider(u3, config);
-  }
+    if (!config.signProvider) {
+        config.signProvider = defaultSignProvider(u3, config);
+    }
 
-  return u3;
+    return u3;
 };
 
 
 module.exports = {
-  createU3,
-  format,
-  U3Utils,
-  Fcbuffer,
-  listener
+    version,
+    createU3,
+    format,
+    U3Utils,
+    Fcbuffer,
+    listener
 };
 
 }).call(this,require('_process'),require("buffer").Buffer)
-},{"./src/abi-cache":542,"./src/asset-cache":543,"./src/config":544,"./src/format":545,"./src/history":546,"./src/structs":547,"./src/utils/apigen":548,"./src/utils/listener":551,"./src/utils/logger":552,"./src/v1/chain":555,"./src/v1/schema":557,"./src/write-api":558,"_process":386,"assert":33,"buffer":139,"fcbuffer":271,"fs":135,"path":379,"u3-utils":464}],19:[function(require,module,exports){
+},{"./package":542,"./src/abi-cache":543,"./src/asset-cache":544,"./src/config":545,"./src/format":546,"./src/history":547,"./src/structs":548,"./src/utils/apigen":549,"./src/utils/listener":552,"./src/utils/logger":553,"./src/v1/chain":556,"./src/v1/schema":558,"./src/write-api":559,"_process":386,"assert":33,"buffer":139,"fcbuffer":271,"fs":135,"path":379,"u3-utils":464}],19:[function(require,module,exports){
 var asn1 = exports;
 
 asn1.bignum = require('bn.js');
@@ -96755,6 +96762,79 @@ function extend() {
 }
 
 },{}],542:[function(require,module,exports){
+module.exports={
+  "name": "u3.js",
+  "version": "0.3.12",
+  "description": "A general library wrapped in javascript for interacting with Ultrain",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "mocha test/index.test.js && mocha test/history.test.js --timeout 30000",
+    "dist": "rm -rf dist && mkdir -p dist && babel --copy-files src --out-dir dist && babel --copy-files index.js --out-dir dist",
+    "bundle": "browserify -o dist/u3.js -s U3 dist/index.js && uglifyjs dist/u3.js -o dist/u3.min.js --source-map --compress --mangle"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:ultrain-os/u3.js.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ultrain-os/u3.js/issues"
+  },
+  "keywords": [
+    "sdk",
+    "javascript"
+  ],
+  "author": "ben.yasin80@gmail.com",
+  "contributors": [],
+  "engines": {
+    "node": ">=8"
+  },
+  "dependencies": {
+    "async": "^2.6.2",
+    "axios": "^0.18.0",
+    "u3-utils": "^0.0.6",
+    "winston": "^3.2.1",
+    "winston-daily-rotate-file": "^3.8.0"
+  },
+  "devDependencies": {
+    "@types/node": "^8.0.3",
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.0",
+    "babel-plugin-syntax-async-functions": "^6.13.0",
+    "babel-plugin-transform-regenerator": "^6.26.0",
+    "babel-plugin-transform-runtime": "6.23.0",
+    "babel-preset-es2015": "^6.24.1",
+    "body-parser": "^1.18.3",
+    "browserify": "^14.4.0",
+    "camel-case": "^3.0.0",
+    "chai": "4.1.2",
+    "express": "^4.16.3",
+    "mocha": "3.5.0",
+    "should": "1.2.2",
+    "uglify-es": "^3.3.9"
+  },
+  "license": "MIT",
+  "babel": {
+    "presets": [
+      "es2015"
+    ],
+    "plugins": [
+      "syntax-async-functions",
+      "transform-regenerator",
+      [
+        "transform-runtime",
+        {
+          "polyfill": false,
+          "regenerator": true
+        }
+      ]
+    ]
+  }
+}
+
+},{}],543:[function(require,module,exports){
 (function (Buffer){
 const Structs = require("./structs");
 
@@ -96875,7 +96955,7 @@ function abiToFcSchema(abi, account) {
 }
 
 }).call(this,{"isBuffer":require("../node_modules/is-buffer/index.js")})
-},{"../node_modules/is-buffer/index.js":295,"./structs":547}],543:[function(require,module,exports){
+},{"../node_modules/is-buffer/index.js":295,"./structs":548}],544:[function(require,module,exports){
 const assert = require('assert');
 const Structs = require('./structs');
 const defaultConfig = require("../src/config");
@@ -96970,11 +97050,12 @@ AssetCache.pending = function() {
   return promises.length !== 0;
 };
 
-},{"../src/config":544,"./structs":547,"assert":33}],544:[function(require,module,exports){
+},{"../src/config":545,"./structs":548,"assert":33}],545:[function(require,module,exports){
 module.exports = {
-  httpEndpoint:"http://ultrain.natapp1.cc",
-  httpEndpointHistory:"http://ultrain-history.natapp1.cc",
-  chainId:"1f1155433d9097e0f67de63a48369916da91f19cb1feff6ba8eca2e5d978a2b2",
+  httpEndpoint:"http://pioneer.natapp1.cc",
+  httpEndpointHistory:"http://pioneer-history.natapp1.cc",
+  chainId:"20c35b993c10b5ea1007014857bb2b8832fb8ae22e9dcfdc61dacf336af4450f",
+
   broadcast: true,
   sign: true,
   logger: {
@@ -96989,7 +97070,7 @@ module.exports = {
 
 };
 
-},{}],545:[function(require,module,exports){
+},{}],546:[function(require,module,exports){
 /** @namespace utils */
 
 const assert = require('assert');
@@ -97667,7 +97748,7 @@ function decodeSymbolName(symbolName, littleEndian = true) {
   return String.fromCharCode(...chars);
 }
 
-},{"assert":33,"bytebuffer":141}],546:[function(require,module,exports){
+},{"assert":33,"bytebuffer":141}],547:[function(require,module,exports){
 /** @namespace history*/
 const defaultConfig = require("../src/config");
 let httpEndpointHistory = require("./config").httpEndpointHistory;
@@ -98615,7 +98696,7 @@ function getProposerList(page, pageSize) {
 
 module.exports = historyGen;
 
-},{"../":18,"../src/config":544,"../src/utils/dbHelper":549,"./config":544}],547:[function(require,module,exports){
+},{"../":18,"../src/config":545,"../src/utils/dbHelper":550,"./config":545}],548:[function(require,module,exports){
 (function (Buffer){
 const {ecc} = require('u3-utils')
 const {Signature, PublicKey} = ecc
@@ -99321,7 +99402,7 @@ const actionDataOverride = (structLookup, forceActionDataHex) => ({
 })
 
 }).call(this,require("buffer").Buffer)
-},{"./format":545,"./v1/schema":557,"assert":33,"buffer":139,"bytebuffer":141,"fcbuffer":271,"u3-utils":464}],548:[function(require,module,exports){
+},{"./format":546,"./v1/schema":558,"assert":33,"buffer":139,"bytebuffer":141,"fcbuffer":271,"u3-utils":464}],549:[function(require,module,exports){
 const camelCase = require("camel-case");
 const processArgs = require("./process-args");
 const helpers = require("./exported-helpers");
@@ -99383,7 +99464,7 @@ function fetchMethod(methodName, url, definition) {
 
     return new Promise((resolve, reject) => {
       Axios[method](url, params, {
-        headers: { "Content-Type": "application/x-www-form-urlencoded", "Connection": "keep-alive" }
+        headers: { "Content-Type": "application/x-www-form-urlencoded" }
       }).then(res => {
         logger.info("<<[" + methodName + "]" + JSON.stringify(res.data));
         resolve(res.data);
@@ -99409,7 +99490,7 @@ function fetchMethod(methodName, url, definition) {
 
 module.exports = apiGen;
 
-},{"./exported-helpers":550,"./logger":552,"./process-args":553,"axios":57,"camel-case":142}],549:[function(require,module,exports){
+},{"./exported-helpers":551,"./logger":553,"./process-args":554,"axios":57,"camel-case":142}],550:[function(require,module,exports){
 const async = require("async");
 const axios = require("axios");
 const Logger = require("../utils/logger");
@@ -99500,7 +99581,7 @@ module.exports = function(config) {
   };
 };
 
-},{"../utils/logger":552,"async":38,"axios":57}],550:[function(require,module,exports){
+},{"../utils/logger":553,"async":38,"axios":57}],551:[function(require,module,exports){
 "use strict";
 
 module.exports = {
@@ -99566,7 +99647,7 @@ async function createTransaction(api) {
   return headers;
 }
 
-},{}],551:[function(require,module,exports){
+},{}],552:[function(require,module,exports){
 (function (Buffer){
 const http = require('http');
 const port = 3002;
@@ -99612,7 +99693,7 @@ module.exports = function listener(callback) {
 
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":139,"http":442}],552:[function(require,module,exports){
+},{"buffer":139,"http":442}],553:[function(require,module,exports){
 (function (__dirname){
 const { createLogger, format, transports } = require("winston");
 const DailyRotateFile = require("winston-daily-rotate-file");
@@ -99685,7 +99766,7 @@ function Logger(config) {
 module.exports = Logger;
 
 }).call(this,"/src/utils")
-},{"fs":135,"path":379,"winston":524,"winston-daily-rotate-file":513}],553:[function(require,module,exports){
+},{"fs":135,"path":379,"winston":524,"winston-daily-rotate-file":513}],554:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -99816,19 +99897,19 @@ function processArgs(args, defParams) {
   }
   return { params: params, options: options, callback: callback, returnPromise: returnPromise };
 }
-},{}],554:[function(require,module,exports){
+},{}],555:[function(require,module,exports){
 arguments[4][13][0].apply(exports,arguments)
-},{"dup":13}],555:[function(require,module,exports){
+},{"dup":13}],556:[function(require,module,exports){
 module.exports = {
   chain: require('./chain.json'),
 }
 
-},{"./chain.json":554}],556:[function(require,module,exports){
+},{"./chain.json":555}],557:[function(require,module,exports){
 arguments[4][15][0].apply(exports,arguments)
-},{"dup":15}],557:[function(require,module,exports){
+},{"dup":15}],558:[function(require,module,exports){
 const schema = Object.assign({}, require('./chain_types.json'))
 module.exports = schema
-},{"./chain_types.json":556}],558:[function(require,module,exports){
+},{"./chain_types.json":557}],559:[function(require,module,exports){
 (function (Buffer){
 const assert = require("assert");
 const { ecc } = require("u3-utils");
@@ -100377,5 +100458,5 @@ function schemaFields(schema, type) {
 module.exports = writeApiGen;
 
 }).call(this,require("buffer").Buffer)
-},{"./asset-cache":543,"./utils/process-args":553,"assert":33,"buffer":139,"create-hash":227,"fcbuffer":271,"u3-utils":464}]},{},[6])(6)
+},{"./asset-cache":544,"./utils/process-args":554,"assert":33,"buffer":139,"create-hash":227,"fcbuffer":271,"u3-utils":464}]},{},[6])(6)
 });
