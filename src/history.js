@@ -16,6 +16,7 @@ function historyGen(config) {
     getContractByName,
     getAllAccounts,
     getAllTxs,
+    getAccountByName,
     getTxByTxId,
     getActionsByTxid,
     getActionsByAccount,
@@ -302,6 +303,33 @@ function getAllTxs(page, pageSize, queryParams, sortParams) {
 
   return fetchUrl("getAllTxs", `${httpEndpointHistory}/txs`, data);
 }
+
+
+/**
+ * get transaction by its id
+ * @param {String} id transaction's id
+ * @memberOf history
+ * @example
+ * import {getAccountByName} from "u3.js";
+ * const u3 = createU3(config)
+ * u3.getAccountByName({
+    'name': 'cona1',
+ * })
+ *
+ * json structure:
+ * {
+  "_id": "5d09cb5426b4a7ec0b35e878",
+  "name": "jack",
+  "createdAt": "2019-06-19T05:42:44.692Z",
+  "id": "5d09cb5426b4a7ec0b35e878",
+  "activePk": "UTR6rBwNTWJSNMYu4ZLgEigyV5gM8hHiNinqejXT1dNGZa5xsbpCB",
+  "ownerPk": "UTR6rBwNTWJSNMYu4ZLgEigyV5gM8hHiNinqejXT1dNGZa5xsbpCB"
+}
+ */
+function getAccountByName(name) {
+  return fetchUrl("getAccountByName", `${httpEndpointHistory}/accounts/${name}`);
+}
+
 
 /**
  * get transaction by its id
