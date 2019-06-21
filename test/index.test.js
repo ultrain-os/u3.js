@@ -100,6 +100,16 @@ describe("u3.js", () => {
       assert.equal(publicKey, result);
     });
 
+    // 2.6 sign data and verify signature
+    it("sign", function() {
+      const privateKey = "5JoTvD8emJDGHNGHyRCjqvpJqRY2jMmn5G6V9j8AifnszK5jKMe";
+      const publicKey = "UTR74nPcTpvZxoEugKZqXgAMysC7FvBjUAiHCB6TBSh576HNAGXz5";
+      let data = "12345";//must be string or hash
+      let signature = U3Utils.ecc.sign(data, privateKey);
+      let valid = U3Utils.ecc.verify(signature, data, publicKey);
+      assert.equal(true, valid);
+    });
+
   });
 
   // 3. contract relative
