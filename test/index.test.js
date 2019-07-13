@@ -118,7 +118,7 @@ describe("u3.js", () => {
     // 3.1 deploy contract only to side chain
     it("deploy contract", async () => {
       const u3 = createU3();
-      const tr = await u3.deploy(path.resolve(__dirname, "../contracts/token/token"), account1, { keyProvider: account1_pk });
+      const tr = await u3.deploy(path.resolve(__dirname, "../contracts/token/token"), account2, { keyProvider: account2_pk });
       assert.equal(tr.transaction.transaction.actions.length, 2);
     });
 
@@ -259,11 +259,11 @@ describe("u3.js", () => {
     // 7.1 create user only in the main chain
     // We should call a 'empoweruser' method to async the user from the main chain to the side chain if in MainNet/TestNet envirnment
     it("createUser", async () => {
-      const u3 = createU3({ keyProvider: account1_pk });
+      const u3 = createU3({ keyProvider: '5KR3iSRHy64dfstTtX9pd6mnXEMgrAEeAM65tbeeY3pDZRNTfHu' });
       const name = randomName();
       let params = {
-        creator: account1,
-        name: name,
+        creator: 'utrioaccount',
+        name: 'temp1',
         owner: publicKey,
         active: publicKey
       };
@@ -284,13 +284,13 @@ describe("u3.js", () => {
        * publicKey:UTR5jKHKQZHCvrmfpZ8cjdf6QJFWKQrxUtBvj5QBPKdWUBob8BkqS
        * mnemonic:spring equip exit tool monkey palm output siren next emerge slight flush
        */
-      const u3 = createU3({ keyProvider: '5JuLu9LyeCq2Rh7cddN9qPXGpgNerRU31kzt8FFYuMASNaDFxUn' });
+      const u3 = createU3({ keyProvider: '5JC2uWa7Pba5V8Qmn1pQPWKDPgwmRSYeZzAxK48jje6GP5iMqmM' });
       const c = await u3.contract("ultrainio");//系统合约名
       await c.empoweruser({
-        user: 'cona1',
+        user: 'temp1',
         chain_name: '11', //pioneer sidechain name
-        owner_pk: 'UTR5jKHKQZHCvrmfpZ8cjdf6QJFWKQrxUtBvj5QBPKdWUBob8BkqS',
-        active_pk: 'UTR5jKHKQZHCvrmfpZ8cjdf6QJFWKQrxUtBvj5QBPKdWUBob8BkqS',
+        owner_pk: 'UTR6rBwNTWJSNMYu4ZLgEigyV5gM8hHiNinqejXT1dNGZa5xsbpCB',
+        active_pk: 'UTR6rBwNTWJSNMYu4ZLgEigyV5gM8hHiNinqejXT1dNGZa5xsbpCB',
         updateable: 1
       })
     });
@@ -302,8 +302,8 @@ describe("u3.js", () => {
     // 8.1 get accountsInfo by name
     it("getAccountInfo", async () => {
       const u3 = createU3();
-      const account_ = await u3.getAccountInfo({ account_name: "versly111213" });
-      assert.equal(account_.account_name, "versly111213");
+      const account_ = await u3.getAccountInfo({ account_name: "ben" });
+      assert.equal(account_.account_name, "ben");
     });
   });
 
