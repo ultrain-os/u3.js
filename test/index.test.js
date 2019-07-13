@@ -110,6 +110,51 @@ describe("u3.js", () => {
       assert.equal(true, valid);
     });
 
+    // 2.7 judge a string whether is a valid public key
+    it("isValidPublic", function() {
+      const keys = [
+        [true, 'PUB_K1_859gxfnXyUriMgUeThh1fWv3oqcpLFyHa3TfFYC4PK2Ht7beeX'],
+        [true, 'UTR859gxfnXyUriMgUeThh1fWv3oqcpLFyHa3TfFYC4PK2HqhToVM'],
+        [false, 'MMM859gxfnXyUriMgUeThh1fWv3oqcpLFyHa3TfFYC4PK2HqhToVM'],
+        [false, 'UTR859gxfnXyUriMgUeThh1fWv3oqcpLFyHa3TfFYC4PK2HqhToVm'],
+      ]
+      for(const key of keys) {
+        assert.equal(key[0], U3Utils.ecc.isValidPublic(key[1]), key[1])
+      }
+    });
+
+    // 2.8 judge a string whether is a valid private key
+    it('isValidPrivate', () => {
+      const keys = [
+        [true, '5KYZdUEo39z3FPrtuX2QbbwGnNP5zTd7yyr2SC1j299sBCnWjss'],
+        [false, '5KYZdUEo39z3FPrtuX2QbbwGnNP5zTd7yyr2SC1j299sBCnWjsm'],
+      ]
+      for(const key of keys) {
+        assert.equal(key[0], U3Utils.ecc.isValidPrivate(key[1]), key[1])
+      }
+    })
+
+    // 2.9 sign a data and verify it
+    it('signatures', () => {
+      const pvt = U3Utils.ecc.seedPrivate('')
+      const pubkey = U3Utils.ecc.privateToPublic(pvt)
+
+      const data = 'hi'
+      const dataSha256 = U3Utils.ecc.sha256(data)
+
+      const sigs = [
+        U3Utils.ecc.sign(data, pvt),
+        U3Utils.ecc.signHash(dataSha256, pvt)
+      ]
+
+      for(const sig of sigs) {
+        assert(U3Utils.ecc.verify(sig, data, pubkey), 'verify data')
+        assert(U3Utils.ecc.verifyHash(sig, dataSha256, pubkey), 'verify hash')
+        assert.equal(pubkey, U3Utils.ecc.recover(sig, data), 'recover from data')
+        assert.equal(pubkey, U3Utils.ecc.recoverHash(sig, dataSha256), 'recover from hash')
+      }
+    })
+
   });
 
   // 3. contract relative
