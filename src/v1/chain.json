@@ -110,7 +110,7 @@
     },
     "example": {
       "func_parameter": {
-        "block_id": "0000000280155952392ddaa5c4fb6611e74e3c93f61852c50f67f47c9c8b90ba"
+        "block_num_or_id": "0000000280155952392ddaa5c4fb6611e74e3c93f61852c50f67f47c9c8b90ba"
       }
     }
   },
@@ -129,7 +129,7 @@
     },
     "example": {
       "func_parameter": {
-        "block_id": "0000000280155952392ddaa5c4fb6611e74e3c93f61852c50f67f47c9c8b90ba"
+        "block_num_or_id": "00000002f68058634c34126e0a4fb1ab3d6837404707181f25979d693794a5d7"
       }
     }
   },
