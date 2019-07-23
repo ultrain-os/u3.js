@@ -69,11 +69,7 @@ let config = {
     //expireInSeconds:60
 }
 let u3 = createU3(config);
-
-u3.getChainInfo((err, info) => {
-  if (err) {throw err;}
-  console.log(info);
-});
+let info = await u3.getChainInfo();
 
 ```
 
