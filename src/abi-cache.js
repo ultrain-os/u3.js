@@ -1,17 +1,29 @@
-const Structs = require("./structs");
+const Structs = require('./structs');
+const fs = require('fs');
+const path = require('path');
 
 module.exports = AbiCache;
 
 function AbiCache(network, config) {
   config.abiCache = {
     abiAsync,
-    abi
+    abi,
   };
 
   // Help (or "usage") needs {defaults: true}
   const abiCacheConfig = Object.assign({}, { defaults: true }, config);
 
-  const cache = {};
+  let cache = {};
+  if (typeof window === 'undefined') {
+    cache = {
+      'ultrainio': {
+        abi: JSON.parse(fs.readFileSync(path.resolve('contracts/ultrainio/ultrainio.abi'))),
+      },
+      'utrio.token': {
+        abi: JSON.parse(fs.readFileSync(path.resolve('contracts/utrio.token/utrio.token.abi'))),
+      },
+    };
+  }
 
   /**
    Asynchronously fetch and cache an ABI from the blockchain.
@@ -19,8 +31,8 @@ function AbiCache(network, config) {
    @arg {boolean} [force = true] false when ABI is immutable.
    */
   async function abiAsync(account, force = true) {
-    if (typeof account !== "string") {
-      throw new Error("account string required");
+    if (typeof account !== 'string') {
+      throw new Error('account string required');
     }
 
     if (force === false && cache[account] != null) {
@@ -28,8 +40,14 @@ function AbiCache(network, config) {
     }
 
     if (network == null) {
-      const abi = cache[account];
-      return Promise.resolve(abi);
+      let cachedAbi;
+      if (config.abi) {
+        cachedAbi = { abi: config.abi };
+      } else {
+        cachedAbi = cache[account];
+      }
+      cachedAbi = this.abi(account, cachedAbi.abi);
+      return Promise.resolve(cachedAbi);
     }
 
     const code = await network.getAbi(account);
@@ -45,12 +63,12 @@ function AbiCache(network, config) {
    @arg {string} [abi] - blockchain ABI json data.  Null to fetch or non-null to cache
    */
   function abi(account, abi) {
-    if (typeof account !== "string") {
-      throw new Error("account string required");
+    if (typeof account !== 'string') {
+      throw new Error('account string required');
     }
     if (abi) {
-      if (typeof abi !== "object") {
-        throw new Error("abi should be object");
+      if (typeof abi !== 'object') {
+        throw new Error('abi should be object');
       }
       if (Buffer.isBuffer(abi)) {
         abi = JSON.parse(abi);
@@ -90,7 +108,7 @@ function abiToFcSchema(abi, account) {
         fields[field.name] = field.type;
       }
       abiSchema[e.name] = { base: e.base, fields };
-      if (e.base === "") {
+      if (e.base === '') {
         delete abiSchema[e.name].base;
       }
     });
@@ -102,11 +120,11 @@ function abiToFcSchema(abi, account) {
       // @example action = {name: 'setprods', type: 'set_producers'}
       const type = abiSchema[action.type];
       if (!type) {
-        console.error("Missing abiSchema type", action.type, account);//, abi, abiSchema)
+        console.error('Missing abiSchema type', action.type, account);//, abi, abiSchema)
       } else {
         type.action = {
           name: action.name,
-          account
+          account,
         };
       }
     });

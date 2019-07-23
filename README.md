@@ -198,14 +198,64 @@ await U3Utils.test.waitUntil(async () => {
 
 Using `{ sign: false, broadcast: false }` to create a U3 instance and do some action.
 And Then send the unsigned_transaction object to the ultrain-chain wallet.
-
+Under these circumstances, you still need the network.
   
 ```
   const u3_offline = createU3({ sign: false, broadcast: false });
   const c = u3_offline.contract('utrio.token');
-  let unsigned_transaction = await c.transfer('ultrainio', 'ben', '1 UGAS', 'uu');
+  let unsigned_transaction = await c.transfer('ben', 'bob', '1 UGAS', 'test');
 ```
-           
+
+U3 will not initiate a network request if you set `httpEndpoint` to null.
+And you should pass in the `transactionHeaders` parameters as below.
+The `abi` parameter is optional. when you ignore it, u3 will looking it from its local directory.
+There are only two abis of 'ultrainio' and 'utrio.token' cached in local file.
+Note that the max `expiration` time is an hour (3600).
+And you can fetch the `ref_block_num` and `ref_block_prefix` through `u3.getBlockInfo` or the rest api `http://xxx/v1/chain/get_block_info`
+
+```
+  const u3_offline = createU3({ 
+    sign: false,
+    broadcast: false,
+    httpEndpoint: null,
+    transactionHeaders: {
+      expiration: expiration.toISOString().split('.')[0],
+      ref_block_num: 5,
+      ref_block_prefix: 2950683920,
+    },
+    abi: JSON.parse('{"version":"ultraio:1.0","types":[{"new_type_name":"account_name","type":"name"}],"structs":[{"name":"transfer","base":"","fields":[{"name":"from","type":"account_name"},{"name":"to","type":"account_name"},{"name":"quantity","type":"asset"},{"name":"memo","type":"string"}]},{"name":"safe_transfer","base":"","fields":[{"name":"from","type":"account_name"},{"name":"to","type":"account_name"},{"name":"quantity","type":"asset"},{"name":"memo","type":"string"}]},{"name":"create","base":"","fields":[{"name":"issuer","type":"account_name"},{"name":"maximum_supply","type":"asset"}]},{"name":"issue","base":"","fields":[{"name":"to","type":"account_name"},{"name":"quantity","type":"asset"},{"name":"memo","type":"string"}]},{"name":"account","base":"","fields":[{"name":"balance","type":"asset"},{"name":"last_block_height","type":"uint32"}]},{"name":"currency_stats","base":"","fields":[{"name":"supply","type":"asset"},{"name":"max_supply","type":"asset"},{"name":"issuer","type":"account_name"}]}],"actions":[{"name":"transfer","type":"transfer","ricardian_contract":""},{"name":"safe_transfer","type":"safe_transfer","ricardian_contract":""},{"name":"issue","type":"issue","ricardian_contract":""},{"name":"create","type":"create","ricardian_contract":""}],"tables":[{"name":"accounts","type":"account","index_type":"i64","key_names":["currency"],"key_types":["uint64"]},{"name":"stat","type":"currency_stats","index_type":"i64","key_names":["currency"],"key_types":["uint64"]}],"ricardian_clauses":[],"abi_extensions":[]}'),
+  });
+  const c = u3_offline.contract('utrio.token');
+  let unsigned_transaction = await c.transfer('ben', 'bob', '1 UGAS', 'test');
+```
+
+Another example is createUser.
+
+```
+let expiration = new Date(new Date().getTime() + 60 * 1000);
+const u3_offline = createU3({
+    httpEndpoint: null,
+    transactionHeaders: {
+      expiration: expiration.toISOString().split('.')[0],
+      ref_block_num: 5,
+      ref_block_prefix: 2950683920,
+    },
+});
+const name = randomName();
+let params = {
+    creator: 'ben',
+    name: 'bob123',
+    owner: 'UTR6r...',
+    active: 'UTR6r...',
+};
+const unsigned_transaction = await u3_offline.createUser(params, {
+    sign: false,
+    broadcast: false,
+    authorization: [`ben@active`],
+});
+```
+
+             
 #### sign and push signed_transaction
 
 In the wallet you can provide your privateKey or mnemonic to make a signature. 

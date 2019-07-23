@@ -214,12 +214,64 @@ return tx && tx.irreversible;
 ## 签名
 
 使用 `{ sign: false, broadcast: false }` 创建一个u3实例并且做一些action, 然后将未签名的交易发送到钱包中.
+在这种情况下，u3仍然需要网络来发送请求
   
 ```
   const u3_offline = createU3({ sign: false, broadcast: false });
   const c = u3_offline.contract('utrio.token');
   let unsigned_transaction = await c.transfer('ultrainio', 'ben', '1 UGAS', 'uu');
 ```
+
+如果你把 `httpEndpoint` 设为null, u3将不发送网络请求
+那么你需要像下面这样传入 `transactionHeaders` 参数.
+其中`abi` 是可选的, 如果你忽略它, 那么u3会从本地目录下查找缓存文件.
+本地缓存文件只有 'ultrainio' and 'utrio.token' 两个系统合约的abi
+注意最大`expiration`时间是一个小时，也就是值为3600.
+你可以通过`u3.getBlockInfo` 或者 rest 接口 `http://xxx/v1/chain/get_block_info` 来获取 `ref_block_num` 和 `ref_block_prefix` 的值 
+
+```
+  const u3_offline = createU3({ 
+    sign: false,
+    broadcast: false,
+    httpEndpoint: null,
+    transactionHeaders: {
+      expiration: expiration.toISOString().split('.')[0],
+      ref_block_num: 5,
+      ref_block_prefix: 2950683920,
+    },
+    abi: JSON.parse('{"version":"ultraio:1.0","types":[{"new_type_name":"account_name","type":"name"}],"structs":[{"name":"transfer","base":"","fields":[{"name":"from","type":"account_name"},{"name":"to","type":"account_name"},{"name":"quantity","type":"asset"},{"name":"memo","type":"string"}]},{"name":"safe_transfer","base":"","fields":[{"name":"from","type":"account_name"},{"name":"to","type":"account_name"},{"name":"quantity","type":"asset"},{"name":"memo","type":"string"}]},{"name":"create","base":"","fields":[{"name":"issuer","type":"account_name"},{"name":"maximum_supply","type":"asset"}]},{"name":"issue","base":"","fields":[{"name":"to","type":"account_name"},{"name":"quantity","type":"asset"},{"name":"memo","type":"string"}]},{"name":"account","base":"","fields":[{"name":"balance","type":"asset"},{"name":"last_block_height","type":"uint32"}]},{"name":"currency_stats","base":"","fields":[{"name":"supply","type":"asset"},{"name":"max_supply","type":"asset"},{"name":"issuer","type":"account_name"}]}],"actions":[{"name":"transfer","type":"transfer","ricardian_contract":""},{"name":"safe_transfer","type":"safe_transfer","ricardian_contract":""},{"name":"issue","type":"issue","ricardian_contract":""},{"name":"create","type":"create","ricardian_contract":""}],"tables":[{"name":"accounts","type":"account","index_type":"i64","key_names":["currency"],"key_types":["uint64"]},{"name":"stat","type":"currency_stats","index_type":"i64","key_names":["currency"],"key_types":["uint64"]}],"ricardian_clauses":[],"abi_extensions":[]}'),
+  });
+  const c = u3_offline.contract('utrio.token');
+  let unsigned_transaction = await c.transfer('ben', 'bob', '1 UGAS', 'test');
+```
+
+另外一个例子是 createUser.
+
+```
+let expiration = new Date(new Date().getTime() + 60 * 1000);
+const u3_offline = createU3({
+    httpEndpoint: null,
+    transactionHeaders: {
+      expiration: expiration.toISOString().split('.')[0],
+      ref_block_num: 5,
+      ref_block_prefix: 2950683920,
+    },
+});
+const name = randomName();
+let params = {
+    creator: 'ben',
+    name: 'bob123',
+    owner: 'UTR6r...',
+    active: 'UTR6r...',
+};
+const unsigned_transaction = await u3_offline.createUser(params, {
+    sign: false,
+    broadcast: false,
+    authorization: [`ben@active`],
+});
+```
+
+
 在钱包中你可以提供私钥或助记词来签名，并将签名后的交易发送到链上.
 
 ```

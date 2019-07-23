@@ -1,0 +1,118 @@
+{
+  "version": "ultraio:1.0",
+  "types": [
+    {
+      "new_type_name": "account_name",
+      "type": "name"
+    },
+    {
+      "new_type_name": "u32",
+      "type": "uint32"
+    }
+  ],
+  "structs": [
+    {
+      "fields": [
+        {
+          "name": "candidate",
+          "type": "account_name"
+        }
+      ],
+      "base": "",
+      "name": "addCandidate"
+    },
+    {
+      "fields": [
+        {
+          "name": "candidate",
+          "type": "account_name"
+        }
+      ],
+      "base": "",
+      "name": "vote"
+    },
+    {
+      "fields": [
+        {
+          "name": "name",
+          "type": "account_name"
+        },
+        {
+          "name": "count",
+          "type": "u32"
+        }
+      ],
+      "base": "",
+      "name": "Votes"
+    },
+    {
+      "fields": [
+        {
+          "name": "name",
+          "type": "account_name"
+        }
+      ],
+      "base": "",
+      "name": "Voters"
+    },
+    {
+      "fields": [
+        {
+          "name": "name",
+          "type": "account_name"
+        }
+      ],
+      "base": "",
+      "name": "Candidate"
+    }
+  ],
+  "actions": [
+    {
+      "ricardian_contract": "",
+      "name": "addCandidate",
+      "type": "addCandidate",
+      "ability": "normal"
+    },
+    {
+      "ricardian_contract": "",
+      "name": "vote",
+      "type": "vote",
+      "ability": "normal"
+    }
+  ],
+  "tables": [
+    {
+      "index_type": "i64",
+      "keys_names": [
+        "currency"
+      ],
+      "keys_types": [
+        "uint64"
+      ],
+      "name": "votes",
+      "type": "Votes"
+    },
+    {
+      "index_type": "i64",
+      "keys_names": [
+        "currency"
+      ],
+      "keys_types": [
+        "uint64"
+      ],
+      "name": "voters",
+      "type": "Voters"
+    },
+    {
+      "index_type": "i64",
+      "keys_names": [
+        "currency"
+      ],
+      "keys_types": [
+        "uint64"
+      ],
+      "name": "candidate",
+      "type": "Candidate"
+    }
+  ]
+}
