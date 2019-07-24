@@ -1,5 +1,5 @@
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.U3 = f()}})(function(){var define,module,exports;return (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
-(function (Buffer){
+(function (Buffer,__dirname){
 'use strict';
 
 var _typeof2 = require('babel-runtime/helpers/typeof');
@@ -31,10 +31,10 @@ function AbiCache(network, config) {
   if (typeof window === 'undefined') {
     cache = {
       'ultrainio': {
-        abi: JSON.parse(fs.readFileSync(path.resolve('contracts/ultrainio/ultrainio.abi')))
+        abi: JSON.parse(fs.readFileSync(__dirname + '/../contracts/ultrainio/ultrainio.abi'))
       },
       'utrio.token': {
-        abi: JSON.parse(fs.readFileSync(path.resolve('contracts/utrio.token/utrio.token.abi')))
+        abi: JSON.parse(fs.readFileSync(__dirname + '/../contracts/utrio.token/utrio.token.abi'))
       }
     };
   }
@@ -206,7 +206,7 @@ function abiToFcSchema(abi, account) {
 
   return abiSchema;
 }
-}).call(this,{"isBuffer":require("../node_modules/is-buffer/index.js")})
+}).call(this,{"isBuffer":require("../node_modules/is-buffer/index.js")},"/dist")
 },{"../node_modules/is-buffer/index.js":296,"./structs":7,"babel-runtime/helpers/typeof":88,"babel-runtime/regenerator":89,"fs":136,"path":380}],2:[function(require,module,exports){
 'use strict';
 
@@ -96882,7 +96882,7 @@ function extend() {
 },{}],543:[function(require,module,exports){
 module.exports={
   "name": "u3.js",
-  "version": "0.3.13",
+  "version": "0.3.14",
   "description": "A general library wrapped in javascript for interacting with Ultrain",
   "main": "index.js",
   "directories": {
@@ -96953,7 +96953,7 @@ module.exports={
 }
 
 },{}],544:[function(require,module,exports){
-(function (Buffer){
+(function (Buffer,__dirname){
 const Structs = require('./structs');
 const fs = require('fs');
 const path = require('path');
@@ -96973,10 +96973,10 @@ function AbiCache(network, config) {
   if (typeof window === 'undefined') {
     cache = {
       'ultrainio': {
-        abi: JSON.parse(fs.readFileSync(path.resolve('contracts/ultrainio/ultrainio.abi'))),
+        abi: JSON.parse(fs.readFileSync(__dirname + '/../contracts/ultrainio/ultrainio.abi')),
       },
       'utrio.token': {
-        abi: JSON.parse(fs.readFileSync(path.resolve('contracts/utrio.token/utrio.token.abi'))),
+        abi: JSON.parse(fs.readFileSync(__dirname + '/../contracts/utrio.token/utrio.token.abi')),
       },
     };
   }
@@ -97090,7 +97090,7 @@ function abiToFcSchema(abi, account) {
   return abiSchema;
 }
 
-}).call(this,{"isBuffer":require("../node_modules/is-buffer/index.js")})
+}).call(this,{"isBuffer":require("../node_modules/is-buffer/index.js")},"/src")
 },{"../node_modules/is-buffer/index.js":296,"./structs":549,"fs":136,"path":380}],545:[function(require,module,exports){
 const assert = require('assert');
 const Structs = require('./structs');

@@ -17,10 +17,10 @@ function AbiCache(network, config) {
   if (typeof window === 'undefined') {
     cache = {
       'ultrainio': {
-        abi: JSON.parse(fs.readFileSync(path.resolve('contracts/ultrainio/ultrainio.abi'))),
+        abi: JSON.parse(fs.readFileSync(__dirname + '/../contracts/ultrainio/ultrainio.abi')),
       },
       'utrio.token': {
-        abi: JSON.parse(fs.readFileSync(path.resolve('contracts/utrio.token/utrio.token.abi'))),
+        abi: JSON.parse(fs.readFileSync(__dirname + '/../contracts/utrio.token/utrio.token.abi')),
       },
     };
   }
