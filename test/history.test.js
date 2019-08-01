@@ -24,6 +24,17 @@ describe("history", async () => {
     assert.ok(rs);
   });
 
+  it("getAccountByName", async () => {
+    const rs = await u3.getAccountByName("ben");
+    assert.ok(rs);
+  });
+
+  it("getAccountsByKey", async () => {
+    const rs = await u3.getAccountsByKey("UTR6ujHgxt2hUz7BfvJz6epfvWzhXEp1ChVKEFZxf1Ld5ea83WE6V");
+    assert.ok(rs);
+  });
+
+
   it("getAllTxs", async () => {
     const rs = await u3.getAllTxs(1, 10, {}, { _id: -1 });
     assert.ok(rs);

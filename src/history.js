@@ -1,6 +1,6 @@
 /** @namespace history*/
-const defaultConfig = require("../src/config");
-let httpEndpointHistory = require("./config").httpEndpointHistory;
+const defaultConfig = require('../src/config');
+let httpEndpointHistory = require('./config').httpEndpointHistory;
 
 // let U3Config = {};
 // let fetchUrl = () => {
@@ -9,7 +9,7 @@ let httpEndpointHistory = require("./config").httpEndpointHistory;
 function historyGen(config) {
   let U3Config = config;
   httpEndpointHistory = config.httpEndpointHistory;
-  let fetchUrl = require("../src/utils/dbHelper")(config).fetchUrl;
+  let fetchUrl = require('../src/utils/dbHelper')(config).fetchUrl;
 
   return {
     getAllBlocks,
@@ -34,7 +34,9 @@ function historyGen(config) {
     getAllBlocksHeader,
     getProposerList,
     getReward,
-    getActionsByContract
+    getActionsByContract,
+    getAccountByName,
+    getAccountsByKey,
   };
 
   /**
@@ -85,13 +87,13 @@ function historyGen(config) {
    */
   function getAllBlocks(page, pageSize, queryParams, sortParams) {
     let data = {
-      "page": page || 1,
-      "pageSize": pageSize || 10,
-      "queryParams": queryParams || {},
-      "sortParams": sortParams || { _id: -1 }
+      'page': page || 1,
+      'pageSize': pageSize || 10,
+      'queryParams': queryParams || {},
+      'sortParams': sortParams || { _id: -1 },
     };
 
-    return fetchUrl("getAllBlocks", `${httpEndpointHistory}/blocks`, data);
+    return fetchUrl('getAllBlocks', `${httpEndpointHistory}/blocks`, data);
   }
 
   /**
@@ -132,13 +134,13 @@ function historyGen(config) {
    */
   function getContracts(page, pageSize, queryParams, sortParams) {
     let data = {
-      "page": page || 1,
-      "pageSize": pageSize || 10,
-      "queryParams": queryParams || {},
-      "sortParams": sortParams || { _id: -1 }
+      'page': page || 1,
+      'pageSize': pageSize || 10,
+      'queryParams': queryParams || {},
+      'sortParams': sortParams || { _id: -1 },
     };
 
-    return fetchUrl("getContracts", `${httpEndpointHistory}/contracts`, data);
+    return fetchUrl('getContracts', `${httpEndpointHistory}/contracts`, data);
   }
 
   /**
@@ -172,7 +174,7 @@ function historyGen(config) {
   }
    */
   function getContractByName(name) {
-    return fetchUrl("getContractByName", `${httpEndpointHistory}/contracts/${name}`);
+    return fetchUrl('getContractByName', `${httpEndpointHistory}/contracts/${name}`);
   }
 
   /**
@@ -203,12 +205,12 @@ function historyGen(config) {
    */
   async function getAllAccounts(page, pageSize, queryParams, sortParams) {
     let data = {
-      "page": page || 1,
-      "pageSize": pageSize || 10,
-      "queryParams": queryParams || {},
-      "sortParams": sortParams || { _id: -1 }
+      'page': page || 1,
+      'pageSize': pageSize || 10,
+      'queryParams': queryParams || {},
+      'sortParams': sortParams || { _id: -1 },
     };
-    return fetchUrl("getAllAccounts", `${httpEndpointHistory}/accounts`, data);
+    return fetchUrl('getAllAccounts', `${httpEndpointHistory}/accounts`, data);
   }
 
   /**
@@ -273,13 +275,13 @@ function historyGen(config) {
    */
   function getAllTxs(page, pageSize, queryParams, sortParams) {
     let data = {
-      "page": page || 1,
-      "pageSize": pageSize || 10,
-      "queryParams": queryParams || {},
-      "sortParams": sortParams || { _id: -1 }
+      'page': page || 1,
+      'pageSize': pageSize || 10,
+      'queryParams': queryParams || {},
+      'sortParams': sortParams || { _id: -1 },
     };
 
-    return fetchUrl("getAllTxs", `${httpEndpointHistory}/txs`, data);
+    return fetchUrl('getAllTxs', `${httpEndpointHistory}/txs`, data);
   }
 
   /**
@@ -335,7 +337,7 @@ function historyGen(config) {
   }
    */
   function getTxByTxId(id) {
-    return fetchUrl("getTxByTxId", `${httpEndpointHistory}/txs/${id}`);
+    return fetchUrl('getTxByTxId', `${httpEndpointHistory}/txs/${id}`);
   }
 
   /**
@@ -367,7 +369,7 @@ function historyGen(config) {
   }
    */
   function getActionsByTxid(id) {
-    return fetchUrl("getActionsByTxid", `${httpEndpointHistory}/actions/tx/${id}`);
+    return fetchUrl('getActionsByTxid', `${httpEndpointHistory}/actions/tx/${id}`);
   }
 
   /**
@@ -406,12 +408,12 @@ function historyGen(config) {
    */
   function getActionsByAccount(page, pageSize, queryParams, sortParams) {
     let data = {
-      "page": page || 1,
-      "pageSize": pageSize || 10,
-      "queryParams": queryParams || {},
-      "sortParams": sortParams || { _id: -1 }
+      'page': page || 1,
+      'pageSize': pageSize || 10,
+      'queryParams': queryParams || {},
+      'sortParams': sortParams || { _id: -1 },
     };
-    return fetchUrl("getActionsByAccount", `${httpEndpointHistory}/actions/by/account`, data);
+    return fetchUrl('getActionsByAccount', `${httpEndpointHistory}/actions/by/account`, data);
   }
 
   /**
@@ -476,12 +478,12 @@ function historyGen(config) {
    */
   function getTxsByBlockNum(page, pageSize, queryParams, sortParams) {
     let data = {
-      "page": page || 1,
-      "pageSize": pageSize || 10,
-      "queryParams": queryParams || {},
-      "sortParams": sortParams || { _id: -1 }
+      'page': page || 1,
+      'pageSize': pageSize || 10,
+      'queryParams': queryParams || {},
+      'sortParams': sortParams || { _id: -1 },
     };
-    return fetchUrl("getTxsByBlockNum", `${httpEndpointHistory}/txs/by/blocknum`, data);
+    return fetchUrl('getTxsByBlockNum', `${httpEndpointHistory}/txs/by/blocknum`, data);
   }
 
   /**
@@ -504,7 +506,7 @@ function historyGen(config) {
   }
    */
   function getExistAccount(name) {
-    return fetchUrl("getExistAccount", `${httpEndpointHistory}/accounts/${name}`);
+    return fetchUrl('getExistAccount', `${httpEndpointHistory}/accounts/${name}`);
   }
 
   /**
@@ -558,9 +560,9 @@ function historyGen(config) {
       block_num,
       account,
       contract,
-      contract_method
+      contract_method,
     };
-    return fetchUrl("getBlocksByContract", `${httpEndpointHistory}/blocks/contract`, data);
+    return fetchUrl('getBlocksByContract', `${httpEndpointHistory}/blocks/contract`, data);
   }
 
   /**
@@ -617,7 +619,7 @@ function historyGen(config) {
    }
    */
   function getTxTraceByTxid(id) {
-    return fetchUrl("getTxTraceByTxid", `${httpEndpointHistory}/txtraces/${id}`);
+    return fetchUrl('getTxTraceByTxid', `${httpEndpointHistory}/txtraces/${id}`);
   }
 
   /**
@@ -631,21 +633,21 @@ function historyGen(config) {
    * u3.search(5b7d11b859bd97fab30ba7f5)
    */
   async function search(param) {
-    let rs = await fetchUrl("search", `${httpEndpointHistory}/search/${param}`);
+    let rs = await fetchUrl('search', `${httpEndpointHistory}/search/${param}`);
     // console.log(rs);
-    if (rs.type === "account" && rs.data.name) {
-      const { createU3 } = require("../");
+    if (rs.type === 'account' && rs.data.name) {
+      const { createU3 } = require('../');
       const u3 = createU3(U3Config);
 
       let balance = await u3.getCurrencyBalance({
-        code: "utrio.token",
+        code: 'utrio.token',
         account: param,
-        symbol: defaultConfig.symbol
+        symbol: defaultConfig.symbol,
       });
 
       // get net_weight cpu_weight ram_bytes
       let accountInfo = await u3.getAccountInfo({
-        account_name: param
+        account_name: param,
       });
 
       rs.data.balance = balance;
@@ -674,7 +676,7 @@ function historyGen(config) {
   }
    */
   function getCreateAccountByName(name) {
-    return fetchUrl("getCreateAccountByName", `${httpEndpointHistory}/getcreateaccount`, { name });
+    return fetchUrl('getCreateAccountByName', `${httpEndpointHistory}/getcreateaccount`, { name });
   }
 
   /**
@@ -713,13 +715,13 @@ function historyGen(config) {
    */
   function getAllTokens(page, pageSize, queryParams, sortParams) {
     let data = {
-      "page": page || 1,
-      "pageSize": pageSize || 10,
-      "queryParams": queryParams || {},
-      "sortParams": sortParams || { _id: -1 }
+      'page': page || 1,
+      'pageSize': pageSize || 10,
+      'queryParams': queryParams || {},
+      'sortParams': sortParams || { _id: -1 },
     };
 
-    return fetchUrl("getAllTokens", `${httpEndpointHistory}/tokens`, data);
+    return fetchUrl('getAllTokens', `${httpEndpointHistory}/tokens`, data);
   }
 
   /**
@@ -749,7 +751,7 @@ function historyGen(config) {
       }
    */
   function getTokenBySymbol(symbol, creator) {
-    return fetchUrl("getTokenBySymbol", `${httpEndpointHistory}/token/${symbol}/${creator}`);
+    return fetchUrl('getTokenBySymbol', `${httpEndpointHistory}/token/${symbol}/${creator}`);
   }
 
   /**
@@ -772,7 +774,7 @@ function historyGen(config) {
       }
    */
   function getBaseInfo() {
-    return fetchUrl("getBaseInfo", `${httpEndpointHistory}/base`);
+    return fetchUrl('getBaseInfo', `${httpEndpointHistory}/base`);
   }
 
   /**
@@ -800,7 +802,7 @@ function historyGen(config) {
    * ]
    */
   function getBalanceByAccount(account) {
-    return fetchUrl("getBalanceByAccount", `${httpEndpointHistory}/balance/${account}`);
+    return fetchUrl('getBalanceByAccount', `${httpEndpointHistory}/balance/${account}`);
   }
 
   /**
@@ -835,13 +837,13 @@ function historyGen(config) {
    */
   function getHoldersBySymbol(page, pageSize, queryParams, sortParams) {
     let data = {
-      "page": page || 1,
-      "pageSize": pageSize || 10,
-      "queryParams": queryParams || {},
-      "sortParams": sortParams || { current_balance: -1 }
+      'page': page || 1,
+      'pageSize': pageSize || 10,
+      'queryParams': queryParams || {},
+      'sortParams': sortParams || { current_balance: -1 },
     };
 
-    return fetchUrl("getHoldersBySymbol", `${httpEndpointHistory}/holders/by/symbol`, data);
+    return fetchUrl('getHoldersBySymbol', `${httpEndpointHistory}/holders/by/symbol`, data);
   }
 
   /**
@@ -886,13 +888,13 @@ function historyGen(config) {
    */
   function getAllBlocksHeader(page, pageSize, queryParams, sortParams) {
     let data = {
-      "page": page || 1,
-      "pageSize": pageSize || 10,
-      "queryParams": queryParams || {},
-      "sortParams": sortParams || { _id: -1 }
+      'page': page || 1,
+      'pageSize': pageSize || 10,
+      'queryParams': queryParams || {},
+      'sortParams': sortParams || { _id: -1 },
     };
 
-    return fetchUrl("getAllBlocksHeader", `${httpEndpointHistory}/blocksheader`, data);
+    return fetchUrl('getAllBlocksHeader', `${httpEndpointHistory}/blocksheader`, data);
   }
 
   /**
@@ -920,13 +922,13 @@ function historyGen(config) {
    */
   function getProposerList(page, pageSize, queryParams, sortParams) {
     let data = {
-      "page": page || 1,
-      "pageSize": pageSize || 10,
-      "queryParams": queryParams || {},
-      "sortParams": sortParams || { total_produce_block: -1 }
+      'page': page || 1,
+      'pageSize': pageSize || 10,
+      'queryParams': queryParams || {},
+      'sortParams': sortParams || { total_produce_block: -1 },
     };
 
-    return fetchUrl("getProposerList", `${httpEndpointHistory}/proposers`, data);
+    return fetchUrl('getProposerList', `${httpEndpointHistory}/proposers`, data);
   }
 
   /**
@@ -944,7 +946,7 @@ function historyGen(config) {
       }
    */
   function getReward() {
-    return fetchUrl("getReward", `${httpEndpointHistory}/award`);
+    return fetchUrl('getReward', `${httpEndpointHistory}/award`);
   }
 
   /**
@@ -983,13 +985,55 @@ function historyGen(config) {
    */
   function getActionsByContract(page, pageSize, queryParams, sortParams) {
     let data = {
-      "page": page || 1,
-      "pageSize": pageSize || 10,
-      "queryParams": queryParams || {},
-      "sortParams": sortParams || { _id: -1 }
+      'page': page || 1,
+      'pageSize': pageSize || 10,
+      'queryParams': queryParams || {},
+      'sortParams': sortParams || { _id: -1 },
     };
-    return fetchUrl("getActionsByContract", `${httpEndpointHistory}/actions/by/contract`, data);
+    return fetchUrl('getActionsByContract', `${httpEndpointHistory}/actions/by/contract`, data);
   }
+
+
+  /**
+   * get account by name
+   * @param {String} name account's name
+   * @memberOf history
+   * @example
+   * import {getAccountByName} from "u3.js";
+   * const u3 = createU3(config)
+   * await u3.getAccountByName('cona1')
+   *
+   * json structure:
+   * {
+   *  "_id": "5d09cb5426b4a7ec0b35e878",
+   *  "name": "jack",
+   *  "createdAt": "2019-06-19T05:42:44.692Z",
+   *  "id": "5d09cb5426b4a7ec0b35e878",
+   *  "activePk": "UTR6rBwNTWJSNMYu4ZLgEigyV5gM8hHiNinqejXT1dNGZa5xsbpCB",
+   *  "ownerPk": "UTR6rBwNTWJSNMYu4ZLgEigyV5gM8hHiNinqejXT1dNGZa5xsbpCB"
+   * }
+   */
+  function getAccountByName(name) {
+    return fetchUrl('getAccountByName', `${httpEndpointHistory}/accounts/${name}`);
+  }
+
+
+  /**
+   * get accounts by public key
+   * @param {String} public_key
+   * @memberOf history
+   * @example
+   * import {getAccountsByKey} from "u3.js";
+   * const u3 = createU3(config)
+   * await u3.getAccountsByKey('UTR6rBwNTWJSNMYu4ZLgEigyV5gM8hHiNinqejXT1dNGZa5xsbpCB')
+   *
+   * json structure:
+   * {account_names:['ben','bob']}
+   */
+  function getAccountsByKey(public_key) {
+    return fetchUrl('getAccountsByKey', `${httpEndpointHistory}/accounts/by/key`, { public_key });
+  }
+
 
 };
 module.exports = historyGen;
