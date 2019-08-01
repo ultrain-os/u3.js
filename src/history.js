@@ -307,8 +307,8 @@ function getAllTxs(page, pageSize, queryParams, sortParams) {
 
 
 /**
- * get transaction by its id
- * @param {String} id transaction's id
+ * get account by name
+ * @param {String} name account's name
  * @memberOf history
  * @example
  * import {getAccountByName} from "u3.js";
