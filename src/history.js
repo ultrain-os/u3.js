@@ -340,10 +340,10 @@ function getAccountByName(name) {
  * await u3.getAccountsByKey('UTR6rBwNTWJSNMYu4ZLgEigyV5gM8hHiNinqejXT1dNGZa5xsbpCB')
  *
  * json structure:
- * ['ben','bob']
+ * {account_names:['ben','bob']}
  */
 function getAccountsByKey(public_key) {
-  return fetchUrl('getAccountsByKey', `${httpEndpointHistory}/accounts/by/key`, {public_key});
+  return fetchUrl('getAccountsByKey', `${httpEndpointHistory}/accounts/by/key`, { public_key });
 }
 
 
