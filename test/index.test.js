@@ -241,6 +241,12 @@ describe('u3.js', () => {
       const tr = await c.transfer(account1, account2, '1.0000 ' + defaultConfig.symbol, '', { keyProvider: account1_pk });
       assert.equal(typeof tr.transaction_id, 'string');
     });
+
+    it('getTransFee', async () => {
+      const u3 = createU3();
+      const fee = await u3.getTransFee('1');
+      assert.equal(typeof fee.fee, 'string');
+    });
   });
 
   // 5. blocks

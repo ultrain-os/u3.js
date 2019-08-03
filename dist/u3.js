@@ -1536,8 +1536,8 @@ function getAllTxs(page, pageSize, queryParams, sortParams) {
 }
 
 /**
- * get transaction by its id
- * @param {String} id transaction's id
+ * get account by name
+ * @param {String} name account's name
  * @memberOf history
  * @example
  * import {getAccountByName} from "u3.js";
@@ -1568,7 +1568,7 @@ function getAccountByName(name) {
  * await u3.getAccountsByKey('UTR6rBwNTWJSNMYu4ZLgEigyV5gM8hHiNinqejXT1dNGZa5xsbpCB')
  *
  * json structure:
- * ['ben','bob']
+ * {account_names:['ben','bob']}
  */
 function getAccountsByKey(public_key) {
   return fetchUrl('getAccountsByKey', httpEndpointHistory + '/accounts/by/key', { public_key: public_key });
@@ -4002,6 +4002,20 @@ module.exports={
         "code": "account",
         "account": "account",
         "symbol": "UGAS"
+      }
+    }
+  },
+  "get_trans_fee": {
+    "params": {
+      "block_height": {
+        "string": "name",
+        "description": "block height"
+      }
+    },
+    "results": "variant",
+    "example": {
+      "func_parameter": {
+        "fee": "string"
       }
     }
   },
@@ -96834,7 +96848,7 @@ function extend() {
 },{}],542:[function(require,module,exports){
 module.exports={
   "name": "u3.js",
-  "version": "0.3.15",
+  "version": "0.3.16",
   "description": "A general library wrapped in javascript for interacting with Ultrain",
   "main": "index.js",
   "directories": {
@@ -98144,8 +98158,8 @@ function getAllTxs(page, pageSize, queryParams, sortParams) {
 
 
 /**
- * get transaction by its id
- * @param {String} id transaction's id
+ * get account by name
+ * @param {String} name account's name
  * @memberOf history
  * @example
  * import {getAccountByName} from "u3.js";
@@ -98177,10 +98191,10 @@ function getAccountByName(name) {
  * await u3.getAccountsByKey('UTR6rBwNTWJSNMYu4ZLgEigyV5gM8hHiNinqejXT1dNGZa5xsbpCB')
  *
  * json structure:
- * ['ben','bob']
+ * {account_names:['ben','bob']}
  */
 function getAccountsByKey(public_key) {
-  return fetchUrl('getAccountsByKey', `${httpEndpointHistory}/accounts/by/key`, {public_key});
+  return fetchUrl('getAccountsByKey', `${httpEndpointHistory}/accounts/by/key`, { public_key });
 }
 
 

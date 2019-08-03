@@ -23,6 +23,20 @@
       }
     }
   },
+  "get_trans_fee": {
+    "params": {
+      "block_height": {
+        "string": "name",
+        "description": "block height"
+      }
+    },
+    "results": "variant",
+    "example": {
+      "func_parameter": {
+        "fee": "string"
+      }
+    }
+  },
   "get_currency_stats": {
     "params": {
       "code": {
