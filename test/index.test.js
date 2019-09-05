@@ -35,8 +35,10 @@ const customCurrency = randomAsset();
 
 const account1 = 'ben';
 const account2 = 'bob';
+const account3 = 'tony';
 const account1_pk = users[account1].private_key;
 const account2_pk = users[account2].private_key;
+const account3_pk = users[account3].private_key;
 
 describe('u3.js', () => {
 
@@ -71,7 +73,6 @@ describe('u3.js', () => {
     // 2.3 generate key pair with mnemonic
     it('generateKeyPairWithMnemonic', function() {
       let result = U3Utils.ecc.generateKeyPairWithMnemonic();
-      console.log(result);
       assert.ok((isString(result.mnemonic) && !isEmpty(result.mnemonic)), true);
       assert.equal(U3Utils.ecc.isValidPrivate(result.private_key), true);
       assert.equal(U3Utils.ecc.isValidPublic(result.public_key), true);
@@ -541,6 +542,48 @@ describe('u3.js', () => {
         active_pk: 'UTR6rBwNTWJSNMYu4ZLgEigyV5gM8hHiNinqejXT1dNGZa5xsbpCB',
         updateable: 1,
       });
+    });
+
+
+    // 7.3 updateAuth
+    it('updateAuth', async () => {
+
+      const u3 = createU3({ keyProvider: account3_pk });
+      const c = await u3.contract('ultrainio');
+
+      let account_ = account3;
+      let publicKey = 'UTR6ujHgxt2hUz7BfvJz6epfvWzhXEp1ChVKEFZxf1Ld5ea83WE6V';
+
+      await u3.getAccountInfo({ account_name: account_ });
+
+      let activeObj = {
+        account: account_,
+        auth: {
+          'threshold': 1,
+          'keys': [{ 'key': publicKey, 'weight': 1 }],
+          'accounts': [],
+          'waits': [],
+        },
+        parent: 'owner',
+        permission: 'active',
+      };
+      await c.updateauth(activeObj, { authorization: [account_ + `@active`] });
+
+      let ownerObj = {
+        account: account_,
+        auth: {
+          'threshold': 1,
+          'keys': [{ 'key': publicKey, 'weight': 1 }],
+          'accounts': [],
+          'waits': [],
+        },
+        parent: '',
+        permission: 'owner',
+      };
+      await c.updateauth(ownerObj, { authorization: [account_ + `@owner`] });
+
+      await u3.getAccountInfo({ account_name: account_ });
+
     });
   });
 
