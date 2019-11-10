@@ -17,7 +17,7 @@ const schema = require("./src/v1/schema");
 const Logger = require("./src/utils/logger");
 let logger;
 
-const version = require("./package").version;
+const version = require("./package.json").version;
 
 const defaultSignProvider = (u3, config) => function ({sign, buf, transaction, optionsKeyProvider}) {
     const keyProvider = optionsKeyProvider ? optionsKeyProvider : config.keyProvider;
