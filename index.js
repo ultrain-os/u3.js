@@ -15,6 +15,7 @@ const writeApiGen = require("./src/write-api");
 const format = require("./src/format");
 const schema = require("./src/v1/schema");
 const Logger = require("./src/utils/logger");
+const U3Dapp = require("./src/u3dapp")
 let logger;
 
 const version = require("./package.json").version;
@@ -160,9 +161,10 @@ async function sign(unsigned_transaction, privateKeyOrMnemonic, chainId = "cf057
 function _mergeWriteFunctions(config, api, structs) {
     assert(config, "network instance required");
     const {network} = config;
+    const u3dapp = new U3Dapp(config,network)
 
     // block api
-    const merge = Object.assign({}, network);
+    const merge = Object.assign({}, network,u3dapp);
 
     // contract abi
     const writeApi = writeApiGen(api, network, structs, config, schema);
