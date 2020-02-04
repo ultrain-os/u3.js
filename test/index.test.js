@@ -501,6 +501,31 @@ describe('u3.js', () => {
       assert.equal(processedTransaction.transaction_id, unsigned_transaction.transaction_id);
     });
 
+    /*
+     * 6.7
+     * batch offline sign
+     */
+    it('sign_separate_from_pushTx_with_network', async () => {
+      const u3_offline = createU3({
+        sign: false,
+        broadcast: false,
+      })
+      const unsigned_transaction = await u3_offline.transaction('utrio.token', t => {
+        t.transfer(account1, account2, '1.0000 ' + defaultConfig.symbol, '', { authorization: [account1 + `@active`] })
+        t.transfer(account1, account3, '1.0000 ' + defaultConfig.symbol, '', { authorization: [account1 + `@active`] })
+      }, { sign: false, broadcast: false })
+      let signature = await u3_offline.sign(unsigned_transaction, account1_pk, defaultConfig.chainId)
+      let signedTransaction = Object.assign({}, unsigned_transaction.transaction, { signatures: [signature] })
+
+      //console.log(signedTransaction)
+
+      //using {sign: true, broadcast: true} to create a online U3 instance and pushTx to chain
+      const config = { keyProvider: account1_pk }
+      const u3 = createU3(config)
+      let processedTransaction = await u3.pushTx(signedTransaction)
+      assert.equal(processedTransaction.transaction_id, unsigned_transaction.transaction_id)
+    })
+
   });
 
   // 7. create user and async user
