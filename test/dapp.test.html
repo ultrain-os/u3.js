@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Dapp</title>
+    <script src="../dist/u3.min.js"></script>
+    <style>
+        button {
+            width: 150px;
+            height: 44px;
+            color: #ffffff;
+            background-color: #000000;
+            border-radius: 8px;
+            display: block;
+            margin-top: 15px;
+            outline: none;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <button onclick="login()">login</button>
+        <button onclick="logout()">logout</button>
+        <button onclick="transfer()">transfer</button>
+        <button onclick="pushTransaction()">pushTransaction</button>
+    </div>
+
+
+    <script>
+        const { createU3 } = window.U3
+        class SDK {
+            constructor (config) {
+                this.config = config
+                this.isConnect = false
+                this.identity = null
+                this.init(config)
+            }
+
+            init (config) {
+                this.u3 = createU3(config)
+            }
+
+            async login () {
+                try {
+                    if(!this.isConnect) {
+                        let isConnect = await this.u3.connect()
+                        if(!isConnect) {
+                            alert("请先安装本地钱包")
+                            return
+                        }
+                        this.isConnect = isConnect
+                    }
+
+                    let identity = await this.u3.getIdentity()
+                    this.identity = identity
+                    return identity
+                } catch (error) {
+                    throw error
+                }
+            }
+
+            async logout() {
+                this.u3.disconnect()
+                this.identity = null
+                this.isConnect = false
+            }
+
+            async transfer() {
+                try {
+                    if(!this.identity) {
+                        alert("请先获取identity")
+                        return
+                    }
+                    let from = this.identity.name
+                    let to = "luckmoneyt1"
+                    let quantity = "1.2000 UGAS"
+                    let memo = "test transaction"
+                    let result = await this.u3.transfer(from,to,quantity,memo)
+                    return result
+                } catch (error) {
+                    throw error
+                }
+            }
+
+            async pushTransaction() {
+                try {
+                    if(!this.isConnect) {
+                        alert("请先与钱包建立连接")
+                        return
+                    }
+                    if(!this.identity) {
+                        alert("请先获取identity")
+                        return
+                    }
+                    let params = {
+                        "contract": "utrio.token",
+                        "action": "transfer",
+                        "type": "transfer",
+                        "bizId": new Date().getMilliseconds(),
+                        "data": {
+                            "sender": this.identity.name,
+                            "receiver": "luckmoneyt1",
+                            "quantity": "1.3000 UGAS",
+                            "memo": "test"
+                        }
+                    }
+
+                    let result = await this.u3.pushTransaction(params)
+                    return result
+                } catch (error) {
+                    throw error
+                }
+            }
+        }
+
+        const config = { 
+            httpEndpoint:"http://ultrain.natapp1.cc",  
+            httpEndpointHistory:"http://ultrain-history.natapp1.cc",
+            chainId: "1f1155433d9097e0f67de63a48369916da91f19cb1feff6ba8eca2e5d978a2b2"
+        }
+
+        let sdk = new SDK(config)
+
+        async function login() {
+            try {
+                let result = await sdk.login()
+                console.log({result})
+            } catch (error) {
+                console.log({error})
+            }
+        }
+
+        async function logout() {
+            sdk.logout()
+        }
+
+        async function transfer() {
+            try {
+                let result = await sdk.transfer()
+                console.log({result})
+                alert(result.transactionId)
+            } catch (error) {
+                alert("交易失败")
+                console.log({error})
+            }
+        }
+
+        async function pushTransaction() {
+            try {
+                let result = await sdk.pushTransaction()
+                console.log({result})
+                alert(result.transactionId)
+            } catch (error) {
+                alert("交易失败")
+                console.log({error})
+            }
+        }
+    </script>
+</body>
+</html>

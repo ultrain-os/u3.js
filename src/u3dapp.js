@@ -8,6 +8,7 @@ class U3Dapp {
         this.network = network
 
         this.connect = this.connect.bind(this)
+        this.disconnect = this.disconnect.bind(this)
         this.getIdentity = this.getIdentity.bind(this)
         this.transfer = this.transfer.bind(this)
         this.pushTransaction = this.pushTransaction.bind(this)
@@ -39,7 +40,11 @@ class U3Dapp {
                     }
                 })
             } else {
-                this.socket = null
+                if(this.socket) {
+                    this.socket.close()
+                    this.socket = null
+                }
+                
                 this.socket = io("http://localhost:50001",{
                     reconnection:false
                 })
@@ -49,6 +54,13 @@ class U3Dapp {
                 this.socket.on("ultrainapi",this.onMessage)
             } 
         })
+    }
+
+    disconnect() {
+        if(this.socket) {
+            this.socket.disconnect()
+            this.socket = null
+        }
     }
 
     getIdentity() {
