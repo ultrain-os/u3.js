@@ -141,6 +141,7 @@ class U3Dapp {
                         'type': 'transfer',
                         'bizId': new Date().getMilliseconds(),
                         'data': {
+                            'sender': sender,
                             'receiver': receiver,
                             'quantity': quantity,
                             'memo': memo,
