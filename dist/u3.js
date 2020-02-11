@@ -3566,6 +3566,7 @@ var U3Dapp = function () {
         this.socket = null;
         this.config = config;
         this.network = network;
+        this.dappName = null;
 
         this.connect = this.connect.bind(this);
         this.disconnect = this.disconnect.bind(this);
@@ -3589,9 +3590,10 @@ var U3Dapp = function () {
         }
     }, {
         key: "connect",
-        value: function connect() {
+        value: function connect(dappName) {
             var _this2 = this;
 
+            this.dappName = dappName ? dappName : window.location.host;
             return new Promise(function (resolve, reject) {
                 if (_this2.isApp) {
                     window.postMessage(JSON.stringify({
@@ -3639,7 +3641,7 @@ var U3Dapp = function () {
                 if (_this3.isApp) {
                     window.postMessage(JSON.stringify({
                         type: "getIdentity",
-                        data: null
+                        data: _this3.dappName
                     }));
 
                     window.document.addEventListener("message", function (msg) {
@@ -3658,7 +3660,8 @@ var U3Dapp = function () {
                     });
                 } else {
                     _this3.socket.emit("ultrainapi", {
-                        method: "getIdentity"
+                        method: "getIdentity",
+                        data: _this3.dappName
                     }, function (error, data) {
                         console.log({ error: error, data: data });
                         if (error) {
@@ -107297,6 +107300,7 @@ class U3Dapp {
         this.socket = null
         this.config = config
         this.network = network
+        this.dappName = null
 
         this.connect = this.connect.bind(this)
         this.disconnect = this.disconnect.bind(this)
@@ -107315,7 +107319,8 @@ class U3Dapp {
         }
     }
 
-    connect() {
+    connect(dappName) {
+        this.dappName = dappName ? dappName : window.location.host
         return new Promise((resolve,reject)=> {
             if(this.isApp) {
                 window.postMessage(JSON.stringify({
@@ -107359,7 +107364,7 @@ class U3Dapp {
             if(this.isApp) {
                 window.postMessage(JSON.stringify({
                     type: "getIdentity",
-                    data: null
+                    data: this.dappName
                 }))
 
                 window.document.addEventListener("message",function(msg){
@@ -107378,7 +107383,8 @@ class U3Dapp {
                 })
             } else {
                 this.socket.emit("ultrainapi",{
-                    method: "getIdentity"
+                    method: "getIdentity",
+                    data: this.dappName
                 },(error,data)=> {
                     console.log({error,data})
                     if(error) {

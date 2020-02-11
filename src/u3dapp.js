@@ -6,6 +6,7 @@ class U3Dapp {
         this.socket = null
         this.config = config
         this.network = network
+        this.dappName = null
 
         this.connect = this.connect.bind(this)
         this.disconnect = this.disconnect.bind(this)
@@ -24,7 +25,8 @@ class U3Dapp {
         }
     }
 
-    connect() {
+    connect(dappName) {
+        this.dappName = dappName ? dappName : window.location.host
         return new Promise((resolve,reject)=> {
             if(this.isApp) {
                 window.postMessage(JSON.stringify({
@@ -68,7 +70,7 @@ class U3Dapp {
             if(this.isApp) {
                 window.postMessage(JSON.stringify({
                     type: "getIdentity",
-                    data: null
+                    data: this.dappName
                 }))
 
                 window.document.addEventListener("message",function(msg){
@@ -87,7 +89,8 @@ class U3Dapp {
                 })
             } else {
                 this.socket.emit("ultrainapi",{
-                    method: "getIdentity"
+                    method: "getIdentity",
+                    data: this.dappName
                 },(error,data)=> {
                     console.log({error,data})
                     if(error) {

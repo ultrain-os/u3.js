@@ -42,10 +42,10 @@
                 this.u3 = createU3(config)
             }
 
-            async login () {
+            async login (dappName) {
                 try {
                     if(!this.isConnect) {
-                        let isConnect = await this.u3.connect()
+                        let isConnect = await this.u3.connect(dappName)
                         if(!isConnect) {
                             alert("请先安装本地钱包")
                             return
@@ -125,7 +125,7 @@
 
         async function login() {
             try {
-                let result = await sdk.login()
+                let result = await sdk.login("DappTest")
                 console.log({result})
             } catch (error) {
                 console.log({error})
