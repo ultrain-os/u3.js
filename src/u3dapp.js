@@ -51,6 +51,12 @@ class U3Dapp {
                 this.socket.on("connect",(error)=>{
                     resolve(true)
                 })
+                this.socket.on('connect_failed', (error) => {
+                    reject('connection attempts failed, please  try again')
+                })
+                this.socket.on('connect_error', (error) => {
+                    reject('the server is offline, please restart the wallet application')
+                })
                 this.socket.on("ultrainapi",this.onMessage)
             } 
         })
