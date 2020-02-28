@@ -76,7 +76,10 @@ class U3Dapp {
             if(this.isApp) {
                 window.postMessage(JSON.stringify({
                     type: "getIdentity",
-                    data: this.dappName
+                    data: {
+                        dappName: this.dappName,
+                        icon: window.location.host + "/favicon.ico"
+                    }
                 }))
 
                 window.document.addEventListener("message",function(msg){
@@ -96,9 +99,11 @@ class U3Dapp {
             } else {
                 this.socket.emit("ultrainapi",{
                     method: "getIdentity",
-                    data: this.dappName
+                    data: {
+                        dappName: this.dappName,
+                        icon: window.location.host + "/favicon.ico"
+                    }
                 },(error,data)=> {
-                    console.log({error,data})
                     if(error) {
                         reject(error)
                     } else {
@@ -209,6 +214,7 @@ class U3Dapp {
                         reject(error)
                     } else {
                         try {
+                            console.log({data})
                             let signedTransaction = data.message
                             let trxHash = await this.network.pushTx(signedTransaction)
 

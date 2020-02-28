@@ -17,9 +17,19 @@
             margin-top: 15px;
             outline: none;
         }
+        span {
+            color: chocolate;
+            font-size: 18px;
+        }
     </style>
 </head>
 <body>
+    <p>
+        改游戏部署在 <span>侧链11(测试网)</span></br> 
+        请切换到 <span>侧链11(测试网)</span></br>
+        并确保账户下有<span>UGAS</span>资产
+    </p>
+
     <div>
         <button onclick="login()">login</button>
         <button onclick="logout()">logout</button>
@@ -40,6 +50,7 @@
 
             init (config) {
                 this.u3 = createU3(config)
+                console.log({u3: this.u3})
             }
 
             async login (dappName) {
@@ -95,30 +106,40 @@
                         return
                     }
                     let params = {
-                        "contract": "utrio.token",
-                        "action": "transfer",
-                        "type": "transfer",
+                        "contract": "cona2",
+                        "action": "hi",
+                        "type": "contract",
                         "bizId": new Date().getMilliseconds(),
                         "data": {
-                            "sender": this.identity.name,
-                            "receiver": "luckmoneyt1",
-                            "quantity": "1.3000 UGAS",
-                            "memo": "test"
+                            name: "ben",
+                            age: 30,
+                            msg: "test call contract"
                         }
                     }
 
                     let result = await this.u3.pushTransaction(params)
                     return result
                 } catch (error) {
+                    console.log({error})
                     throw error
                 }
             }
         }
 
+        // const config = { 
+        //     httpEndpoint:"http://ultrain.natapp1.cc",  
+        //     httpEndpointHistory:"http://ultrain-history.natapp1.cc",
+        //     chainId: "1f1155433d9097e0f67de63a48369916da91f19cb1feff6ba8eca2e5d978a2b2",
+        //     sign:true,
+        //     boardcast:true
+        // }
+
         const config = { 
-            httpEndpoint:"http://ultrain.natapp1.cc",  
-            httpEndpointHistory:"http://ultrain-history.natapp1.cc",
-            chainId: "1f1155433d9097e0f67de63a48369916da91f19cb1feff6ba8eca2e5d978a2b2"
+            httpEndpoint: "http://pioneer.natapp1.cc",
+            httpEndpointHistory: "http://pioneer-history.natapp1.cc",
+            chainId: "20c35b993c10b5ea1007014857bb2b8832fb8ae22e9dcfdc61dacf336af4450f",
+            sign:true,
+            boardcast:true
         }
 
         let sdk = new SDK(config)

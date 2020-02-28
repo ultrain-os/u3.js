@@ -3620,6 +3620,12 @@ var U3Dapp = function () {
                     _this2.socket.on("connect", function (error) {
                         resolve(true);
                     });
+                    _this2.socket.on('connect_failed', function (error) {
+                        reject('connection attempts failed, please  try again');
+                    });
+                    _this2.socket.on('connect_error', function (error) {
+                        reject('the server is offline, please restart the wallet application');
+                    });
                     _this2.socket.on("ultrainapi", _this2.onMessage);
                 }
             });
@@ -3641,7 +3647,10 @@ var U3Dapp = function () {
                 if (_this3.isApp) {
                     window.postMessage(JSON.stringify({
                         type: "getIdentity",
-                        data: _this3.dappName
+                        data: {
+                            dappName: _this3.dappName,
+                            icon: window.location.host + "/favicon.ico"
+                        }
                     }));
 
                     window.document.addEventListener("message", function (msg) {
@@ -3661,9 +3670,11 @@ var U3Dapp = function () {
                 } else {
                     _this3.socket.emit("ultrainapi", {
                         method: "getIdentity",
-                        data: _this3.dappName
+                        data: {
+                            dappName: _this3.dappName,
+                            icon: window.location.host + "/favicon.ico"
+                        }
                     }, function (error, data) {
-                        console.log({ error: error, data: data });
                         if (error) {
                             reject(error);
                         } else {
@@ -3816,16 +3827,18 @@ var U3Dapp = function () {
                                         }
 
                                         reject(error);
-                                        _context2.next = 16;
+                                        _context2.next = 17;
                                         break;
 
                                     case 4:
                                         _context2.prev = 4;
+
+                                        console.log({ data: data });
                                         signedTransaction = data.message;
-                                        _context2.next = 8;
+                                        _context2.next = 9;
                                         return _regenerator2.default.awrap(_this5.network.pushTx(signedTransaction));
 
-                                    case 8:
+                                    case 9:
                                         trxHash = _context2.sent;
                                         resData = {
                                             success: true,
@@ -3838,21 +3851,21 @@ var U3Dapp = function () {
                                         };
 
                                         resolve(resData);
-                                        _context2.next = 16;
+                                        _context2.next = 17;
                                         break;
 
-                                    case 13:
-                                        _context2.prev = 13;
+                                    case 14:
+                                        _context2.prev = 14;
                                         _context2.t0 = _context2["catch"](4);
 
                                         reject(_context2.t0);
 
-                                    case 16:
+                                    case 17:
                                     case "end":
                                         return _context2.stop();
                                 }
                             }
-                        }, null, _this5, [[4, 13]]);
+                        }, null, _this5, [[4, 14]]);
                     });
                 });
             }
@@ -107347,6 +107360,12 @@ class U3Dapp {
                 this.socket.on("connect",(error)=>{
                     resolve(true)
                 })
+                this.socket.on('connect_failed', (error) => {
+                    reject('connection attempts failed, please  try again')
+                })
+                this.socket.on('connect_error', (error) => {
+                    reject('the server is offline, please restart the wallet application')
+                })
                 this.socket.on("ultrainapi",this.onMessage)
             } 
         })
@@ -107364,7 +107383,10 @@ class U3Dapp {
             if(this.isApp) {
                 window.postMessage(JSON.stringify({
                     type: "getIdentity",
-                    data: this.dappName
+                    data: {
+                        dappName: this.dappName,
+                        icon: window.location.host + "/favicon.ico"
+                    }
                 }))
 
                 window.document.addEventListener("message",function(msg){
@@ -107384,9 +107406,11 @@ class U3Dapp {
             } else {
                 this.socket.emit("ultrainapi",{
                     method: "getIdentity",
-                    data: this.dappName
+                    data: {
+                        dappName: this.dappName,
+                        icon: window.location.host + "/favicon.ico"
+                    }
                 },(error,data)=> {
-                    console.log({error,data})
                     if(error) {
                         reject(error)
                     } else {
@@ -107497,6 +107521,7 @@ class U3Dapp {
                         reject(error)
                     } else {
                         try {
+                            console.log({data})
                             let signedTransaction = data.message
                             let trxHash = await this.network.pushTx(signedTransaction)
 
