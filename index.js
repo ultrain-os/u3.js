@@ -2,8 +2,8 @@ const fs = require("fs");
 const path = require("path");
 const assert = require("assert");
 const Fcbuffer = require("fcbuffer");
-const U3Utils = require("u3-utils");
 const configDefaults = require("./src/config");
+let Cipher = require('./src/cipher-selector')(configDefaults.cipherType);
 const listener = require("./src/utils/listener");
 const apiGen = require("./src/utils/apigen");
 const historyGen = require("./src/history");
@@ -19,6 +19,7 @@ let logger;
 
 const version = require("./package.json").version;
 
+
 const defaultSignProvider = (u3, config) => function ({sign, buf, transaction, optionsKeyProvider}) {
     const keyProvider = optionsKeyProvider ? optionsKeyProvider : config.keyProvider;
     if (!keyProvider) {
@@ -33,10 +34,10 @@ const defaultSignProvider = (u3, config) => function ({sign, buf, transaction, o
     keys = keys.map(key => {
         try {
             // normalize format (WIF => PVT_K1_base58privateKey)
-            return {private: U3Utils.ecc.PrivateKey(key).toString()};
+            return {private: Cipher.PrivateKey(key).toString()};
         } catch (e) {
             // normalize format (UTRKey => PUB_K1_base58publicKey)
-            return {public: U3Utils.ecc.PublicKey(key).toString()};
+            return {public: Cipher.PublicKey(key).toString()};
         }
         assert(false, "expecting public or private keys from keyProvider");
     });
@@ -134,19 +135,18 @@ async function sign(unsigned_transaction, privateKeyOrMnemonic, chainId = "cf057
     assert(privateKeyOrMnemonic, "privateKeyOrMnemonic required");
 
     let privateKey = privateKeyOrMnemonic;
-    let isValidPrivateKey = U3Utils.ecc.isValidPrivate(privateKeyOrMnemonic);
+    let isValidPrivateKey = Cipher.isValidPrivate(privateKeyOrMnemonic);
     if (!isValidPrivateKey) {
-        let result = U3Utils.ecc.generateKeyPairByMnemonic(privateKeyOrMnemonic);
+        let result = Cipher.generateKeyPairByMnemonic(privateKeyOrMnemonic);
         privateKey = result.private_key;
     }
 
     let txObject = unsigned_transaction.transaction.transaction;
 
     const buf = Fcbuffer.toBuffer(this.fc.structs.transaction, txObject);
-    const chainIdBuf = new Buffer(chainId, "hex");
-    const signBuf = Buffer.concat([chainIdBuf, buf, new Buffer(new Uint8Array(32))]);
-
-    return U3Utils.ecc.sign(signBuf, privateKey);
+    const chainIdBuf = Buffer.from(chainId, "hex");
+    const signBuf = Buffer.concat([chainIdBuf, buf, Buffer.from(new Uint8Array(32))]);
+    return Cipher.sign(signBuf, privateKey);
 }
 
 /**
@@ -235,6 +235,8 @@ const createU3 = (config = {}) => {
     const {structs, types, fromBuffer, toBuffer} = Structs(config);
     const u3 = _mergeWriteFunctions(config, network, structs);
 
+    // 初始化签名方式
+    Cipher = require('./src/cipher-selector')(config.cipherType);
     Object.assign(u3, {
             config,
             fc: {
@@ -250,6 +252,7 @@ const createU3 = (config = {}) => {
         history
     );
 
+
     if (!config.signProvider) {
         config.signProvider = defaultSignProvider(u3, config);
     }
@@ -262,7 +265,7 @@ module.exports = {
     version,
     createU3,
     format,
-    U3Utils,
     Fcbuffer,
+    Cipher,
     listener
 };

@@ -1,5 +1,4 @@
-const {ecc} = require('u3-utils')
-const {Signature, PublicKey} = ecc
+const Cipher = require('./cipher-selector')();
 const Fcbuffer = require('fcbuffer')
 const ByteBuffer = require('bytebuffer')
 const assert = require('assert')
@@ -191,14 +190,14 @@ const PublicKeyEcc = (validation) => {
       const bcopy = b.copy(b.offset, b.offset + 33)
       b.skip(33)
       const pubbuf = Buffer.from(bcopy.toBinary(), 'binary')
-      return PublicKey.fromBuffer(pubbuf).toString()
+      return Cipher.PublicKey.fromBuffer(pubbuf).toString()
     },
 
     appendByteBuffer (b, value) {
       // if(validation.debug) {
       //   console.error(`${value}`, 'PublicKeyType.appendByteBuffer')
       // }
-      const buf = PublicKey.fromStringOrThrow(value).toBuffer()
+      const buf = Cipher.PublicKey.fromStringOrThrow(value).toBuffer()
       b.append(buf.toString('binary'), 'binary')
     },
 
@@ -535,17 +534,17 @@ const SignatureType = (validation, baseTypes) => {
   return {
     fromByteBuffer (b) {
       const signatureBuffer = signatureType.fromByteBuffer(b)
-      const signature = Signature.from(signatureBuffer)
+      const signature = Cipher.Signature.from(signatureBuffer)
       return signature.toString()
     },
 
     appendByteBuffer (b, value) {
-      const signature = Signature.from(value)
+      const signature = Cipher.Signature.from(value)
       signatureType.appendByteBuffer(b, signature.toBuffer())
     },
 
     fromObject (value) {
-      const signature = Signature.from(value)
+      const signature = Cipher.Signature.from(value)
       return signature.toString()
     },
 
@@ -553,7 +552,7 @@ const SignatureType = (validation, baseTypes) => {
       if (validation.defaults && value == null) {
         return 'SIG_K1_bas58signature..'
       }
-      const signature = Signature.from(value)
+      const signature = Cipher.Signature.from(value)
       return signature.toString()
     }
   }
@@ -562,7 +561,7 @@ const SignatureType = (validation, baseTypes) => {
 const authorityOverride = ({
   /** shorthand `UTR6MRyAj..` */
   'authority.fromObject': (value) => {
-    if (PublicKey.fromString(value)) {
+    if (Cipher.PublicKey.fromString(value)) {
       return {
         threshold: 1,
         keys: [{key: value, weight: 1}]
@@ -650,7 +649,7 @@ const actionDataOverride = (structLookup, forceActionDataHex) => ({
       b.append(b2.copy(0, b2.offset), 'binary')
     } else {
       // console.log(`Unknown Action.name ${object.name}`)
-      const data = typeof object.data === 'string' ? new Buffer(object.data, 'hex') : object.data
+      const data = typeof object.data === 'string' ? Buffer.from(object.data, 'hex') : object.data
       if (!Buffer.isBuffer(data)) {
         throw new TypeError(`Unknown struct '${object.name}' for contract '${object.account}', locate this struct or provide serialized action.data`)
       }
@@ -666,7 +665,7 @@ const actionDataOverride = (structLookup, forceActionDataHex) => ({
       if (typeof data === 'object') {
         result.data = ser.fromObject(data) // resolve shorthand
       } else if (typeof data === 'string') {
-        const buf = new Buffer(data, 'hex')
+        const buf = Buffer.from(data, 'hex')
         result.data = Fcbuffer.fromBuffer(ser, buf)
       } else {
         throw new TypeError('Expecting hex string or object in action.data')

@@ -1,11 +1,9 @@
 const assert = require('assert');
-const { ecc } = require('u3-utils');
+const Cipher = require('./cipher-selector')();
 const Fcbuffer = require('fcbuffer');
 const createHash = require('create-hash');
 const processArgs = require('./utils/process-args');
 const AssetCache = require('./asset-cache');
-
-const { sign } = ecc;
 
 function writeApiGen(Network, network, structs, config, schemaDef) {
   if (typeof config.chainId !== 'string') {
@@ -437,7 +435,7 @@ function WriteApi(Network, network, config, Transaction) {
       const signBuf = Buffer.concat([chainIdBuf, buf, packedContextFreeData]);
 
       sigs = config.signProvider({
-        transaction: tr, buf: signBuf, sign,
+        transaction: tr, buf: signBuf, sign: Cipher.sign,
         optionsKeyProvider: options.keyProvider,
       });
 

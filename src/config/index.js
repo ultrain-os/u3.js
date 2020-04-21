@@ -1,7 +1,7 @@
 module.exports = {
   httpEndpoint: "http://127.0.0.1:8888",
   httpEndpointHistory: "http://127.0.0.1:3000",
-  chainId: "80a5d6aa3e0c2e2052c3df1cc6b591b90b8307fb102bd174805e06c8b8b16ec1",
+  chainId: "cf057bbfb72640471fd910bcb67639c22df9f92470936cddc1ade0e2f2e7dc4f",
   broadcast: true,
   sign: true,
   logger: {
@@ -11,6 +11,7 @@ module.exports = {
     file: false // append to file
   },
   symbol: "UGAS",
+  cipherType: "ecc",
   //keyProvider:[],
   //expireInSeconds:60
 

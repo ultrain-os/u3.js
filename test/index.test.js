@@ -4,7 +4,8 @@ const isString = require('lodash.isstring');
 const fs = require('fs');
 const path = require('path');
 const defaultConfig = require('../src/config');
-const { createU3, format, U3Utils, listener } = require('../');
+
+const { createU3, format, Cipher, listener } = require('../');
 
 const readKeysFromFiles = () => {
   let accounts = ['ben', 'john', 'tony', 'jack', 'bob', 'tom', 'jerry', 'alice'];
@@ -50,46 +51,46 @@ describe('u3.js', () => {
     });
   });
 
-  // 2. U3Utils.ecc utils
+  // 2. Cipher utils
   describe('offline', () => {
 
     // 2.1 generate key pair by seed
     it('generateKeyPairBySeed', function() {
       let seed = randomName();
-      let keys = U3Utils.ecc.generateKeyPairBySeed(seed);
-      assert.equal(U3Utils.ecc.isValidPrivate(keys.private_key), true);
-      assert.equal(U3Utils.ecc.isValidPublic(keys.public_key), true);
+      let keys = Cipher.generateKeyPairBySeed(seed);
+      assert.equal(Cipher.isValidPrivate(keys.private_key), true);
+      assert.equal(Cipher.isValidPublic(keys.public_key), true);
     });
 
     // 2.2 re-generate key pair by the same seed
     it('generateKeyPairBySeed(same keys with same seed)', function() {
       let seed = randomName();
-      let keys1 = U3Utils.ecc.generateKeyPairBySeed(seed);
-      let keys2 = U3Utils.ecc.generateKeyPairBySeed(seed);
+      let keys1 = Cipher.generateKeyPairBySeed(seed);
+      let keys2 = Cipher.generateKeyPairBySeed(seed);
       assert.equal(keys1.public_key, keys2.public_key);
       assert.equal(keys1.private_key, keys2.private_key);
     });
 
     // 2.3 generate key pair with mnemonic
     it('generateKeyPairWithMnemonic', function() {
-      let result = U3Utils.ecc.generateKeyPairWithMnemonic();
+      let result = Cipher.generateKeyPairWithMnemonic();
       assert.ok((isString(result.mnemonic) && !isEmpty(result.mnemonic)), true);
-      assert.equal(U3Utils.ecc.isValidPrivate(result.private_key), true);
-      assert.equal(U3Utils.ecc.isValidPublic(result.public_key), true);
+      assert.equal(Cipher.isValidPrivate(result.private_key), true);
+      assert.equal(Cipher.isValidPublic(result.public_key), true);
     });
 
     // 2.4 re-generate key pair by the same mnemonic
     it('generateKeyPairByMnemonic(same mnemonic same key pair)', function() {
-      let result = U3Utils.ecc.generateKeyPairWithMnemonic();
-      let result2 = U3Utils.ecc.generateKeyPairByMnemonic(result.mnemonic);
+      let result = Cipher.generateKeyPairWithMnemonic();
+      let result2 = Cipher.generateKeyPairByMnemonic(result.mnemonic);
       assert.equal(result.public_key, result2.public_key);
       assert.equal(result.private_key, result2.private_key);
     });
 
     // 2.5 generate publicKey by privateKey
     it('generatePublicKeyByPrivateKey', function() {
-      let result = U3Utils.ecc.generateKeyPairWithMnemonic();
-      let publicKey = U3Utils.ecc.privateToPublic(result.private_key);
+      let result = Cipher.generateKeyPairWithMnemonic();
+      let publicKey = Cipher.privateToPublic(result.private_key);
       assert.equal(publicKey, result.public_key);
     });
 
@@ -97,7 +98,7 @@ describe('u3.js', () => {
     it('privateToPublic', function() {
       const privateKey = '5JoTvD8emJDGHNGHyRCjqvpJqRY2jMmn5G6V9j8AifnszK5jKMe';
       const publicKey = 'UTR74nPcTpvZxoEugKZqXgAMysC7FvBjUAiHCB6TBSh576HNAGXz5';
-      let result = U3Utils.ecc.privateToPublic(privateKey);
+      let result = Cipher.privateToPublic(privateKey);
       assert.equal(publicKey, result);
     });
 
@@ -106,8 +107,8 @@ describe('u3.js', () => {
       const privateKey = '5JoTvD8emJDGHNGHyRCjqvpJqRY2jMmn5G6V9j8AifnszK5jKMe';
       const publicKey = 'UTR74nPcTpvZxoEugKZqXgAMysC7FvBjUAiHCB6TBSh576HNAGXz5';
       let data = '12345';//must be string or hash
-      let signature = U3Utils.ecc.sign(data, privateKey);
-      let valid = U3Utils.ecc.verify(signature, data, publicKey);
+      let signature = Cipher.sign(data, privateKey);
+      let valid = Cipher.verify(signature, data, publicKey);
       assert.equal(true, valid);
     });
 
@@ -120,7 +121,7 @@ describe('u3.js', () => {
         [false, 'UTR859gxfnXyUriMgUeThh1fWv3oqcpLFyHa3TfFYC4PK2HqhToVm'],
       ];
       for (const key of keys) {
-        assert.equal(key[0], U3Utils.ecc.isValidPublic(key[1]), key[1]);
+        assert.equal(key[0], Cipher.isValidPublic(key[1]), key[1]);
       }
     });
 
@@ -131,30 +132,30 @@ describe('u3.js', () => {
         [false, '5KYZdUEo39z3FPrtuX2QbbwGnNP5zTd7yyr2SC1j299sBCnWjsm'],
       ];
       for (const key of keys) {
-        assert.equal(key[0], U3Utils.ecc.isValidPrivate(key[1]), key[1]);
+        assert.equal(key[0], Cipher.isValidPrivate(key[1]), key[1]);
       }
     });
 
     // 2.9 sign a data and verify it
-    it('signatures', () => {
-      const pvt = U3Utils.ecc.seedPrivate('');
-      const pubkey = U3Utils.ecc.privateToPublic(pvt);
+    // it('signatures', () => {
+    //   const pvt = Cipher.seedPrivate('');
+    //   const pubkey = Cipher.privateToPublic(pvt);
 
-      const data = 'hi';
-      const dataSha256 = U3Utils.ecc.sha256(data);
+    //   const data = 'hi';
+    //   const dataSha256 = Cipher.sha256(data);
 
-      const sigs = [
-        U3Utils.ecc.sign(data, pvt),
-        U3Utils.ecc.signHash(dataSha256, pvt),
-      ];
+    //   const sigs = [
+    //     Cipher.sign(data, pvt),
+    //     Cipher.signHash(dataSha256, pvt),
+    //   ];
 
-      for (const sig of sigs) {
-        assert(U3Utils.ecc.verify(sig, data, pubkey), 'verify data');
-        assert(U3Utils.ecc.verifyHash(sig, dataSha256, pubkey), 'verify hash');
-        assert.equal(pubkey, U3Utils.ecc.recover(sig, data), 'recover from data');
-        assert.equal(pubkey, U3Utils.ecc.recoverHash(sig, dataSha256), 'recover from hash');
-      }
-    });
+    //   for (const sig of sigs) {
+    //     assert(Cipher.verify(sig, data, pubkey), 'verify data');
+    //     assert(Cipher.verifyHash(sig, dataSha256, pubkey), 'verify hash');
+    //     assert.equal(pubkey, Cipher.recover(sig, data), 'recover from data');
+    //     assert.equal(pubkey, Cipher.recoverHash(sig, dataSha256), 'recover from hash');
+    //   }
+    // });
 
   });
 
@@ -164,7 +165,7 @@ describe('u3.js', () => {
     // 3.1 deploy contract only to side chain
     it('deploy contract', async () => {
       const u3 = createU3();
-      const tr = await u3.deploy(path.resolve(__dirname, '../contracts/token/token'), account2, { keyProvider: account2_pk });
+      const tr = await u3.deploy(path.resolve(__dirname, '../contracts/token/token'), account1, { keyProvider: account1_pk });
       assert.equal(tr.transaction.transaction.actions.length, 2);
     });
 
@@ -231,23 +232,23 @@ describe('u3.js', () => {
     it('globalConfig', async () => {
       const keyProvider = [account1_pk];
       const u3 = createU3({ keyProvider });
-      const c = await u3.contract('utrio.token');
-      const tr = await c.transfer(account1, account2, '1.0000 ' + defaultConfig.symbol, '');
+      const c = await u3.contract(account1);
+      const tr = await c.transfer(account1, account2, '1.0000 ' + customCurrency, '');
       assert.equal(typeof tr.transaction_id, 'string');
     });
 
     it('optionalConfig', async () => {
       const u3 = createU3();
-      const c = await u3.contract('utrio.token');
-      const tr = await c.transfer(account1, account2, '1.0000 ' + defaultConfig.symbol, '', { keyProvider: account1_pk });
+      const c = await u3.contract(account1);
+      const tr = await c.transfer(account1, account2, '1.0000 ' + customCurrency, '', { keyProvider: account1_pk });
       assert.equal(typeof tr.transaction_id, 'string');
     });
 
-    it('getTransFee', async () => {
-      const u3 = createU3();
-      const fee = await u3.getTransFee('1');
-      assert.equal(typeof fee.fee, 'string');
-    });
+    // it('getTransFee', async () => {
+    //   const u3 = createU3();
+    //   const fee = await u3.getTransFee('1');
+    //   assert.equal(typeof fee.fee, 'string');
+    // });
   });
 
   // 5. blocks
@@ -261,8 +262,8 @@ describe('u3.js', () => {
 
     it('transaction confirm', async () => {
       const u3 = createU3();
-      const c = await u3.contract('utrio.token');
-      const result = await c.transfer(account1, account2, '1.0000 ' + defaultConfig.symbol, '', { keyProvider: account1_pk });
+      const c = await u3.contract(account1);
+      const result = await c.transfer(account1, account2, '1.0000 ' + customCurrency, '', { keyProvider: account1_pk });
 
       // first check whether the transaction was failed
       if (!result || result.processed.receipt.status !== 'executed') {
@@ -301,8 +302,8 @@ describe('u3.js', () => {
         sign: false,
         broadcast: false,
       });
-      const tr = await u3_offline.contract('utrio.token');
-      const unsigned_transaction = await tr.transfer(account1, account2, '1.0000 ' + defaultConfig.symbol, '', { authorization: [account1 + `@active`] });
+      const tr = await u3_offline.contract(account1);
+      const unsigned_transaction = await tr.transfer(account1, account2, '1.0000 ' + customCurrency, '', { authorization: [account1 + `@active`] });
       let signature = await u3_offline.sign(unsigned_transaction, account1_pk, defaultConfig.chainId);
       let signedTransaction = Object.assign({}, unsigned_transaction.transaction, { signatures: [signature] });
       //console.log(signedTransaction);
@@ -336,8 +337,8 @@ describe('u3.js', () => {
         },
         abi: JSON.parse('{"version":"ultraio:1.0","types":[{"new_type_name":"account_name","type":"name"}],"structs":[{"name":"transfer","base":"","fields":[{"name":"from","type":"account_name"},{"name":"to","type":"account_name"},{"name":"quantity","type":"asset"},{"name":"memo","type":"string"}]},{"name":"safe_transfer","base":"","fields":[{"name":"from","type":"account_name"},{"name":"to","type":"account_name"},{"name":"quantity","type":"asset"},{"name":"memo","type":"string"}]},{"name":"create","base":"","fields":[{"name":"issuer","type":"account_name"},{"name":"maximum_supply","type":"asset"}]},{"name":"issue","base":"","fields":[{"name":"to","type":"account_name"},{"name":"quantity","type":"asset"},{"name":"memo","type":"string"}]},{"name":"account","base":"","fields":[{"name":"balance","type":"asset"},{"name":"last_block_height","type":"uint32"}]},{"name":"currency_stats","base":"","fields":[{"name":"supply","type":"asset"},{"name":"max_supply","type":"asset"},{"name":"issuer","type":"account_name"}]}],"actions":[{"name":"transfer","type":"transfer","ricardian_contract":""},{"name":"safe_transfer","type":"safe_transfer","ricardian_contract":""},{"name":"issue","type":"issue","ricardian_contract":""},{"name":"create","type":"create","ricardian_contract":""}],"tables":[{"name":"accounts","type":"account","index_type":"i64","key_names":["currency"],"key_types":["uint64"]},{"name":"stat","type":"currency_stats","index_type":"i64","key_names":["currency"],"key_types":["uint64"]}],"ricardian_clauses":[],"abi_extensions":[]}'),
       });
-      const tr = await u3_offline.contract('utrio.token');
-      const unsigned_transaction = await tr.transfer(account1, account2, '1.0000 ' + defaultConfig.symbol, '', { authorization: [account1 + `@active`] });
+      const tr = await u3_offline.contract(account1);
+      const unsigned_transaction = await tr.transfer(account1, account2, '1.0000 ' + customCurrency, '', { authorization: [account1 + `@active`] });
       let signature = await u3_offline.sign(unsigned_transaction, account1_pk, defaultConfig.chainId);
       let signedTransaction = Object.assign({}, unsigned_transaction.transaction, { signatures: [signature] });
       //console.log(signedTransaction);
@@ -643,13 +644,13 @@ describe('u3.js', () => {
     it('get currency balance', async () => {
       const u3 = createU3();
       const balance = await u3.getCurrencyBalance({
-        code: 'utrio.token',
+        code: account1,
         account: account1,
-        symbol: defaultConfig.symbol,
+        symbol: customCurrency,
       });
       assert.ok(Array.isArray(balance));
       assert.equal(balance[0].split(' ').length, 2);
-      assert.equal(balance[0].split(' ')[1], defaultConfig.symbol);
+      assert.equal(balance[0].split(' ')[1], customCurrency);
     });
 
     //9.3 query currency's status
@@ -732,7 +733,7 @@ describe('u3.js', () => {
         console.log(data);
       });
 
-      await U3Utils.test.wait(2000);
+      // await U3Utils.test.wait(2000);
 
       //emit event defined  in the contract action
       //...
