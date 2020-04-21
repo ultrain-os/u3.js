@@ -1,8 +1,8 @@
 var selectCipherType = (function() {
-    // let initialized = false;
+    let initialized = false;
     let Cipher = {};
     return function(cipher_type) {
-        // if (!initialized) {
+        if (!initialized) {
             const U3Utils = require('u3-utils');
             if (cipher_type === 'ecc') {
                 Cipher = {
@@ -38,10 +38,10 @@ var selectCipherType = (function() {
                     generateKeyPairWithMnemonic: U3Utils.gm.generateKeyPairWithMnemonic,
                 }
             } else {
-                // throw new Error('U3 only support "ecc" or "gm" by now, please correct cipher-type');
+                throw new Error('U3 only support "ecc" or "gm" by now, please correct cipher-type');
             }
-            // initialized = true;
-        // }
+            initialized = true;
+        }
         return Cipher;
     }
 })();

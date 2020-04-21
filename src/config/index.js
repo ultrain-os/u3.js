@@ -11,7 +11,7 @@ module.exports = {
     file: false // append to file
   },
   symbol: "UGAS",
-  cipherType: "ecc",
+  cipherType: "gm",
   //keyProvider:[],
   //expireInSeconds:60
 

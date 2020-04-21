@@ -5,7 +5,7 @@ const fs = require('fs');
 const path = require('path');
 const defaultConfig = require('../src/config');
 
-const { createU3, format, Cipher, listener } = require('../');
+const { createU3, format, listener } = require('../');
 
 const readKeysFromFiles = () => {
   let accounts = ['ben', 'john', 'tony', 'jack', 'bob', 'tom', 'jerry', 'alice'];
@@ -46,13 +46,17 @@ describe('u3.js', () => {
   // 1. chain info
   describe('chainInfo', () => {
     it('chainInfo', async () => {
-      const u3 = createU3();
+      const u3 = createU3({cipherType: 'ecc'});
       await u3.getChainInfo();
     });
   });
 
   // 2. Cipher utils
   describe('offline', () => {
+    let Cipher;
+    before(() => {
+      Cipher = createU3({cipherType: 'ecc'}).Cipher;
+    })
 
     // 2.1 generate key pair by seed
     it('generateKeyPairBySeed', function() {
@@ -164,28 +168,28 @@ describe('u3.js', () => {
 
     // 3.1 deploy contract only to side chain
     it('deploy contract', async () => {
-      const u3 = createU3();
+      const u3 = createU3({cipherType: 'ecc'});
       const tr = await u3.deploy(path.resolve(__dirname, '../contracts/token/token'), account1, { keyProvider: account1_pk });
       assert.equal(tr.transaction.transaction.actions.length, 2);
     });
 
     //3.2 get contract detail (wast,abi)
     it('getContract', async () => {
-      const u3 = createU3();
+      const u3 = createU3({cipherType: 'ecc'});
       const contract = await u3.getContract(account1);
       assert.equal(contract.abi.version, 'ultraio:1.0:UIP06');
     });
 
     //3.3 get abi
     it('getAbi', async () => {
-      const u3 = createU3();
+      const u3 = createU3({cipherType: 'ecc'});
       const abi = await u3.getAbi(account1);
       assert.ok(!isEmpty(abi));
     });
 
     // 3.4 create custom token (uip06)
     it('create custom token', async () => {
-      const u3 = createU3();
+      const u3 = createU3({cipherType: 'ecc'});
       console.log('created token named: ' + customCurrency);
 
       //these three method can user.11.111 called separately or together
@@ -202,7 +206,7 @@ describe('u3.js', () => {
 
     // 3.5 query token holder and token symbol when issued
     it('get table by scope', async () => {
-      const u3 = createU3();
+      const u3 = createU3({cipherType: 'ecc'});
 
       //all holder accounts which held tokens created by the creator
       const holders_arr = await u3.getTableByScope({
@@ -238,14 +242,14 @@ describe('u3.js', () => {
     });
 
     it('optionalConfig', async () => {
-      const u3 = createU3();
+      const u3 = createU3({cipherType: 'ecc'});
       const c = await u3.contract(account1);
       const tr = await c.transfer(account1, account2, '1.0000 ' + customCurrency, '', { keyProvider: account1_pk });
       assert.equal(typeof tr.transaction_id, 'string');
     });
 
     // it('getTransFee', async () => {
-    //   const u3 = createU3();
+    //   const u3 = createU3({cipherType: 'ecc'});
     //   const fee = await u3.getTransFee('1');
     //   assert.equal(typeof fee.fee, 'string');
     // });
@@ -255,13 +259,13 @@ describe('u3.js', () => {
   describe('blocks', () => {
 
     it('getBlockInfo', async () => {
-      const u3 = createU3();
+      const u3 = createU3({cipherType: 'ecc'});
       const blockInfo = await u3.getBlockInfo(1);
       assert.equal(blockInfo.block_num, 1);
     });
 
     it('transaction confirm', async () => {
-      const u3 = createU3();
+      const u3 = createU3({cipherType: 'ecc'});
       const c = await u3.contract(account1);
       const result = await c.transfer(account1, account2, '1.0000 ' + customCurrency, '', { keyProvider: account1_pk });
 
@@ -301,6 +305,7 @@ describe('u3.js', () => {
       const u3_offline = createU3({
         sign: false,
         broadcast: false,
+        cipherType: 'ecc',
       });
       const tr = await u3_offline.contract(account1);
       const unsigned_transaction = await tr.transfer(account1, account2, '1.0000 ' + customCurrency, '', { authorization: [account1 + `@active`] });
@@ -309,7 +314,7 @@ describe('u3.js', () => {
       //console.log(signedTransaction);
 
       //using {sign: true, broadcast: true} to create a online U3 instance and pushTx to chain
-      const config = { keyProvider: account1_pk };
+      const config = { keyProvider: account1_pk, cipherType: 'ecc' };
       const u3 = createU3(config);
       let processedTransaction = await u3.pushTx(signedTransaction);
       assert.equal(processedTransaction.transaction_id, unsigned_transaction.transaction_id);
@@ -327,6 +332,7 @@ describe('u3.js', () => {
     it('sign_separate_from_pushTx_without_network', async () => {
       let expiration = new Date(new Date().getTime() + 60 * 1000);
       const u3_offline = createU3({
+        cipherType: 'ecc',
         sign: false,
         broadcast: false,
         httpEndpoint: null,
@@ -344,7 +350,7 @@ describe('u3.js', () => {
       //console.log(signedTransaction);
 
       //using {sign: true, broadcast: true} to create a online U3 instance and pushTx to chain
-      const config = { keyProvider: account1_pk };
+      const config = { cipherType: 'ecc', keyProvider: account1_pk };
       const u3 = createU3(config);
       let processedTransaction = await u3.pushTx(signedTransaction);
       assert.equal(processedTransaction.transaction_id, unsigned_transaction.transaction_id);
@@ -362,6 +368,7 @@ describe('u3.js', () => {
     it('sign_separate_from_pushTx_without_network_and_abi', async () => {
       let expiration = new Date(new Date().getTime() + 60 * 1000);
       const u3_offline = createU3({
+        cipherType: 'ecc',
         sign: false,
         broadcast: false,
         httpEndpoint: null,
@@ -378,7 +385,7 @@ describe('u3.js', () => {
       //console.log(signedTransaction);
 
       //using {sign: true, broadcast: true} to create a online U3 instance and pushTx to chain
-      const config = { keyProvider: account1_pk };
+      const config = { cipherType: 'ecc', keyProvider: account1_pk };
       const u3 = createU3(config);
       let processedTransaction = await u3.pushTx(signedTransaction);
       assert.equal(processedTransaction.transaction_id, unsigned_transaction.transaction_id);
@@ -392,7 +399,7 @@ describe('u3.js', () => {
      */
     it('createUser_sign_separate_from_pushTx_with_network', async () => {
       let expiration = new Date(new Date().getTime() + 60 * 1000);
-      const u3_offline = createU3();
+      const u3_offline = createU3({cipherType: 'ecc'});
       const name = randomName();
       let params = {
         creator: account1,
@@ -428,6 +435,7 @@ describe('u3.js', () => {
     it('createUser_sign_separate_from_pushTx_without_network', async () => {
       let expiration = new Date(new Date().getTime() + 60 * 1000);
       const u3_offline = createU3({
+        cipherType: 'ecc',
         httpEndpoint: null,
         transactionHeaders: {
           expiration: expiration.toISOString().split('.')[0],
@@ -454,7 +462,7 @@ describe('u3.js', () => {
       //console.log(signedTransaction);
 
       //using {sign: true, broadcast: true} to create a online U3 instance and pushTx to chain
-      const config = { keyProvider: account1_pk };
+      const config = { cipherType: 'ecc', keyProvider: account1_pk };
       const u3 = createU3(config);
       let processedTransaction = await u3.pushTx(signedTransaction);
       assert.equal(processedTransaction.transaction_id, unsigned_transaction.transaction_id);
@@ -471,6 +479,7 @@ describe('u3.js', () => {
     it('createUser_sign_separate_from_pushTx_without_network_and_abi', async () => {
       let expiration = new Date(new Date().getTime() + 60 * 1000);
       const u3_offline = createU3({
+        cipherType: 'ecc',
         httpEndpoint: null,
         transactionHeaders: {
           expiration: expiration.toISOString().split('.')[0],
@@ -496,7 +505,7 @@ describe('u3.js', () => {
       //console.log(signedTransaction);
 
       //using {sign: true, broadcast: true} to create a online U3 instance and pushTx to chain
-      const config = { keyProvider: account1_pk };
+      const config = { cipherType: 'ecc', keyProvider: account1_pk };
       const u3 = createU3(config);
       let processedTransaction = await u3.pushTx(signedTransaction);
       assert.equal(processedTransaction.transaction_id, unsigned_transaction.transaction_id);
@@ -508,6 +517,7 @@ describe('u3.js', () => {
      */
     it('sign_separate_from_pushTx_with_network', async () => {
       const u3_offline = createU3({
+        cipherType: 'ecc',
         sign: false,
         broadcast: false,
       })
@@ -521,7 +531,7 @@ describe('u3.js', () => {
       //console.log(signedTransaction)
 
       //using {sign: true, broadcast: true} to create a online U3 instance and pushTx to chain
-      const config = { keyProvider: account1_pk }
+      const config = { cipherType: 'ecc', keyProvider: account1_pk }
       const u3 = createU3(config)
       let processedTransaction = await u3.pushTx(signedTransaction)
       assert.equal(processedTransaction.transaction_id, unsigned_transaction.transaction_id)
@@ -536,7 +546,7 @@ describe('u3.js', () => {
     // 7.1 create user only in the main chain
     // We should call a 'empoweruser' method to async the user from the main chain to the side chain if in MainNet/TestNet envirnment
     it('createUser', async () => {
-      const u3 = createU3({ keyProvider: account1_pk });
+      const u3 = createU3({ cipherType: 'ecc', keyProvider: account1_pk });
       const name = randomName();
       let params = {
         creator: 'ben',
@@ -559,7 +569,7 @@ describe('u3.js', () => {
        * publicKey:UTR5jKHKQZHCvrmfpZ8cjdf6QJFWKQrxUtBvj5QBPKdWUBob8BkqS
        * mnemonic:spring equip exit tool monkey palm output siren next emerge slight flush
        */
-      const u3 = createU3({ keyProvider: '5JC2uWa7Pba5V8Qmn1pQPWKDPgwmRSYeZzAxK48jje6GP5iMqmM' });
+      const u3 = createU3({ cipherType: 'ecc', keyProvider: '5JC2uWa7Pba5V8Qmn1pQPWKDPgwmRSYeZzAxK48jje6GP5iMqmM' });
       const c = await u3.contract('ultrainio');//系统合约名
       await c.empoweruser({
         user: 'temp1',
@@ -574,7 +584,7 @@ describe('u3.js', () => {
     // 7.3 updateAuth
     it('updateAuth', async () => {
 
-      const u3 = createU3({ keyProvider: account3_pk });
+      const u3 = createU3({ cipherType: 'ecc', keyProvider: account3_pk });
       const c = await u3.contract('ultrainio');
 
       let account_ = account3;
@@ -618,7 +628,7 @@ describe('u3.js', () => {
 
     // 8.1 get accountsInfo by name
     it('getAccountInfo', async () => {
-      const u3 = createU3();
+      const u3 = createU3({cipherType: 'ecc'});
       const account_ = await u3.getAccountInfo({ account_name: 'ben' });
       assert.equal(account_.account_name, 'ben');
     });
@@ -630,7 +640,7 @@ describe('u3.js', () => {
     //9.1 Returns an object containing rows from the specified table.
     //before using it, you should know table and scope defined in the contract
     it('get table records', async () => {
-      const u3 = createU3();
+      const u3 = createU3({cipherType: 'ecc'});
       const balance = await u3.getTableRecords({
         code: 'utrio.token',//smart contract name
         scope: account1,//account name
@@ -642,7 +652,7 @@ describe('u3.js', () => {
 
     //9.2 query account's current balance
     it('get currency balance', async () => {
-      const u3 = createU3();
+      const u3 = createU3({cipherType: 'ecc'});
       const balance = await u3.getCurrencyBalance({
         code: account1,
         account: account1,
@@ -655,7 +665,7 @@ describe('u3.js', () => {
 
     //9.3 query currency's status
     it('get currency stats', async function() {
-      const u3 = createU3();
+      const u3 = createU3({cipherType: 'ecc'});
       const stats = await u3.getCurrencyStats('utrio.token', defaultConfig.symbol);
       assert.ok(stats.hasOwnProperty(defaultConfig.symbol));
       assert.ok(stats['UGAS'].hasOwnProperty('supply'));
@@ -669,7 +679,7 @@ describe('u3.js', () => {
 
     // 10.1 buy resource and query resource
     it('lease_and_query', async () => {
-      const config = { keyProvider: account1_pk };
+      const config = { cipherType: 'ecc', keyProvider: account1_pk };
       const u3 = createU3(config);
       const c = await u3.contract('ultrainio');
 
@@ -691,7 +701,7 @@ describe('u3.js', () => {
 
     // 10.1 buy resource and query resource
     it('queryRandom', async () => {
-      const u3 = createU3();
+      const u3 = createU3({cipherType: 'ecc'});
       const c = await u3.contract('utrio.rand');
       const tx = await c.query({
         keyProvider: '5JbedY3jGfNK7HcLXcqGqSYrmX2n8wQWqZAuq6K7Gcf4Dj62UfL',
@@ -711,7 +721,7 @@ describe('u3.js', () => {
 
     // 11.1 subscribe event
     it('subscribe', async () => {
-      const config = { keyProvider: users[account].private_key };
+      const config = { cipherType: 'ecc', keyProvider: users[account].private_key };
       const u3 = createU3(config);
       const sub = await u3.registerEvent(account, 'http://192.168.1.5:3002');
       console.log(sub);
@@ -719,7 +729,7 @@ describe('u3.js', () => {
 
     // 11.2 unsubscribe event
     it('unsubscribe', async () => {
-      const config = { keyProvider: users[account].private_key };
+      const config = { cipherType: 'ecc', keyProvider: users[account].private_key };
       const u3 = createU3(config);
       const unSub = await u3.unregisterEvent(account, 'http://192.168.1.5:3002');
       console.log(unSub);
