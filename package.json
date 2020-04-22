@@ -30,7 +30,7 @@
   "dependencies": {
     "async": "^2.6.2",
     "axios": "^0.18.0",
-    "u3-utils": "^0.0.6",
+    "u3-utils": "git+https://github.com/ultrain-os/u3-utils.git",
     "winston": "^3.2.1",
     "winston-daily-rotate-file": "^3.8.0"
   },
