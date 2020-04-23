@@ -197,7 +197,7 @@ const PublicKeyEcc = (validation) => {
       // if(validation.debug) {
       //   console.error(`${value}`, 'PublicKeyType.appendByteBuffer')
       // }
-      const buf = Cipher.PublicKey.fromStringOrThrow(value).toBuffer()
+      const buf = Cipher.PublicKey.fromString(value).toBuffer()
       b.append(buf.toString('binary'), 'binary')
     },
 
