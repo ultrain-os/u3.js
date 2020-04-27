@@ -36,6 +36,12 @@
   "unsigned_int": "varuint32",
   "bool": "uint8",
 
+  "code_version": {
+    "fields": {
+      "major_num": "uint32",
+      "minor_num": "uint32"
+    }
+  },
   "extensions_type": {
     "base": "",
     "fields": {
@@ -168,6 +174,7 @@
     "base": "",
     "fields": {
       "account": "account_name",
+      "version": "code_version",
       "name": "action_name",
       "authorization": "permission_level[]",
       "data": "bytes"
