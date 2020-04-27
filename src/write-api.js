@@ -202,6 +202,10 @@ function WriteApi(Network, network, config, Transaction) {
       const tr = {
         actions: [{
           account,
+          version:{
+            major_num:0,
+            minor_num:0
+          },
           name,
           authorization,
           data: params,
