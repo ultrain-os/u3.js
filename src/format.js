@@ -62,7 +62,7 @@ function ULong(value, unsigned = true, radix = 10) {
  * @example
  * import {isName} from "u3.js";
  * const u3 = createU3(config)
- * u3.isName('ultrain')
+ * u3.isName('gcf')
  */
 function isName(str, err) {
   try {
@@ -93,7 +93,7 @@ const charidx = ch => {
  * @example
  * import {encodeName} from "u3.js";
  * const u3 = createU3(config)
- * u3.encodeName('ultrain')
+ * u3.encodeName('gcf')
  */
 function encodeName(name, littleEndian = true) {
   if (typeof name !== 'string')
@@ -139,7 +139,7 @@ function encodeName(name, littleEndian = true) {
  * @example
  * import {decodeName} from "u3.js";
  * const u3 = createU3(config)
- * u3.decodeName(encodeName('ultrain'))
+ * u3.decodeName(encodeName('gcf'))
  */
 function decodeName(value, littleEndian = true) {
   value = ULong(value);
@@ -186,7 +186,7 @@ const NameExIndex = ch => {
  * @example
  * import {encodeNameEx} from "u3.js";
  * const u3 = createU3(config)
- * u3.encodeNameEx('ultrain')
+ * u3.encodeNameEx('gcf')
  */
 function encodeNameEx(name, littleEndian = true) {
   if (typeof name !== 'string')

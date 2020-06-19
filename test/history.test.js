@@ -15,7 +15,7 @@ describe("history", async () => {
   });
 
   it("getContractByName", async () => {
-    const rs = await u3.getContractByName("ultrainio");
+    const rs = await u3.getContractByName("gcfio");
     assert.ok(rs);
   });
 
@@ -60,7 +60,7 @@ describe("history", async () => {
     var requestData = {
       "page": 1,
       "pageSize": 10,
-      "queryParams": { account_name: "ultrainio" },
+      "queryParams": { account_name: "gcfio" },
       "sortParams": { _id: -1 }
     };
     const rs = await u3.getActionsByAccount(requestData.page, requestData.pageSize, requestData.queryParams, requestData.sortParams);
@@ -80,7 +80,7 @@ describe("history", async () => {
   });
 
   it("getBlocksByContract", async () => {
-    const rs = await u3.getBlocksByContract(1, "ultrainio", "utrio.token", "transfer");
+    const rs = await u3.getBlocksByContract(1, "gcfio", "gcfio.token", "transfer");
     assert.ok(rs);
   });
 

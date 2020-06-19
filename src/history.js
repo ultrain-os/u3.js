@@ -52,7 +52,7 @@ function historyGen(config) {
  * await u3.getAllBlocks({
     'page': 1,
     'pageSize': 10,
-    'queryParams': {"block.producer":"ultrainio"},
+    'queryParams': {"block.producer":"gcfio"},
     'sortParams': { _id: -1 }
  * })
  *
@@ -62,7 +62,7 @@ function historyGen(config) {
     "block_id" : "00000002d99f33473ee5553e0993f6b821f68ce12787c7d5e8ba90393eb1f6e6", 
     "block" : {
         "timestamp" : "2018-08-22T07:33:13.000", 
-        "producer" : "ultrainio", 
+        "producer" : "gcfio",
         "confirmed" : NumberInt(0), 
         "previous" : "00000001bcf2f448225d099685f14da76803028926af04d2607eafcf609c265c", 
         "transaction_mroot" : "0000000000000000000000000000000000000000000000000000000000000000", 
@@ -117,10 +117,10 @@ function getAllBlocks(page, pageSize, queryParams, sortParams) {
  * json structure:
  {
     "_id" : ObjectId("5bd2e8347705c6005a6f4d12"),
-    "name" : "ultrainio",
+    "name" : "gcfio",
     "createdAt" : ISODate("2018-10-26T10:11:00.683+0000"),
     "abi" : {
-        "version" : "ultrainio::abi/1.0",
+        "version" : "gcfio::abi/1.0",
         "types" : [...],
         "structs" : [...],
         "actions" : [...],
@@ -152,16 +152,16 @@ function getContracts(page, pageSize, queryParams, sortParams) {
  * import {getContractByName} from "u3.js";
  * const u3 = createU3(config)
  * await u3.getContractByName({
-    'name': 'utrio.code'
+    'name': 'gcfio.code'
  * })
  *
  * json structure:
  *  {
     "_id" : ObjectId("5bd2e8347705c6005a6f4d12"),
-    "name" : "utrio.code",
+    "name" : "gcfio.code",
     "createdAt" : ISODate("2018-10-26T10:11:00.683+0000"),
     "abi" : {
-        "version" : "ultrainio::abi/1.0",
+        "version" : "gcfio::abi/1.0",
         "types" : [...],
         "structs" : [...],
         "actions" : [...],
@@ -197,7 +197,7 @@ function getContractByName(name) {
  * json structure:
  *{ 
     "_id" : ObjectId("5b7d11cc59bd97fab30ba86b"), 
-    "name" : "utrio.code", 
+    "name" : "gcfio.code",
     "owner" : "UTR6uHKWW5tvmw6eQpbv92cVmkpDFhQ9q7xsee5Da2X2pVeYUNy4D",
     "active" : "UTR8uHKWW5tvmw6eQpbv92cVmkpDFhQ9q7xsee5Da2X2pVeYUNy4D",
     "createdAt" : ISODate("2018-08-22T07:33:32.092+0000")
@@ -249,11 +249,11 @@ async function getAllAccounts(page, pageSize, queryParams, sortParams) {
             "action_num" : NumberInt(0), 
             "trx_id" : "40ed51618da80804373fd84015548c8343da8c7ade8af00548ada4952d3e38b9", 
             "cfa" : false, 
-            "account" : "ultrainio", 
+            "account" : "gcfio",
             "name" : "onblock", 
             "authorization" : [
                 {
-                    "actor" : "ultrainio", 
+                    "actor" : "gcfio",
                     "permission" : "active"
                 }
             ], 
@@ -355,11 +355,11 @@ function getAccountsByKey(public_key) {
             "action_num" : NumberInt(0), 
             "trx_id" : "40ed51618da80804373fd84015548c8343da8c7ade8af00548ada4952d3e38b9", 
             "cfa" : false, 
-            "account" : "ultrainio", 
+            "account" : "gcfio",
             "name" : "onblock", 
             "authorization" : [
                 {
-                    "actor" : "ultrainio", 
+                    "actor" : "gcfio",
                     "permission" : "active"
                 }
             ], 
@@ -399,11 +399,11 @@ function getTxByTxId(id) {
     "action_num" : NumberInt(0), 
     "trx_id" : "40ed51618da80804373fd84015548c8343da8c7ade8af00548ada4952d3e38b9", 
     "cfa" : false, 
-    "account" : "ultrainio", 
+    "account" : "gcfio",
     "name" : "onblock", 
     "authorization" : [
         {
-            "actor" : "ultrainio", 
+            "actor" : "gcfio",
             "permission" : "active"
         }
     ], 
@@ -427,7 +427,7 @@ function getActionsByTxid(id) {
  * await u3.getActionsByAccount({
      'page': 1,
      'pageSize': 10,
-     'queryParams': {account:'ultrainio'},
+     'queryParams': {account:'gcfio'},
      'sortParams': { _id: -1 }
  * })
  *
@@ -437,11 +437,11 @@ function getActionsByTxid(id) {
     "action_num" : NumberInt(0), 
     "trx_id" : "40ed51618da80804373fd84015548c8343da8c7ade8af00548ada4952d3e38b9", 
     "cfa" : false, 
-    "account" : "ultrainio", 
+    "account" : "gcfio",
     "name" : "onblock", 
     "authorization" : [
         {
-            "actor" : "ultrainio", 
+            "actor" : "gcfio",
             "permission" : "active"
         }
     ], 
@@ -495,11 +495,11 @@ function getActionsByAccount(page, pageSize, queryParams, sortParams) {
             "action_num" : NumberInt(0), 
             "trx_id" : "40ed51618da80804373fd84015548c8343da8c7ade8af00548ada4952d3e38b9", 
             "cfa" : false, 
-            "account" : "ultrainio", 
+            "account" : "gcfio",
             "name" : "onblock", 
             "authorization" : [
                 {
-                    "actor" : "ultrainio", 
+                    "actor" : "gcfio",
                     "permission" : "active"
                 }
             ], 
@@ -537,13 +537,13 @@ function getTxsByBlockNum(page, pageSize, queryParams, sortParams) {
  * import {getExistAccount} from "u3.js";
  * const u3 = createU3(config)
  * await u3.getExistAccount({
-     'name': 'utrio.code'
+     'name': 'gcfio.code'
  * })
  *
  * json structure:
  * { 
     "_id" : ObjectId("5b7d11cc59bd97fab30ba86b"), 
-    "name" : "utrio.code", 
+    "name" : "gcfio.code",
     "createdAt" : ISODate("2018-08-22T07:33:32.092+0000")
 }
  */
@@ -555,7 +555,7 @@ function getExistAccount(name) {
  * get blocks by block_num、account_name、contract_name、contract_method
  * @param { Number } block_num lasted block_num
  * @param { String } account account name
- * @param { String } contract contract name eg. utrio.token
+ * @param { String } contract contract name eg. gcfio.token
  * @param { String } contract_method contract method eg. transfer
  * @memberOf history
  * @example
@@ -563,8 +563,8 @@ function getExistAccount(name) {
  * const u3 = createU3(config)
  * await u3.getBlocksByContract({
     'block_num': 1,
-    'account': "ultrainio",
-    'contract': "utrio.token",
+    'account': "gcfio",
+    'contract': "gcfio.token",
     'contract_method': "transfer"
  * })
  *
@@ -574,7 +574,7 @@ function getExistAccount(name) {
     "block_id" : "00000002d99f33473ee5553e0993f6b821f68ce12787c7d5e8ba90393eb1f6e6", 
     "block" : {
         "timestamp" : "2018-08-22T07:33:13.000", 
-        "producer" : "ultrainio", 
+        "producer" : "gcfio",
         "confirmed" : NumberInt(0), 
         "previous" : "00000001bcf2f448225d099685f14da76803028926af04d2607eafcf609c265c", 
         "transaction_mroot" : "0000000000000000000000000000000000000000000000000000000000000000", 
@@ -637,11 +637,11 @@ function getBlocksByContract(block_num, account, contract, contract_method) {
             "action_num" : NumberInt(0), 
             "trx_id" : "40ed51618da80804373fd84015548c8343da8c7ade8af00548ada4952d3e38b9", 
             "cfa" : false, 
-            "account" : "ultrainio", 
+            "account" : "gcfio",
             "name" : "onblock", 
             "authorization" : [
                 {
-                    "actor" : "ultrainio", 
+                    "actor" : "gcfio",
                     "permission" : "active"
                 }
             ], 
@@ -681,7 +681,7 @@ async function search(param) {
     const u3 = createU3(U3Config);
 
     let balance = await u3.getCurrencyBalance({
-      code: "utrio.token",
+      code: "gcfio.token",
       account: param,
       symbol: defaultConfig.symbol
     });
@@ -706,13 +706,13 @@ async function search(param) {
  * import {getCreateAccountByName} from "u3.js";
  * const u3 = createU3(config)
  * u3.getCreateAccountByName({
-     'name': 'utrio.code'
+     'name': 'gcfio.code'
  * })
  *
  * json structure:
  * { 
     "_id" : ObjectId("5b7d11cc59bd97fab30ba86b"), 
-    "name" : "utrio.code", 
+    "name" : "gcfio.code",
     "createdAt" : ISODate("2018-08-22T07:33:32.092+0000")
 }
  */
@@ -1013,11 +1013,11 @@ function getProposerList(page, pageSize, queryParams, sortParams) {
     "action_num" : NumberInt(0), 
     "trx_id" : "40ed51618da80804373fd84015548c8343da8c7ade8af00548ada4952d3e38b9", 
     "cfa" : false, 
-    "account" : "ultrainio", 
+    "account" : "gcfio",
     "name" : "onblock", 
     "authorization" : [
         {
-            "actor" : "ultrainio", 
+            "actor" : "gcfio",
             "permission" : "active"
         }
     ], 

@@ -1,18 +1,18 @@
 module.exports = {
-  httpEndpoint: "http://127.0.0.1:8888",
-  httpEndpointHistory: "http://127.0.0.1:3000",
-  chainId: "cf057bbfb72640471fd910bcb67639c22df9f92470936cddc1ade0e2f2e7dc4f",
+  httpEndpoint: 'http://139.217.83.22:8888',
+  httpEndpointHistory: 'http://59.110.63.119:3111',
+  chainId: '1a608a002d9191ecefb6a5072d7f547981749399945d1d291a74e43011206c0c',
   broadcast: true,
   sign: true,
   logger: {
-    directory: "../../logs", // daily rotate file directory
-    level: "info", // error->warn->info->verbose->debug->silly
+    directory: '../../logs', // daily rotate file directory
+    level: 'info', // error->warn->info->verbose->debug->silly
     console: true, // print to console
-    file: false // append to file
+    file: false, // append to file
   },
-  symbol: "UGAS",
-  cipherType: "gm",
-  //keyProvider:[],
+  symbol: 'UGAS',
+  cipherType: 'gm',
+  keyProvider: ['5KWRpXRqXWvMTztE72QnJmpTfK8dx9oL5VYAzho5xt5jDZiUDRX'],
   //expireInSeconds:60
 
-};
+}

@@ -3,7 +3,7 @@ sleep 1
 clultrain=./clultrain
 
 # remove default.wallet
-DWallet=/root/ultrainio-wallet/default.wallet
+DWallet=/root/gcfio-wallet/default.wallet
 if [ -e $DWallet ]; then
     rm $DWallet
 fi
@@ -21,7 +21,7 @@ fi
 ContractPath=/contracts
 
 # The system and user account
-sys_acc_arr=(utrio.code ultrio.bpay utrio.msig utrio.names utrio.ram utrio.ramfee utrio.saving utrio.stake utrio.token utrio.vpay utrio.fee  exchange)
+sys_acc_arr=(gcfio.code ultrio.bpay gcfio.msig gcfio.names gcfio.ram gcfio.ramfee gcfio.saving gcfio.stake gcfio.token gcfio.vpay gcfio.fee  exchange)
 
 # Create the system accounts
 for account in ${sys_acc_arr[@]};
@@ -30,7 +30,7 @@ do
 	PrivKey=${Keys[0]}
 	PubKey=${Keys[1]}
 	$clultrain wallet import --private-key $PrivKey
-	$clultrain create account ultrainio ${account} $PubKey ${PubKey}
+	$clultrain create account gcfio ${account} $PubKey ${PubKey}
 done
 
 
@@ -67,21 +67,21 @@ accounts_l=${#test_acc_arr[*]}
 for ((i=0;i<$accounts_l;i++))
 do
     echo ${test_acc_arr[$i]}
-	$clultrain create account ultrainio ${test_acc_arr[$i]} ${test_acc_pub_arr[$i]} ${test_acc_pub_arr[$i]}
+	$clultrain create account gcfio ${test_acc_arr[$i]} ${test_acc_pub_arr[$i]} ${test_acc_pub_arr[$i]}
 done
 
 sleep 15
 
 # Deploy the system contract
-$clultrain set contract utrio.token $ContractPath/ultrainio.token/ -p utrio.token
-$clultrain push action utrio.token create '[ "ultrainio", "8000000000.0000 UGAS"]' -p utrio.token
-$clultrain push action utrio.token issue '[ "ultrainio", "1000000000.0000 UGAS"]' -p ultrainio
-$clultrain set contract ultrainio $ContractPath/ultrainio.system/ -p ultrainio -x 3600
+$clultrain set contract gcfio.token $ContractPath/gcfio.token/ -p gcfio.token
+$clultrain push action gcfio.token create '[ "gcfio", "8000000000.0000 UGAS"]' -p gcfio.token
+$clultrain push action gcfio.token issue '[ "gcfio", "1000000000.0000 UGAS"]' -p gcfio
+$clultrain set contract gcfio $ContractPath/gcfio.system/ -p gcfio -x 3600
 
 sleep 15
 
 for ((i=0;i<$accounts_l;i++))
 do
     echo ${test_acc_arr[$i]}
-    $clultrain transfer -f ultrainio ${test_acc_arr[$i]} "1000.0000 UGAS"
+    $clultrain transfer -f gcfio ${test_acc_arr[$i]} "1000.0000 UGAS"
 done

@@ -81,7 +81,7 @@ describe('shorthand', () => {
     const u3 = createcreateU3();
     const { types } = u3.fc;
     const AssetType = types.asset();
-    assertSerializer(AssetType, '1.1 4,' + defaultConfig.symbol + '@utrio.token', '1.1000 ' + defaultConfig.symbol + '@utrio.token', '1.1000 ' + defaultConfig.symbol);
+    assertSerializer(AssetType, '1.1 4,' + defaultConfig.symbol + '@gcfio.token', '1.1000 ' + defaultConfig.symbol + '@gcfio.token', '1.1000 ' + defaultConfig.symbol);
   });
 
   it('extended_asset', () => {
@@ -109,10 +109,10 @@ if (process.env['NODE_ENV'] === 'development') {
     it('u3io token contract parses', (done) => {
       const u3 = createcreateU3();
 
-      u3.contract('utrio.token', (error, utrio_token) => {
+      u3.contract('gcfio.token', (error, utrio_token) => {
         assert(!error, error);
-        assert(utrio_token.transfer, 'utrio.token contract');
-        assert(utrio_token.issue, 'utrio.token contract');
+        assert(utrio_token.transfer, 'gcfio.token contract');
+        assert(utrio_token.issue, 'gcfio.token contract');
         done();
       });
     });
@@ -125,7 +125,7 @@ describe('Action.data', () => {
     const u3 = createU3({ forceActionDataHex: false });
     const { structs, types } = u3.fc;
     const value = {
-      account: 'utrio.token',
+      account: 'gcfio.token',
       name: 'transfer',
       data: {
         from: 'inita',
@@ -142,7 +142,7 @@ describe('Action.data', () => {
     const u3 = createU3({ forceActionDataHex: true });
     const { structs, types } = u3.fc;
     const value = {
-      account: 'utrio.token',
+      account: 'gcfio.token',
       name: 'transfer',
       data: {
         from: 'inita',
@@ -159,7 +159,7 @@ describe('Action.data', () => {
     const u3 = createU3({ forceActionDataHex: false });
     const { structs, types } = u3.fc;
     const value = {
-      account: 'utrio.token',
+      account: 'gcfio.token',
       name: 'mytype',
       data: '030a0b0c',
       authorization: []

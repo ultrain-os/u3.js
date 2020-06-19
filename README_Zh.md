@@ -31,7 +31,7 @@ Javascript封装的负责与链交互的通用库
                       const keyProvider = () => {
                         return ["5JbedY3jGfNK7HcLXcqGqSYrmX2n8wQWqZAuq6K7Gcf4Dj62UfL"];
                       };
-                      const c = await u3.contract("utrio.token");
+                      const c = await u3.contract("gcfio.token");
                       await c.transfer("ben", "bob", "1.0000 UGAS", "", { keyProvider });
                     };
                     func();
@@ -163,7 +163,7 @@ await u3.transaction(tr => { tr.anyAction() }, {keyProvider})
    
    ```
    const u3 = createU3(config);
-   const c = await u3.contract("ultrainio");
+   const c = await u3.contract("gcfio");
    await c.empoweruser({
      user: 'tester1',
      chain_name: 'pioneer', // pioneer is one of the sidechain name
@@ -182,7 +182,7 @@ await u3.transaction(tr => { tr.anyAction() }, {keyProvider})
 
 ```
 const u3 = createU3(config);
-const c = await u3.contract('utrio.token')
+const c = await u3.contract('gcfio.token')
 
 // 使用位置参数
 const result = await c.transfer('ben', 'bob', '1.2000 UGAS', '')
@@ -214,14 +214,14 @@ return tx && tx.irreversible;
   
 ```
   const u3_offline = createU3({ sign: false, broadcast: false });
-  const c = u3_offline.contract('utrio.token');
-  let unsigned_transaction = await c.transfer('ultrainio', 'ben', '1 UGAS', 'uu');
+  const c = u3_offline.contract('gcfio.token');
+  let unsigned_transaction = await c.transfer('gcfio', 'ben', '1 UGAS', 'uu');
 ```
 
 如果你把 `httpEndpoint` 设为null, u3将不发送网络请求
 那么你需要像下面这样传入 `transactionHeaders` 参数.
 其中`abi` 是可选的, 如果你忽略它, 那么u3会从本地目录下查找缓存文件.
-本地缓存文件只有 'ultrainio' and 'utrio.token' 两个系统合约的abi
+本地缓存文件只有 'gcfio' and 'gcfio.token' 两个系统合约的abi
 注意最大`expiration`时间是一个小时，也就是值为3600.
 你可以通过`u3.getBlockInfo` 或者 rest 接口 `http://xxx/v1/chain/get_block_info` 来获取 `ref_block_num` 和 `ref_block_prefix` 的值 
 
@@ -237,7 +237,7 @@ return tx && tx.irreversible;
     },
     abi: JSON.parse('{"version":"ultraio:1.0","types":[{"new_type_name":"account_name","type":"name"}],"structs":[{"name":"transfer","base":"","fields":[{"name":"from","type":"account_name"},{"name":"to","type":"account_name"},{"name":"quantity","type":"asset"},{"name":"memo","type":"string"}]},{"name":"safe_transfer","base":"","fields":[{"name":"from","type":"account_name"},{"name":"to","type":"account_name"},{"name":"quantity","type":"asset"},{"name":"memo","type":"string"}]},{"name":"create","base":"","fields":[{"name":"issuer","type":"account_name"},{"name":"maximum_supply","type":"asset"}]},{"name":"issue","base":"","fields":[{"name":"to","type":"account_name"},{"name":"quantity","type":"asset"},{"name":"memo","type":"string"}]},{"name":"account","base":"","fields":[{"name":"balance","type":"asset"},{"name":"last_block_height","type":"uint32"}]},{"name":"currency_stats","base":"","fields":[{"name":"supply","type":"asset"},{"name":"max_supply","type":"asset"},{"name":"issuer","type":"account_name"}]}],"actions":[{"name":"transfer","type":"transfer","ricardian_contract":""},{"name":"safe_transfer","type":"safe_transfer","ricardian_contract":""},{"name":"issue","type":"issue","ricardian_contract":""},{"name":"create","type":"create","ricardian_contract":""}],"tables":[{"name":"accounts","type":"account","index_type":"i64","key_names":["currency"],"key_types":["uint64"]},{"name":"stat","type":"currency_stats","index_type":"i64","key_names":["currency"],"key_types":["uint64"]}],"ricardian_clauses":[],"abi_extensions":[]}'),
   });
-  const c = u3_offline.contract('utrio.token');
+  const c = u3_offline.contract('gcfio.token');
   let unsigned_transaction = await c.transfer('ben', 'bob', '1 UGAS', 'test');
 ```
 
@@ -285,7 +285,7 @@ const unsigned_transaction = await u3_offline.createUser(params, {
 调用合约只会消耗合约Owner的资源，如果你想部署一个合约，请先购买一些资源. 
 
 主网环境下,请至[开发者网站](https://developer.ultrain.io/resources)上选择合适的资源套餐并进行购买，
-测试网环境下,请至[测试网浏览器](https://testnet-explorer.ultrain.io/ultrainio/account-recharge)自行进行账号充值与资源购买。
+测试网环境下,请至[测试网浏览器](https://testnet-explorer.ultrain.io/gcfio/account-recharge)自行进行账号充值与资源购买。
 
 
 * resourcelease(payer,receiver,slot,days,location) 
@@ -294,9 +294,9 @@ location is the chain name you to use your resource
 
 ```
 const u3 = createU3(config);
-const c = await u3.contract('ultrainio')
+const c = await u3.contract('gcfio')
 
-await c.resourcelease('ben', 'bob', 1, 10, "ultrainio");// 1 slot for 10 days on the side chain named ultrainio
+await c.resourcelease('ben', 'bob', 1, 10, "gcfio");// 1 slot for 10 days on the side chain named gcfio
 
 ```
 

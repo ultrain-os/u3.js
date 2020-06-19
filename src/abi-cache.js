@@ -16,11 +16,11 @@ function AbiCache(network, config) {
   let cache = {};
   if (typeof window === 'undefined') {
     cache = {
-      'ultrainio': {
-        abi: JSON.parse(fs.readFileSync(__dirname + '/../contracts/ultrainio/ultrainio.abi')),
+      'gcfio': {
+        abi: JSON.parse(fs.readFileSync(__dirname + '/../contracts/gcfio/gcfio.abi')),
       },
-      'utrio.token': {
-        abi: JSON.parse(fs.readFileSync(__dirname + '/../contracts/utrio.token/utrio.token.abi')),
+      'gcfio.token': {
+        abi: JSON.parse(fs.readFileSync(__dirname + '/../contracts/gcfio.token/gcfio.token.abi')),
       },
     };
   }

@@ -81,8 +81,8 @@ function WriteApi(Network, network, config, Transaction) {
       }
 
       const abiPromises = [];
-      // Ultrain contract operations are cached (efficient and offline transactions)
-      const cachedCode = new Set(['ultrainio', 'utrio.token']);
+      // gcf contract operations are cached (efficient and offline transactions)
+      const cachedCode = new Set(['gcfio', 'gcfio.token']);
       //const cachedCode = new Set([]);
       accounts.forEach(account => {
         if (!cachedCode.has(account)) {
@@ -154,7 +154,7 @@ function WriteApi(Network, network, config, Transaction) {
     });
   }
 
-  function genMethod(type, definition, transactionArg, account = 'utrio.token', name = type) {
+  function genMethod(type, definition, transactionArg, account = 'gcfio.token', name = type) {
     return function(...args) {
 
       const optionOverrides = {};
@@ -265,13 +265,13 @@ function WriteApi(Network, network, config, Transaction) {
       messageList.push(ret);
     };
 
-    // merges can be an object of functions (as in the main ultrain contract)
+    // merges can be an object of functions (as in the main gcf contract)
     // or an object of contract names with functions under those
     for (const key in merges) {
       const value = merges[key];
       const variableName = key.replace(/\./, '_');
       if (typeof value === 'function') {
-        // Native operations (ultrain contract for example)
+        // Native operations (gcf contract for example)
         messageCollector[variableName] = wrap(value);
 
       } else if (typeof value === 'object') {

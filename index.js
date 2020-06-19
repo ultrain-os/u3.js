@@ -72,8 +72,8 @@ const createU3 = (config = {}) => {
 
     /**
      * deploy contract
-     * @param contract path of contract，eg. utrio.UGAStem
-     * @param account name of owner account，eg. ultrainio
+     * @param contract path of contract，eg. gcfio.UGAStem
+     * @param account name of owner account，eg. gcfio
      * @param options eg:{keyProvider: 'xxx...'}
      * @returns {Promise<*>}
      */
@@ -88,7 +88,7 @@ const createU3 = (config = {}) => {
                     action.ability = "normal";
             });
 
-            const tr = await this.transaction("ultrainio", c => {
+            const tr = await this.transaction("gcfio", c => {
                 c.setcode(account, 0, 0, wasm);
                 c.setabi(account, abi_obj);
             }, options);
@@ -105,7 +105,7 @@ const createU3 = (config = {}) => {
      *
      * params format:
      * {
-        creator: "ultrainio",
+        creator: "gcfio",
         name: "test123",
         owner: "UTR6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV",
         active: "UTR6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV",
@@ -119,7 +119,7 @@ const createU3 = (config = {}) => {
         };
         let data = Object.assign({}, defaults, params);
 
-        const c = await this.contract("ultrainio");
+        const c = await this.contract("gcfio");
         return c.transaction(tr => {
             tr.newaccount({
                 creator: data.creator,

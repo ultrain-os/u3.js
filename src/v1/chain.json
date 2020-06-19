@@ -495,7 +495,7 @@
     "results": "vector[push_transaction.results]"
   },
   "register_event": {
-    "brief": "subscribe to ultrain chain event.",
+    "brief": "subscribe to gcf chain event.",
     "params": {
       "account": {
         "type": "name",
@@ -512,7 +512,7 @@
     }
   },
   "unregister_event": {
-    "brief": "unsubscribe to ultrain chain event.",
+    "brief": "unsubscribe to gcf chain event.",
     "params": {
       "account": {
         "type": "name",
@@ -577,7 +577,7 @@
     }
   },
   "deploy": {
-    "brief": "deploy a contract to ultrain",
+    "brief": "deploy a contract to gcf",
     "params": {
       "contract": {
         "type": "string",

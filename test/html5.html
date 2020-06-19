@@ -16,7 +16,7 @@
         const keyProvider = () => {
           return ["5JbedY3jGfNK7HcLXcqGqSYrmX2n8wQWqZAuq6K7Gcf4Dj62UfL"];
         };
-        const c = await u3.contract("utrio.token");
+        const c = await u3.contract("gcfio.token");
         await c.transfer("ben", "bob", "1.0000 UGAS", "", { keyProvider });
       };
       func();

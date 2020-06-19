@@ -7,16 +7,16 @@ module.exports = AssetCache;
 function AssetCache(network) {
 
   const cache = {
-    'UTR@utrio.token': { precision: 4 }
+    'UTR@gcfio.token': { precision: 4 }
   };
-  cache[defaultConfig.symbol + '@utrio.token'] = { precision: 4 };
+  cache[defaultConfig.symbol + '@gcfio.token'] = { precision: 4 };
 
   function lookupAsync(symbol, contract) {
     assert(symbol, 'required symbol');
     assert(contract, 'required contract');
 
-    if (contract === 'utrio') {
-      contract = 'utrio.token';
+    if (contract === 'gcfio') {
+      contract = 'gcfio.token';
     }
 
     const extendedAsset = `${symbol}@${contract}`;
@@ -60,8 +60,8 @@ function AssetCache(network) {
     assert(symbol, 'required symbol');
     assert(contract, 'required contract');
 
-    if (contract === 'utrio') {
-      contract = 'utrio.token';
+    if (contract === 'gcfio') {
+      contract = 'gcfio.token';
     }
 
     const extendedAsset = `${symbol}@${contract}`;
