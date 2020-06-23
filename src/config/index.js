@@ -12,7 +12,6 @@ module.exports = {
   },
   symbol: 'UGAS',
   cipherType: 'gm',
-  keyProvider: ['5KWRpXRqXWvMTztE72QnJmpTfK8dx9oL5VYAzho5xt5jDZiUDRX'],
   //expireInSeconds:60
 
 }
