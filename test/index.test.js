@@ -34,11 +34,11 @@ const randomAsset = () => {
 const customCurrency = randomAsset()
 
 const account1 = 'gcfuture'
-const account1_pk = '5KWRpXRqXWvMTztE72QnJmpTfK8dx9oL5VYAzho5xt5jDZiUDRX'
+const account1_pk = 'xxx'
 /*{
   mnemonic: 'action leaf city room outer deposit soup link observe between spy food',
-    public_key: 'GCF7LcHfv6yVhfb35cDh447ExY7jud3akB61LTbem7uGoEqMTLz5Z',
-  private_key: '5Jvs7Ehi6zqP42KHVrtoaStvVHzADm4HXey7n15EL896LMxawwJ'
+    public_key: 'GCF7...',
+  private_key: 'xxx'
 }*/
 
 describe('u3.js', () => {
